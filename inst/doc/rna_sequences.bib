@@ -1,0 +1,306 @@
+This file was created with JabRef 2.2.
+Encoding: UTF8
+
+@ARTICLE{rna:Altschul:1990,
+  author = {S. F. Altschul and W. Gish and W. Miller and E. W. Myers and D. J.
+	Lipman},
+  title = {Basic Local Alignment Search Tool},
+  journal = {Journal of Molecular Biology},
+  year = {1990},
+  volume = {215},
+  pages = {403--410},
+  number = {3},
+  month = {Oct},
+  abstract = {A new approach to rapid sequence comparison, basic local alignment
+	search tool (BLAST), directly approximates alignments that optimize
+	a measure of local similarity, the maximal segment pair (MSP) score.
+	Recent mathematical results on the stochastic properties of MSP scores
+	allow an analysis of the performance of this method as well as the
+	statistical significance of alignments it generates. The basic algorithm
+	is simple and robust; it can be implemented in a number of ways and
+	applied in a variety of contexts including straightforward DNA and
+	protein sequence database searches, motif searches, gene identification
+	searches, and in the analysis of multiple regions of similarity in
+	long DNA sequences. In addition to its flexibility and tractability
+	to mathematical analysis, BLAST is an order of magnitude faster than
+	existing sequence comparison tools of comparable sensitivity.},
+  owner = {hahsler},
+  timestamp = {2009.04.29}
+}
+
+@ARTICLE{rna:Deschavanne:1999,
+  author = {P. J. Deschavanne and A. Giron and J. Vilain and G. Fagot and B.
+	Fertil},
+  title = {Genomic Signature: Characterization and Classification of Species Assessed by Chaos Game Representation of Sequences.},
+  journal = {Molecular Biology and Evolution},
+  year = {1999},
+  volume = {16},
+  pages = {1391--1399},
+  number = {10},
+  month = {Oct},
+  abstract = {We explored DNA structures of genomes by means of a new tool derived
+	from the "chaotic dynamical systems" theory (the so-called chaos
+	game representation [CGR]), which allows the depiction of frequencies
+	of oligonucleotides in the form of images. Using CGR, we observe
+	that subsequences of a genome exhibit the main characteristics of
+	the whole genome, attesting to the validity of the genomic signature
+	concept. Base concentrations, stretches (runs of complementary bases
+	or purines/pyrimidines), and patches (over- or underexpressed words
+	of various lengths) are the main factors explaining the variability
+	observed among sequences. The distance between images may be considered
+	a measure of phylogenetic proximity. Eukaryotes and prokaryotes can
+	be identified merely on the basis of their DNA structures.},
+  owner = {hahsler},
+  timestamp = {2009.04.29}
+}
+
+@ARTICLE{rna:Hughey:1996,
+  author = {R. Hughey and A. Krogh},
+  title = {Hidden Markov Models for Sequence Analysis: Extension and Analysis of the Basic Method},
+  journal = {Computational Applications in Bioscience},
+  year = {1996},
+  volume = {12},
+  pages = {95--107},
+  number = {2},
+  month = {Apr},
+  abstract = {Hidden Markov models (HMMs) are a highly effective means of modeling
+	a family of unaligned sequences or a common motif within a set of
+	unaligned sequences. The trained HMM can then be used for discrimination
+	or multiple alignment. The basic mathematical description of an HMM
+	and its expectation-maximization training procedure is relatively
+	straightforward. In this paper, we review the mathematical extensions
+	and heuristics that move the method from the theoretical to the practical.
+	We then experimentally analyze the effectiveness of model regularization,
+	dynamic model modification and optimization strategies. Finally it
+	is demonstrated on the SH2 domain how a domain can be found from
+	unaligned sequences using a special model type. The experimental
+	work was completed with the aid of the Sequence Alignment and Modeling
+	software suite.},
+  keywords = {Algorithms; Amino Acid Sequence; Animals; Base Sequence; Databases,
+	Factual; Evaluation Studies as Topic; Humans; Markov Chains; Models,
+	Statistical; Sequence Alignment; Sequence Analysis; Software; src
+	Homology Domains},
+  owner = {hahsler},
+  timestamp = {2009.04.29}
+}
+
+@ARTICLE{rna:Li:2006,
+  author = {Weizhong Li and Adam Godzik},
+  title = {Cd-hit: A Fast Program for Clustering and Comparing Large Sets of Protein or Nucleotide Sequences},
+  journal = {Bioinformatics},
+  year = {2006},
+  volume = {22},
+  pages = {1658--1659},
+  number = {13},
+  month = {Jul},
+  abstract = {MOTIVATION: In 2001 and 2002, we published two papers (Bioinformatics,
+	17, 282-283, Bioinformatics, 18, 77-82) describing an ultrafast protein
+	sequence clustering program called cd-hit. This program can efficiently
+	cluster a huge protein database with millions of sequences. However,
+	the applications of the underlying algorithm are not limited to only
+	protein sequences clustering, here we present several new programs
+	using the same algorithm including cd-hit-2d, cd-hit-est and cd-hit-est-2d.
+	Cd-hit-2d compares two protein datasets and reports similar matches
+	between them; cd-hit-est clusters a DNA/RNA sequence database and
+	cd-hit-est-2d compares two nucleotide datasets. All these programs
+	can handle huge datasets with millions of sequences and can be hundreds
+	of times faster than methods based on the popular sequence comparison
+	and database search tools, such as BLAST.},
+  keywords = {Algorithms; Animals; Cluster Analysis; Computational Biology; DNA;
+	Databases, Nucleic Acid; Databases, Protein; Expressed Sequence Tags;
+	Humans; Programming Languages; RNA; Sequence Analysis, DNA; Sequence
+	Analysis, Protein; Software},
+  owner = {hahsler},
+  review = {cd-hit},
+  timestamp = {2009.04.29}
+}
+
+@ARTICLE{rna:Li:2002,
+  author = {Weizhong Li and Lukasz Jaroszewski and Adam Godzik},
+  title = {Tolerating Some Redundancy Significantly Speeds up Clustering of Large Protein Databases},
+  journal = {Bioinformatics},
+  year = {2002},
+  volume = {18},
+  pages = {77--82},
+  number = {1},
+  month = {Jan},
+  abstract = {MOTIVATION: Sequence clustering replaces groups of similar sequences
+	in a database with single representatives. Clustering large protein
+	databases like the NCBI Non-Redundant database (NR) using even the
+	best currently available clustering algorithms is very time-consuming
+	and only practical at relatively high sequence identity thresholds.
+	Our previous program, CD-HI, clustered NR at 90\% identity in approximately
+	1 h and at 75\% identity in approximately 1 day on a 1 GHz Linux
+	PC (Li et al., Bioinformatics, 17, 282, 2001); however even faster
+	clustering speed is needed because the size of protein databases
+	are rapidly growing and many applications desire a lower attainable
+	thresholds. RESULTS: For our previous algorithm (CD-HI), we have
+	employed short-word filters to speed up the clustering. In this paper,
+	we show that tolerating some redundancy makes for more efficient
+	use of these short-word filters and increases the program's speed
+	100 times. Our new program implements this technique and clusters
+	NR at 70\% identity within 2 h, and at 50\% identity in approximately
+	5 days. Although some redundancy is present after clustering, our
+	new program's results only differ from our previous program's by
+	less than 0.4\%.},
+  keywords = {Algorithms; Cluster Analysis; Computational Biology; Database Management
+	Systems; Databases, Protein; Software},
+  owner = {hahsler},
+  review = {cd-hit},
+  timestamp = {2009.04.29}
+}
+
+@ARTICLE{rna:Li:2001,
+  author = {W. Li and L. Jaroszewski and A. Godzik},
+  title = {Clustering of Highly Homologous Sequences to Reduce the Size of Large Protein Databases},
+  journal = {Bioinformatics},
+  year = {2001},
+  volume = {17},
+  pages = {282--283},
+  number = {3},
+  month = {Mar},
+  abstract = {We present a fast and flexible program for clustering large protein
+	databases at different sequence identity levels. It takes less than
+	2 h for the all-against-all sequence comparison and clustering of
+	the non-redundant protein database of over 560,000 sequences on a
+	high-end PC. The output database, including only the representative
+	sequences, can be used for more efficient and sensitive database
+	searches.},
+  keywords = {Algorithms; Databases, Factual; Proteins; Sequence Analysis; Software},
+  owner = {hahsler},
+  review = {cd-hit},
+  timestamp = {2009.04.29}
+}
+
+@ARTICLE{rna:Pham:2004,
+  author = {Tuan D Pham and Johannes Zuegg},
+  title = {A Probabilistic Measure for Alignment-free Sequence Comparison},
+  journal = {Bioinformatics},
+  year = {2004},
+  volume = {20},
+  pages = {3455--3461},
+  number = {18},
+  month = {Dec},
+  abstract = {MOTIVATION: Alignment-free sequence comparison methods are still in
+	the early stages of development compared to those of alignment-based
+	sequence analysis. In this paper, we introduce a probabilistic measure
+	of similarity between two biological sequences without alignment.
+	The method is based on the concept of comparing the similarity/dissimilarity
+	between two constructed Markov models. RESULTS: The method was tested
+	against six DNA sequences, which are the thrA, thrB and thrC genes
+	of the threonine operons from Escherichia coli K-12 and from Shigella
+	flexneri; and one random sequence having the same base composition
+	as thrA from E.coli. These results were compared with those obtained
+	from CLUSTAL W algorithm (alignment-based) and the chaos game representation
+	(alignment-free). The method was further tested against a more complex
+	set of 40 DNA sequences and compared with other existing sequence
+	similarity measures (alignment-free). AVAILABILITY: All datasets
+	and computer codes written in MATLAB are available upon request from
+	the first author.},
+  keywords = {Algorithms; Computer Simulation; Escherichia coli; Models, Genetic;
+	Models, Statistical; Operon; Sequence Alignment; Sequence Analysis,
+	DNA; Sequence Homology, Nucleic Acid; Shigella flexneri; Threonine},
+  owner = {hahsler},
+  timestamp = {2009.04.29}
+}
+
+@ARTICLE{rna:Vinga:2003,
+  author = {Susana Vinga and Jonas Almeida},
+  title = {Alignment-free Sequence Comparison---{A} Review},
+  journal = {Bioinformatics},
+  year = {2003},
+  volume = {19},
+  pages = {513--523},
+  number = {4},
+  month = {Mar},
+  abstract = {MOTIVATION: Genetic recombination and, in particular, genetic shuffling
+	are at odds with sequence comparison by alignment, which assumes
+	conservation of contiguity between homologous segments. A variety
+	of theoretical foundations are being used to derive alignment-free
+	methods that overcome this limitation. The formulation of alternative
+	metrics for dissimilarity between sequences and their algorithmic
+	implementations are reviewed. RESULTS: The overwhelming majority
+	of work on alignment-free sequence has taken place in the past two
+	decades, with most reports published in the past 5 years. Two main
+	categories of methods have been proposed-methods based on word (oligomer)
+	frequency, and methods that do not require resolving the sequence
+	with fixed word length segments. The first category is based on the
+	statistics of word frequency, on the distances defined in a Cartesian
+	space defined by the frequency vectors, and on the information content
+	of frequency distribution. The second category includes the use of
+	Kolmogorov complexity and Chaos Theory. Despite their low visibility,
+	alignment-free metrics are in fact already widely used as pre-selection
+	filters for alignment-based querying of large applications. Recent
+	work is furthering their usage as a scale-independent methodology
+	that is capable of recognizing homology when loss of contiguity is
+	beyond the possibility of alignment. Availability: Most of the alignment-free
+	algorithms reviewed were implemented in MATLAB code and are available
+	at http://bioinformatics.musc.edu/resources.html},
+  keywords = {Algorithms; Animals; Humans; Models, Genetic; Models, Statistical;
+	Sequence Alignment; Sequence Analysis; Sequence Homology},
+  owner = {hahsler},
+  timestamp = {2009.04.29}
+}
+
+@ARTICLE{rna:Wang:2007,
+  author = {Qiong Wang and George M Garrity and James M Tiedje and James R Cole},
+  title = {Naive Bayesian Classifier for Rapid Assignment of {rRNA} Sequences into the new Bacterial Taxonomy},
+  journal = {Applied and Environmental Microbiology},
+  year = {2007},
+  volume = {73},
+  pages = {5261--5267},
+  number = {16},
+  month = {Aug},
+  abstract = {The Ribosomal Database Project (RDP) Classifier, a naïve Bayesian
+	classifier, can rapidly and accurately classify bacterial 16S rRNA
+	sequences into the new higher-order taxonomy proposed in Bergey's
+	Taxonomic Outline of the Prokaryotes (2nd ed., release 5.0, Springer-Verlag,
+	New York, NY, 2004). It provides taxonomic assignments from domain
+	to genus, with confidence estimates for each assignment. The majority
+	of classifications (98\%) were of high estimated confidence (> or
+	= 95\%) and high accuracy (98\%). In addition to being tested with
+	the corpus of 5,014 type strain sequences from Bergey's outline,
+	the RDP Classifier was tested with a corpus of 23,095 rRNA sequences
+	as assigned by the NCBI into their alternative higher-order taxonomy.
+	The results from leave-one-out testing on both corpora show that
+	the overall accuracies at all levels of confidence for near-full-length
+	and 400-base segments were 89\% or above down to the genus level,
+	and the majority of the classification errors appear to be due to
+	anomalies in the current taxonomies. For shorter rRNA segments, such
+	as those that might be generated by pyrosequencing, the error rate
+	varied greatly over the length of the 16S rRNA gene, with segments
+	around the V2 and V4 variable regions giving the lowest error rates.
+	The RDP Classifier is suitable both for the analysis of single rRNA
+	sequences and for the analysis of libraries of thousands of sequences.
+	Another related tool, RDP Library Compare, was developed to facilitate
+	microbial-community comparison based on 16S rRNA gene sequence libraries.
+	It combines the RDP Classifier with a statistical test to flag taxa
+	differentially represented between samples. The RDP Classifier and
+	RDP Library Compare are available online at http://rdp.cme.msu.edu/.},
+  keywords = {Algorithms; Bacteria; Bayes Theorem; Classification; Databases, Nucleic
+	Acid; Phylogeny; RNA, Ribosomal; RNA, Ribosomal, 16S},
+  owner = {hahsler},
+  timestamp = {2009.04.29}
+}
+
+@ARTICLE{rna:Wu:2001,
+  author = {Wu, Tiee-Jian and Hsieh, Ya-Ching and Li, Lung-An},
+  title = {Statistical Measures of {DNA} Sequence Dissimilarity under Markov Chain Models of Base Composition},
+  journal = {Biometrics},
+  year = {2001},
+  volume = {57},
+  pages = {441--448},
+  number = {2},
+  month = {June},
+  owner = {hahsler},
+  timestamp = {2009.04.29}
+}
+
+@comment{jabref-meta: selector_publisher:}
+
+@comment{jabref-meta: selector_author:}
+
+@comment{jabref-meta: selector_journal:}
+
+@comment{jabref-meta: selector_keywords:}
+

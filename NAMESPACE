@@ -1,0 +1,44 @@
+#imports("gclus") ## we use :: for gclus in seriate.hclust
+#imports("cluster") ## we use :: for silhouette in dissplot
+
+importFrom(graphics, plot)
+## Fixme: Rgraphviz has to be loaded after rEMM for plot to work!
+
+importFrom(stats, predict)
+
+exportClasses(EMM, EMMLayer, tNN)
+
+export(
+    EMM,
+    states,
+    size,
+    state_counts,
+    state_centers,
+    transitions,
+    current_state,
+
+    build,
+    reset,
+    transition,
+    transition_matrix,
+    transition_table,
+    initial_transition,
+    merge_states,
+    remove_states,
+    remove_transitions,
+    remove_selftransitions,
+    recluster_hclust,
+    recluster_kmeans,
+    recluster_pam,
+    predict,
+    find_states,
+    score,
+    fade,
+    rare_states,
+    rare_transitions,
+    prune,
+    plot,
+
+    synthetic_stream
+)
+

@@ -1,0 +1,52 @@
+\name{transition_table}
+\alias{transition_table}
+\alias{transition_table,EMM,numeric-method}
+\alias{transition_table,EMM,data.frame-method}
+\alias{transition_table,EMM,matrix-method}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{Extract a Transition Table for a New Sequence Given an EMM}
+\description{
+Finds the state sequence of a new sequence in an EMM and returns a table
+with the transition probabilities or counts.
+}
+\usage{
+\S4method{transition_table}{EMM,matrix}(x, newdata, method = c("prob", "counts", "log_odds"), match_state = "nn", plus_one=TRUE, initial_transition = FALSE)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{x}{ an \code{EMM} object. }
+  \item{newdata}{ new sequence, }
+  \item{method}{ the measure to return. }
+  \item{match_state}{ do the new observations have to fall within
+    the threshold of state (\code{"exact"}) or is nearest neighbor 
+    used (\code{"nn"})?}
+  \item{plus_one}{ add one to each transition count. This is equal
+      to start with one for each transition count, i.e. initially all
+          transitions are equally likely. It prevents the product
+          of probabilities to be zero if a transition was never observed. }
+  \item{initial_transition}{ include the initial transition 
+	 in the table?}
+}
+%\details{
+%}
+\value{
+    A data.frame with three columns (from state, to state and the 
+    transition probability/count.)
+}
+%\references{ ~put references to the literature/web site here ~ }
+%\author{ ~~who you are~~ }
+\seealso{\code{\link{transition}} to access transition probabilities
+and \code{\link{find_states}} for assigning observations to states/clusters. }
+\examples{
+data("EMMsim")
+
+emm <- EMM(threshold=.5)
+emm <- build(emm, EMMsim_train)
+
+transition_table(emm, EMMsim_test)
+transition_table(emm, EMMsim_test, method ="prob", initial_transition=TRUE)
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+%\keyword{ ~kwd1 }
+%\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
