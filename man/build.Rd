@@ -3,8 +3,14 @@
 \alias{build,EMM,data.frame-method}
 \alias{build,EMM,matrix-method}
 \alias{build,EMM,numeric-method}
+\alias{cluster}
+\alias{cluster,tNN,data.frame-method}
+\alias{cluster,tNN,matrix-method}
+\alias{cluster,tNN,numeric-method}
+%\alias{update,EMM-method}
+%\alias{update}
 \alias{reset}
-\alias{reset,EMMLayer-method}
+\alias{reset,TRACDS-method}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Building an EMM using New Data}
 \description{
@@ -12,7 +18,9 @@ Add new data to an EMM.
 }
 \usage{
 build(x, newdata, ...)
+cluster(x, newdata, ...)
 reset(x)
+%\S4method{update}{EMM}(object, newdata, verbose=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,18 +32,19 @@ reset(x)
   building the model.}
 }
 \details{
-	For \code{build()} the dissimilarity between the new observation and the
-	centers of the clusters is calculated. The new observation is assigned to
-	the closest cluster if the dissimilarity value is smaller than the
-	threshold (for the state).  If no such state exists, a new state is created
-	for the observation. This simple clustering algorithm is called
-	nearest neighbor threshold nearest neighbor (threshold NN).
+	\code{cluster()} implements tNN clustering The dissimilarity between
+	the new observation and the centers of the clusters is calculated. The
+	new observation is assigned to the closest cluster if the dissimilarity
+	value is smaller than the threshold (for the state).  If no such state
+	exists, a new state is created for the observation. This simple
+	clustering algorithm is called nearest neighbor threshold nearest
+	neighbor (threshold NN).
 
-    After clustering, the EMM is updated. 
-	An edge with weight 1 from the current state to the new state (determined
-	by the chosen cluster) is added. If this edge already existed, 
-	the weight is incremented by one.
-    The new state becomes the current state.
+    \code{build()} performs clustering and also updates the EMM. 
+    An edge with weight 1 from the
+    current state to the new state (determined by the chosen cluster) is added.
+    If this edge already existed, the weight is incremented by one.  The new
+    state becomes the current state.
 
     \code{NA}s are handled in the data by using only the other 
 	dimensions if the data for dissimilarity computation 
@@ -51,7 +60,7 @@ A new EMM object with the data added.
 %\references{ ~put references to the literature/web site here ~ }
 %\author{ ~~who you are~~ }
 \seealso{ 
-	Class \code{"\linkS4class{EMM}"}, 
+	Class \code{\linkS4class{TRACDS}}, 
 	\code{\link{fade}} and \code{\link[proxy]{dist}} 
 	in \pkg{proxy}.}
 \examples{

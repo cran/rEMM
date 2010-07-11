@@ -7,15 +7,10 @@
 	## fade counts (clustering)
 	x@counts <- x@counts * lambda_factor^t 
 
-	## fade transition counts (EMMLayer)
+	## fade transition counts (TRACDS)
 	x@initial_counts <- x@initial_counts * lambda_factor^t 
-	#edgeWeights(x@mm) <-  lapply(edgeWeights(x@mm), "*", fade)
-	## edgeWeights<- not implemented in graph so we have to do it low-level
-	x@mm@edgeData@data <- lapply(x@mm@edgeData@data, FUN=function(z) {
-			z$weight <- z$weight* lambda_factor^t
-			z
-		})
-
+	x <- smc_fade(x, lambda_factor^t)
+	
 	x
 }
 

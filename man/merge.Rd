@@ -1,13 +1,13 @@
-\name{merge_states}
-\alias{merge_states}
-\alias{merge_states,EMM,character-method}
-\alias{merge_states,EMM,integer-method}
+\name{merge_clusters}
+\alias{merge_clusters}
+\alias{merge_clusters,EMM,character-method}
+\alias{merge_clusters,EMM,integer-method}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Merge States of an EMM }
 \description{
 Merge several clusters/states of an EMM into a single cluster/state.}
 \usage{
-\S4method{merge_states}{EMM,character}(x, to_merge, clustering = FALSE, new_center = NULL)
+\S4method{merge_clusters}{EMM,character}(x, to_merge, clustering = FALSE, new_center = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -39,7 +39,7 @@ emm <- build(emm, EMMTraffic)
 states(emm)
 
 ## merge states 1-3
-emm_m123 <- merge_states(emm, c("1", "2", "3"))
+emm_m123 <- merge_clusters(emm, c("1", "2", "3"))
 states(emm_m123)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

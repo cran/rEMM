@@ -13,7 +13,7 @@ of nucleotides in windows of length 100 without any overlap. To
 separate sequences a row of dummy count of \code{NA} is used.}
 \usage{data("16S")}
 \format{
-    \code{Alphaproteobacteria16s} and \code{Mollicutes16s} are matrices
+    \code{Alphaproteobacteria16S} and \code{Mollicutes16S} are matrices
     with about 449 rows and 64 (number of possible triplets) columns. 
 }
 %\details{

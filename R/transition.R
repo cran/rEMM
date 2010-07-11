@@ -1,5 +1,5 @@
 
-setMethod("transition", signature(x = "EMMLayer", 
+setMethod("transition", signature(x = "TRACDS", 
 		from = "matrix", to = "missing"),
 	function(x, from, to, 
 		type=c("probability", "counts", "log_odds"), plus_one = FALSE){
@@ -12,7 +12,7 @@ setMethod("transition", signature(x = "EMMLayer",
 )
 		
 
-setMethod("transition", signature(x = "EMMLayer", from = "character", to =
+setMethod("transition", signature(x = "TRACDS", from = "character", to =
                 "character"), function(x, from, to, type=c("probability",
                         "counts", "log_odds"), plus_one = FALSE){ 
             type <- match.arg(type)
@@ -30,21 +30,14 @@ setMethod("transition", signature(x = "EMMLayer", from = "character", to =
 
 
 
-setMethod("transition_matrix", signature(x = "EMMLayer"),
+setMethod("transition_matrix", signature(x = "TRACDS"),
 	function(x,
 		type=c("probability", "counts", "log_odds"), plus_one = FALSE){
 		type <- match.arg(type)
 
-		#tm <- outer(states(x), states(x),
-			#FUN = function(x, y) transition(x, x, y, type=type))
-		#dimnames(tm) <- list(states(x), states(x))
-		#tm
-
-		## doing it sparse is much more efficient
-		m <- matrix(0, ncol=size(x), nrow=size(x), 
-			dimnames=list(states(x), states(x)))
-		ew <- edgeWeights(x@mm, states(x))
-		for(i in 1:length(ew)) m[i, names(ew[[i]])] <- ew[[i]]
+		## get transition count matrix
+		m <- smc_countMatrix(x@mm)
+		
 		if(plus_one) m <- m+1
 
 		if(type=="counts") return(m)
@@ -65,12 +58,12 @@ setMethod("transition_matrix", signature(x = "EMMLayer"),
 )
 
 
-setMethod("initial_transition", signature(x = "EMMLayer"),
+setMethod("initial_transition", signature(x = "TRACDS"),
 	function(x, 
 		type=c("probability", "counts", "log_odds"), plus_one = FALSE){
 		type <- match.arg(type)
 
-		ic <- x@initial_counts
+		ic <- smc_initialCounts(x@mm)
 		if(plus_one) ic <- ic+1
 
 		switch(type,
@@ -84,23 +77,23 @@ setMethod("initial_transition", signature(x = "EMMLayer"),
 
 setMethod("transition_table", signature(x = "EMM", newdata = "numeric"),
 	function(x, newdata, method = c("prob", "counts", "log_odds"), 
-		match_state="nn", plus_one = TRUE, 
+		match_cluster="nn", plus_one = TRUE, 
 		initial_transition = FALSE) 
 	transition_table(x, as.matrix(rbind(newdata)), method, 
-		match_state, plus_one, initial_transition)
+		match_cluster, plus_one, initial_transition)
 )
 
 setMethod("transition_table", signature(x = "EMM", newdata = "data.frame"),
 	function(x, newdata, method = c("prob", "counts", "log_odds"), 
-		match_state="nn", plus_one = TRUE, 
+		match_cluster="nn", plus_one = TRUE, 
 		initial_transition = FALSE) 
 	transition_table(x, as.matrix(newdata), method, 
-		match_state, plus_one, initial_transition)
+		match_cluster, plus_one, initial_transition)
 )
 
 setMethod("transition_table", signature(x = "EMM", newdata = "matrix"),
         function(x, newdata, method = c("prob", "counts", "log_odds"), 
-                match_state="nn", plus_one = TRUE, 
+                match_cluster="nn", plus_one = TRUE, 
                 initial_transition = FALSE) {
 
             method <- match.arg(method)
@@ -117,7 +110,7 @@ setMethod("transition_table", signature(x = "EMM", newdata = "matrix"),
             }
 
             ## get sequence
-            ssequence <- find_states(x, newdata, match_state=match_state, 
+            ssequence <- find_clusters(x, newdata, match_cluster=match_cluster, 
                     dist=FALSE)
             from <- ssequence[1:(n-1)]
             to <- ssequence[2:n]

@@ -10,15 +10,15 @@ Finds the state sequence of a new sequence in an EMM and returns a table
 with the transition probabilities or counts.
 }
 \usage{
-\S4method{transition_table}{EMM,matrix}(x, newdata, method = c("prob", "counts", "log_odds"), match_state = "nn", plus_one=TRUE, initial_transition = FALSE)
+\S4method{transition_table}{EMM,matrix}(x, newdata, method = c("prob", "counts", "log_odds"), match_cluster = "nn", plus_one=TRUE, initial_transition = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ an \code{EMM} object. }
   \item{newdata}{ new sequence, }
   \item{method}{ the measure to return. }
-  \item{match_state}{ do the new observations have to fall within
-    the threshold of state (\code{"exact"}) or is nearest neighbor 
+  \item{match_cluster}{ do the new observations have to fall within
+    the threshold of the cluster (\code{"exact"}) or is nearest neighbor 
     used (\code{"nn"})?}
   \item{plus_one}{ add one to each transition count. This is equal
       to start with one for each transition count, i.e. initially all
@@ -36,7 +36,7 @@ with the transition probabilities or counts.
 %\references{ ~put references to the literature/web site here ~ }
 %\author{ ~~who you are~~ }
 \seealso{\code{\link{transition}} to access transition probabilities
-and \code{\link{find_states}} for assigning observations to states/clusters. }
+and \code{\link{find_clusters}} for assigning observations to states/clusters. }
 \examples{
 data("EMMsim")
 

@@ -1,6 +1,14 @@
 This file was created with JabRef 2.2.
 Encoding: UTF8
 
+@BOOK{stream_clust:Aggrawal:2007,
+  title = {Data Streams: Models and Algorithms},
+  year = {2007},
+  editor = {Springer},
+  author = {Aggarwal, Charu},
+  series = {Advances in Database Systems}
+}
+
 @INPROCEEDINGS{stream_clust:Aggarwal:2009,
   author = {Aggarwal, Charu},
   title = {A Framework for Clustering Massive-Domain Data Streams},
@@ -26,11 +34,10 @@ Encoding: UTF8
   author = {Aggarwal, Charu C. and Han, Jiawei and Wang, Jianyong and Yu, Philip
 	S.},
   title = {A Framework for Projected Clustering of High Dimensional Data Streams},
-  booktitle = {VLDB '04: Proceedings of the Thirtieth International Conference on
-	Very Large Data Bases},
+  booktitle = {Proceedings of the Thirtieth International Conference on
+	Very Large Data Bases (VLDB '04)},
   year = {2004},
   pages = {852--863},
-  publisher = {VLDB Endowment},
   isbn = {0-12-088469-0},
   location = {Toronto, Canada}
 }
@@ -40,20 +47,31 @@ Encoding: UTF8
 	Yu},
   title = {A Framework for Clustering Evolving Data Streams},
   booktitle = {Proceedings of the International Conference on Very Large Data Bases
-	(VLDB)},
+	(VLDB '03)},
   year = {2003},
   pages = {81--92}
 }
 
 @INPROCEEDINGS{stream_clust:Ankerst:1999,
   author = {Michael Ankerst and Markus M. Breunig and Hans-Peter Kriegel and
-	Jörg Sander},
+	J\"org Sander},
   title = {{OPTICS}: {O}rdering Points To Identify the Clustering Structure},
-  booktitle = {Proceedings of the 1999 ACM SIGMOD International Conference on Management of Data},
+  booktitle = {Proceedings of the 1999 ACM SIGMOD International Conference on Management
+	of Data},
   year = {1999},
   pages = {49--60},
   owner = {hahsler},
   timestamp = {2009.04.29}
+}
+
+@ARTICLE{stream_clust:Barbara:2002,
+  author = {Daniel Barbar{\'a}},
+  title = {Requirements for Clustering Data Streams},
+  journal = {SIGKDD Explorations},
+  year = {2002},
+  volume = {3},
+  pages = {23--27},
+  number = {2}
 }
 
 @INPROCEEDINGS{stream_clust:Cao:2006,
@@ -93,8 +111,7 @@ Encoding: UTF8
 @INPROCEEDINGS{stream_clust:Guha:2000,
   author = {Guha, S. and Mishra, N. and Motwani, R. and O'Callaghan, L.},
   title = {Clustering Data Streams},
-  booktitle = {Foundations of Computer Science, 2000. Proceedings. 41st Annual Symposium
-	on},
+  booktitle = {Proceedings of the ACM Symposium on Foundations of Computer Science},
   year = {2000},
   pages = {359--366},
   month = {12-14 Nov.},
@@ -128,7 +145,7 @@ Encoding: UTF8
 }
 
 @INPROCEEDINGS{stream_clust:Kriegel:2003,
-  author = {Hans-Peter Kriegel and Peer Kröger and Irina Gotlibovich},
+  author = {Hans-Peter Kriegel and Peer Kr\"oger and Irina Gotlibovich},
   title = {Incremental {OPTICS}: {E}fficient Computation of Updates in a Hierarchical Cluster Ordering},
   booktitle = {Data Warehousing and Knowledge Discovery},
   year = {2003},
@@ -167,11 +184,35 @@ Encoding: UTF8
   timestamp = {2009.04.29}
 }
 
+@INPROCEEDINGS{stream_clust:Spiliopoulou:2006,
+  author = {Myra Spiliopoulou and Iren Ntoutsi and Yannis Theodoridis and Rene
+	Schult},
+  title = {{MONIC:} {M}odeling and monitoring cluster transitions},
+  booktitle = {Proceedings of the 12th ACM SIGKDD International Conference on Knowledge
+	Discovery and Data Mining, Philadelphia, PA, USA},
+  year = {2006},
+  pages = {706--711},
+  owner = {hahsler},
+  timestamp = {2009.09.09}
+}
+
+@ARTICLE{stream_clust:Stonebraker:2005,
+  author = {Michael Stonebraker and Ugur Cetinternel and Stan Zdonik},
+  title = {The 8 requirements of real-time stream processing},
+  journal = {SIGMOD Record},
+  year = {2005},
+  volume = {34},
+  pages = {42--47},
+  number = {4},
+  month = {December},
+  owner = {hahsler},
+  timestamp = {2009.09.09}
+}
+
 @INPROCEEDINGS{stream_clust:Tasoulis:2006,
   author = {Tasoulis, D.K. and Adams, N.M. and Hand, D.J.},
   title = {Unsupervised Clustering in Streaming Data},
-  booktitle = {Data Mining Workshops, 2006. ICDM Workshops 2006. Sixth IEEE International
-	Conference on},
+  booktitle = {IEEE International Workshop on Mining Evolving and Streaming Data. Sixth IEEE International Conference on Data Mining (ICDM 2006)},
   year = {2006},
   pages = {638--642},
   month = {Dec. },
@@ -190,6 +231,44 @@ Encoding: UTF8
   abstract = {OpticsStream},
   owner = {hahsler},
   timestamp = {2009.04.29}
+}
+
+@ARTICLE{stream_clust:Tu:2009,
+  author = {Tu, Li and Chen, Yixin},
+  title = {Stream data clustering based on grid density and attraction},
+  journal = {ACM Transactions on Knowledge Discovery from Data},
+  year = {2009},
+  volume = {3},
+  pages = {1--27},
+  number = {3},
+  issn = {1556-4681},
+  publisher = {ACM}
+}
+
+@ARTICLE{stream_clust:Tucker:2003,
+  author = {P.A. Tucker and D. Maier and T. Sheard and L. Fegaras},
+  title = {Exploiting Punctuation Semantics in Continuous Data Streams},
+  journal = {IEEE Transactions on Knowledge and Data Engineering},
+  year = {2003},
+  volume = {15},
+  pages = {555--568},
+  number = {3},
+  month = {May-June},
+  owner = {hahsler},
+  timestamp = {2009.09.09}
+}
+
+@ARTICLE{stream_clust:Wan:2009,
+  author = {Wan, Li and Ng, Wee Keong and Dang, Xuan Hong and Yu, Philip S. and
+	Zhang, Kuan},
+  title = {Density-based clustering of data streams at multiple resolutions},
+  journal = {ACM Transactions on Knowledge Discovery from Data},
+  year = {2009},
+  volume = {3},
+  pages = {1--28},
+  number = {3},
+  issn = {1556-4681},
+  publisher = {ACM}
 }
 
 @INPROCEEDINGS{stream_clust:Zhang:1996,

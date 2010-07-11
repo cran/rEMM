@@ -1,6 +1,6 @@
 \name{remove}
-\alias{remove_states}
-\alias{remove_states,EMM,character-method}
+\alias{remove_clusters}
+\alias{remove_clusters,EMM,character-method}
 \alias{remove_transitions}
 \alias{remove_transitions,EMM,character,character-method}
 \alias{remove_transitions,EMM,matrix,missing-method}
@@ -12,7 +12,7 @@
 Remove states/clusters or transitions from an EMM.
 }
 \usage{
-remove_states(x, to_remove)
+remove_clusters(x, to_remove)
 remove_transitions(x, from, to)
 remove_selftransitions(x)
 }
@@ -39,7 +39,7 @@ emm <- EMM(measure="eJaccard", threshold=0.2)
 emm <- build(emm, EMMTraffic)
 
 ## remove state 3
-emm_rs3 <- remove_states(emm, "3")
+emm_rs3 <- remove_clusters(emm, "3")
 
 ## remove transition 5->2
 emm_rt52 <- remove_transitions(emm, "5", "2")

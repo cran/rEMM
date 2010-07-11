@@ -1,19 +1,19 @@
 ## the generic with x, y, ... comes from graphics
 setMethod("plot", signature(x = "EMM", y = "missing"),
-        function(x, y, method = c("MDS", "graph", "state_counts",
+        function(x, y, method = c("MDS", "graph", "cluster_counts",
                         "transition_counts"), data = NULL, 
                 parameter=NULL, ...){ 
 
             method <- match.arg(method)
 
             p <- .get_parameters(list(
-                            state_counts=TRUE,
+                            cluster_counts=TRUE,
                             arrow_width=TRUE,
                             arrows = "counts",      ## or "probabilities"
                             arrow_width_multiplier=1,
                             state_size_multiplier=1,
                             add_labels = TRUE,
-                            state_labels = NULL,
+                            cluster_labels = NULL,
                             mark_clusters = TRUE,
                             mark_states = NULL,
                             draw_ellipses = FALSE,
@@ -21,11 +21,11 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                             eAttrs = list()
                             ), parameter)
 
-            emm_centers <- state_centers(x)
+            emm_centers <- cluster_centers(x)
 
-            if(method=="state_counts") {
-                barplot(sort(state_counts(x), decreasing=TRUE), 
-                        ylab="State counts", ...)
+            if(method=="cluster_counts") {
+                barplot(sort(cluster_counts(x), decreasing=TRUE), 
+                        ylab="Count", xlab = "State", ...)
 
             }else if(method=="transition_counts") {
                 tr <- transitions(x)
@@ -38,7 +38,9 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
             }else if(method=="graph") {
                 if(!require("Rgraphviz")) stop ("Package Rgraphviz needed!")
 
-                nAttrs <- p$nAttrs
+                g <- smc_as.graph(x@mm)
+		
+		nAttrs <- p$nAttrs
                 eAttrs <- p$eAttrs
 
                 if(!is.null(p$mark_states)) {
@@ -49,53 +51,51 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                 }
 
                 ## vertex labels
-                if(!is.null(p$state_labels)) {
-                    names(p$state_labels) <- states(x)
-                    nAttrs$label <- p$state_labels
+                if(!is.null(p$cluster_labels)) {
+                    names(p$cluster_labels) <- states(x)
+                    nAttrs$label <- p$cluster_labels
                 }
 
                 if(!p$add_labels) {
-                    p$state_labels <- rep("", size(x))
-                    names(p$state_labels) <- states(x)
-                    nAttrs$label <- p$state_labels
+                    p$cluster_labels <- rep("", size(x))
+                    names(p$cluster_labels) <- states(x)
+                    nAttrs$label <- p$cluster_labels
                 }
 
                 ## vertex size
-                if(p$state_counts){
+                if(p$cluster_counts){
                     nAttrs$width <- .5 +
                     x@counts/max(x@counts)*p$state_size_multiplier
                 }
 
-                ## setting line width for arrows does not seem to be implemented
-                pl <- plot(x@mm, recipEdges="distinct",
+		if(p$arrow_width) {
+		    ## this should work but the order in graph
+		    ## lwd ordering seems to be broken in graph
+		    #edges <- transitions(x)
+		    
+		    edg <- edges(g)
+		    from <- character()
+		    to <- unlist(edg)
+		    for(n in names(edg)) 
+			from <- c(from, rep(n, length(edg[[n]])))
+		    edges <- cbind(from=from, to=to)
+		    ## end work around for graph
+
+		    lwd <- transition(x, edges, type=p$arrows)
+		    
+		    ## normalize 
+		    lwd <- lwd-min(lwd)
+		    lwd <- lwd/max(lwd)
+		    lwd <- 1 + lwd * 4 * p$arrow_width_multiplier
+
+		    names(lwd) <- apply(edges, 
+		    	    MARGIN=1, FUN = function(z) paste(z, collapse="~"))
+		    eAttrs$lwd <- lwd
+		}
+
+                pl <- plot(g, recipEdges="distinct",
                         nodeAttrs = nAttrs, edgeAttrs = eAttrs, ...)
-                if(p$arrow_width) {
-                    ## redraw arrows with different width
-                    ## calculate arrow length (see plot in graph.R in Rgraphviz)
-                    agn <- AgNode(pl)
-                    nodeDims <- sapply(agn, function(n)
-                            { c(getNodeRW(n)+getNodeLW(n), getNodeHeight(n)) })
-
-                    arrowLen <- par("pin")[1] / diff(par("usr")[1:2]) * 
-                    min(nodeDims) / pi *1.3
-                    ## I'm not quite sure why we have to make them 30% longer
-
-                    ## lwd for arrows
-                    edges <- AgEdge(pl)
-
-                    lwd <- transition(x, sapply(edges, tail), sapply(edges, head), 
-                            type=p$arrows)
-                    ## normalize 
-                    lwd <- lwd/max(lwd)
-                    lwd <- 1 + lwd * 5 * p$arrow_width_multiplier
-
-                    for(i in 1:length(edges)) {
-                        lines(edges[[i]], lwd=lwd[i], len=arrowLen)
-                    }
-                } 
-            }
-
-            else {
+            } else {
                 if(nrow(emm_centers)<3) stop('Less than 3 centers! Use plot_type="graph".')
 
                 ## self transitions are not visible for these plots
@@ -123,7 +123,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 
                     ## use cex for point size
                     cex <- 2
-                    if(p$state_counts) cex <- 
+                    if(p$cluster_counts) cex <- 
                     2+x@counts/max(x@counts) * p$state_size_multiplier*5
 
                     ## arrows
@@ -164,8 +164,9 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                     if(p$arrow_width) {
                         lwd <- transition(x, edges[,1], edges[,2], type=p$arrows)
                         ## normalize 
+                        lwd <- lwd-min(lwd)
                         lwd <- lwd/max(lwd)
-                        lwd <- 1+ lwd * p$arrow_width_multiplier*5
+                        lwd <- 1 + lwd * 4 * p$arrow_width_multiplier
                     }
 
                     ## arrows whines about zero length arrows
@@ -180,8 +181,8 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 
                     if(p$add_labels) {
                         ## plot labels
-                        if(is.null(p$state_labels)) labels <- states(x)
-                        else labels <- p$state_labels
+                        if(is.null(p$cluster_labels)) labels <- states(x)
+                        else labels <- p$cluster_labels
                             cex <- cex/1.7
                         ## make sure double digit labels fit
                         cex <- cex * (strwidth("8")/
@@ -208,7 +209,8 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                     }
                     ## points
                     if(p$mark_clusters){
-                        point_center <- find_states(x, data, match_state="exact")
+                        point_center <- find_clusters(x, data, 
+				match_cluster="exact")
                         ## make state name integer for pch
                         pch <- as.integer(factor(point_center, 
                                         levels = states(x)))
@@ -237,16 +239,15 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 
                         ## add ellipses
                         ## FIXME: does not work with d>2
-                        if(p$draw_ellipses) {
-                            library(sfsmisc)
-                            tmp <- lapply(1:size(x),
-                                    FUN = function (i) {
-                                        thr <- x@var_thresholds[i]
-                                        loc <- state_centers(x)[i,]
-                                        lines(ellipsePoints(thr, thr, loc=loc), 
-                                                col = "black", lty=2)
-                                    })
-                            }
+			if(p$draw_ellipses) {
+			    library(sfsmisc)
+			    for (i in 1:size(x)) {
+				thr <- x@var_thresholds[i]
+				loc <- cluster_centers(x)[i,]
+				lines(ellipsePoints(thr, thr, loc=loc), 
+					col = "black", lty=2)
+			    }
+			}
 
 
                     }else{
@@ -260,7 +261,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                     cex <- 1
 
                     ## use cex for point size (scale: 1...3)
-                    if(p$state_counts) cex <- 1+x@counts/max(x@counts)*2
+                    if(p$cluster_counts) cex <- 1+x@counts/max(x@counts)*2
 
                     ## centers
                     if(p$mark_clusters) points(centers, 

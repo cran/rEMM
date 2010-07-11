@@ -20,7 +20,7 @@ setMethod("recluster_hclust", signature(x = "EMM"),
 		if(!is.null(prune)) x <- prune(x, count_threshold = prune, 
 			transitions = FALSE)
 
-		d <- dist(state_centers(x), method = x@measure)
+		d <- dist(cluster_centers(x), method = x@measure)
 		hc <- hclust(d, method=method)
 		cl <- cutree(hc , k=k, h=h)
 
@@ -31,17 +31,17 @@ setMethod("recluster_hclust", signature(x = "EMM"),
 			FUN=function(i) 
 			{
 				if(!x@centroids) 
-				new_center <- state_centers(x)[.find_medoids(d, k, cl[,i]),]
-				## centroids are handled by merge_states!
+				new_center <- cluster_centers(x)[.find_medoids(d, k, cl[,i]),]
+				## centroids are handled by merge_clusters!
 				else new_center <- NULL
-				merge_states(x, cl[,i], 
+				merge_clusters(x, cl[,i], 
 					clustering=TRUE, new_center = new_center)
 			})
 		else{ 
 			if(!x@centroids) 
-			new_center <- state_centers(x)[.find_medoids(d, k, cl),]
+			new_center <- cluster_centers(x)[.find_medoids(d, k, cl),]
 			else new_center <- NULL
-			x <- merge_states(x, cl, 
+			x <- merge_clusters(x, cl, 
 				clustering=TRUE,  new_center = new_center)
 		}
 
@@ -61,9 +61,9 @@ setMethod("recluster_kmeans", signature(x = "EMM"),
 			paste("Using k-means implies Euclidean distances but the EMM uses:", 
 				x@measure))
 
-		cl <- kmeans(state_centers(x), centers = k, ...)
+		cl <- kmeans(cluster_centers(x), centers = k, ...)
 
-		x <- merge_states(x, cl$cluster, clustering=TRUE, new_center=cl$centers)
+		x <- merge_clusters(x, cl$cluster, clustering=TRUE, new_center=cl$centers)
 
 		attr(x, "cluster_info") <- cl
 		x
@@ -77,14 +77,46 @@ setMethod("recluster_pam", signature(x = "EMM"),
 		if(!is.null(prune)) x <- prune(x, count_threshold = prune, 
 			transitions = FALSE)
 
-		d <- dist(state_centers(x), method = x@measure)
+		d <- dist(cluster_centers(x), method = x@measure)
 		cl <- pam(d, k=k, ...)
 
-		medoids <- state_centers(x)[cl$medoids,]
-		x <- merge_states(x, cl$clustering, clustering=TRUE, new_center=medoids)
+		medoids <- cluster_centers(x)[cl$medoids,]
+		x <- merge_clusters(x, cl$clustering, clustering=TRUE, new_center=medoids)
 
 		attr(x, "cluster_info") <- cl
 		x
 	}
 )
 
+## reachability
+setMethod("recluster_reachability", signature(x = "EMM"),
+	function(x, h, ..., prune=NULL) {
+
+		if(!is.null(prune)) x <- prune(x, count_threshold = prune, 
+			transitions = FALSE)
+
+		
+                d <- as.matrix(dist(cluster_centers(x), method = x@measure))
+
+                # get adjecency matrix and find all paths 
+                a_mat <- d < h
+                r_mat <- a_mat
+                for(i in 1:size(x)) {
+                    r_mat <- r_mat%*%a_mat
+                    storage.mode(r_mat) <- "logical"
+                }
+
+                to_merge <- unique(apply(r_mat, MARGIN=1, FUN = which))
+                to_merge <- lapply(to_merge, as.character)
+
+                x_merged <- x
+                for(i in 1:length(to_merge)) {
+                    m <- to_merge[[i]]
+                    if(length(m)>1) {
+                        x_merged <- merge_clusters(x_merged, to_merge = m)
+                    }
+                }
+
+                x_merged
+	}
+)

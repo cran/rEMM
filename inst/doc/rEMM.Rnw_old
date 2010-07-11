@@ -1,13 +1,13 @@
-%\documentclass[fleqn, letter, 10pt]{article}
 %\documentclass[article]{jss}
-\documentclass[nojss]{jss}
-%\usepackage[round,longnamesfirst]{natbib}
-%\usepackage[left=1.5in,top=1.5in,right=1.5in,bottom=1.5in,nohead]{geometry} 
-%\usepackage{graphicx,keyval,thumbpdf,url}
-%\usepackage{hyperref}
-%\usepackage{Sweave}
-%\SweaveOpts{strip.white=TRUE, eps=FALSE}
-%\AtBeginDocument{\setkeys{Gin}{width=0.6\textwidth}}
+
+\documentclass[fleqn, letter, 10pt]{article}
+\usepackage[round,longnamesfirst]{natbib}
+\usepackage[left=1.5in,top=1.5in,right=1.5in,bottom=1.5in,nohead]{geometry} 
+\usepackage{graphicx,keyval,thumbpdf,url}
+\usepackage{hyperref}
+\usepackage{Sweave}
+\SweaveOpts{strip.white=TRUE, eps=FALSE}
+\AtBeginDocument{\setkeys{Gin}{width=0.6\textwidth}}
 
 
 \usepackage[utf8]{inputenc}
@@ -17,18 +17,18 @@
 \usepackage{amsfonts}
 
 
-%\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
 \newcommand{\class}[1]{\mbox{\textsf{#1}}}
 \newcommand{\func}[1]{\mbox{\texttt{#1()}}}
-%\newcommand{\code}[1]{\mbox{\texttt{#1}}}
-%\newcommand{\pkg}[1]{\strong{#1}}
-%\newcommand{\samp}[1]{`\mbox{\texttt{#1}}'}
-%\newcommand{\proglang}[1]{\textsf{#1}}
+\newcommand{\code}[1]{\mbox{\texttt{#1}}}
+\newcommand{\pkg}[1]{\strong{#1}}
+\newcommand{\samp}[1]{`\mbox{\texttt{#1}}'}
+\newcommand{\proglang}[1]{\textsf{#1}}
 \newcommand{\set}[1]{\mathcal{#1}}
 \newcommand{\vect}[1]{\mathbf{#1}}
 \newcommand{\mat}[1]{\mathbf{#1}}
-%\newcommand{\sQuote}[1]{`{#1}'}
-%\newcommand{\dQuote}[1]{``{#1}''}
+\newcommand{\sQuote}[1]{`{#1}'}
+\newcommand{\dQuote}[1]{``{#1}''}
 \newcommand\R{{\mathbb{R}}}
 
 %\DeclareMathOperator*{\argmin}{argmin}
@@ -37,37 +37,37 @@
 %\setlength{\parindent}{0mm}
 %\setlength{\parskip}{3mm plus2mm minus2mm}
 
-%% \VignetteIndexEntry{Extensible Markov Model for data stream clustering}
+%% \VignetteIndexEntry{rEMM: Extensible Markov Model for Data Stream Clustering in R}
 
 \hyphenation{Clu-Stream}
 
-\author{Michael Hahsler\\Southern Methodist University \And
-    Margaret H. Dunham\\Southern Methodist University}
-\title{\pkg{rEMM}: Extensible Markov Model for
-Data Stream Clustering in \proglang{R}}
-%% for pretty printing and a nice hypersummary also set:
-\Plainauthor{Michael Hahsler, Margaret H. Dunham} %% comma-separated
-\Plaintitle{rEMM: Extensible Markov Model for
-Data Stream Clustering in R} %% without formatting
-\Shorttitle{Extensible Markov Model for Data Stream Clustering} %% a short title (if necessary)
+%\author{Michael Hahsler\\Southern Methodist University \And
+%    Margaret H. Dunham\\Southern Methodist University}
+%\title{\pkg{rEMM}: Extensible Markov Model for
+%Data Stream Clustering in \proglang{R}}
+%%% for pretty printing and a nice hypersummary also set:
+%\Plainauthor{Michael Hahsler, Margaret H. Dunham} %% comma-separated
+%\Plaintitle{rEMM: Extensible Markov Model for
+%Data Stream Clustering in R} %% without formatting
+%\Shorttitle{Extensible Markov Model for Data Stream Clustering} %% a short title (if necessary)
 
 %% an abstract and keywords
-\Abstract{
-Clustering streams
-of continuously arriving data has become an important application
-of data mining in recent years and efficient algorithms have been proposed
-by several researchers. However, clustering alone neglects the fact that
-data in a data stream is not only characterized by the proximity 
-of data points which is used by clustering, but also by a temporal
-component. The Extensible Markov Model (EMM) adds the temporal component
-to data stream clustering by superimposing a dynamically adapting
-Markov Chain. In this paper we introduce the implementation of the 
-\proglang{R}~extension package~\pkg{rEMM} which implements EMM 
-and we discuss some 
-examples and applications.
-}
-\Keywords{data mining, data streams, clustering, Markov chain}
-\Plainkeywords{data mining, data streams, clustering, Markov chain} %% without formatting
+%\Abstract{
+%Clustering streams
+%of continuously arriving data has become an important application
+%of data mining in recent years and efficient algorithms have been proposed
+%by several researchers. However, clustering alone neglects the fact that
+%data in a data stream is not only characterized by the proximity 
+%of data points which is used by clustering, but also by a temporal
+%component. The Extensible Markov Model (EMM) adds the temporal component
+%to data stream clustering by superimposing a dynamically adapting
+%Markov Chain. In this paper we introduce the implementation of the 
+%\proglang{R}~extension package~\pkg{rEMM} which implements EMM on top of a 
+%simple clustering algorithm for data streams and discuss some 
+%examples and applications.
+%}
+%\Keywords{data mining, data streams, clustering, Markov chain}
+%\Plainkeywords{data mining, data streams, clustering, Markov chain} %% without formatting
 
 %% at least one keyword must be supplied
 
@@ -82,25 +82,25 @@ examples and applications.
 
 %% The address of (at least) one author should be given
 %% in the following format:
-\Address{
-    Michael Hahsler\\
-        Computer Science and Engineering\\
-        Lyle School of Engineering\\
-        Southern Methodist University\\
-        P.O. Box 750122 \\
-        Dallas, TX 75275-0122\\
-        E-mail: \email{mhahsler@lyle.smu.edu}\\
-        URL: \url{http://lyle.smu.edu/~mhahsler}
-
-    Margaret H. Dunham\\
-        Computer Science and Engineering\\
-        Lyle School of Engineering\\
-        Southern Methodist University\\
-        P.O. Box 750122 \\
-        Dallas, TX 75275-0122\\
-        E-mail: \email{mhd@lyle.smu.edu}\\
-        URL: \url{http://lyle.smu.edu/~mhd}
-}
+%\Address{
+%    Michael Hahsler\\
+%        Computer Science and Engineering\\
+%        Lyle School of Engineering\\
+%        Southern Methodist University\\
+%        P.O. Box 750122 \\
+%        Dallas, TX 75275-0122\\
+%        E-mail: \email{mhahsler@lyle.smu.edu}\\
+%        URL: \url{http://lyle.smu.edu/~mhahsler}
+%
+%    Margaret H. Dunham\\
+%        Computer Science and Engineering\\
+%        Lyle School of Engineering\\
+%        Southern Methodist University\\
+%        P.O. Box 750122 \\
+%        Dallas, TX 75275-0122\\
+%        E-mail: \email{mhd@lyle.smu.edu}\\
+%        URL: \url{http://lyle.smu.edu/~mhd}
+%}
 %% It is also possible to add a telephone and fax number
 %% before the e-mail in the following format:
 %% Telephone: +43/1/31336-5053
@@ -115,14 +115,28 @@ examples and applications.
 
 \begin{document}
 
-%\title{rEMM: Extensible Markov Model for Data Stream Clustering in R}
-%\author{Michael Hahsler and Margaret H. Dunham}
+\title{rEMM: Extensible Markov Model for Data Stream Clustering in R}
+\author{Michael Hahsler and Margaret H. Dunham}
 %\date{}
 
-%\maketitle
+
+\maketitle
 \sloppy
 
-%\abstract{}
+\abstract{
+Clustering streams
+of continuously arriving data has become an important application
+of data mining in recent years and efficient algorithms have been proposed
+by several researchers. However, clustering alone neglects the fact that
+data in a data stream is not only characterized by the proximity 
+of data points which is used by clustering, but also by a temporal
+component. The Extensible Markov Model (EMM) adds the temporal component
+to data stream clustering by superimposing a dynamically adapting
+Markov Chain. In this paper we introduce the implementation of the 
+\proglang{R}~extension package~\pkg{rEMM} which implements EMM on top of a 
+simple clustering algorithm for data streams and discuss some 
+examples and applications.
+}
 
 <<echo=FALSE>>=
 options(width = 70, prompt="R> ", digits=4)
@@ -240,8 +254,6 @@ examples for the package's functionality and apply EMM
 to analyzing river flow data and to genetic sequences.
 We conclude with Section~\ref{sec:conclusion}.
 
-A previous version of this paper was published in the Journal of Statistical
-Software~\citep{Hahsler+Dunham:2010}.
 
 \section{Extensible Markov model}
 \label{sec:EMM}\nopagebreak
@@ -1668,6 +1680,6 @@ Part of the research presented in this paper was supported by
 by NSF IIS-0948893.
 
 
-%\bibliographystyle{abbrvnat}
-\bibliography{rEMM}
+\bibliographystyle{abbrvnat}
+\bibliography{emm,rna_sequences,stream_clust,misc}
 \end{document}

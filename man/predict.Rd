@@ -1,6 +1,6 @@
 \name{predict}
 \alias{predict}
-\alias{predict,EMMLayer-method}
+\alias{predict,TRACDS-method}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Predict a Future State }
 \description{
@@ -8,12 +8,12 @@ Predict a state or the probability distribution over states in \eqn{n}
 time steps.
 }
 \usage{
-\S4method{predict}{EMMLayer}(object, n = 1, current_state = NULL, 
+\S4method{predict}{TRACDS}(object, n = 1, current_state = NULL, 
 	probabilities = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{object}{ an \code{"EMM"}/\code{"EMMLayer"} object. }
+  \item{object}{ an \code{"EMM"}/\code{"TRACDS"} object. }
   \item{n}{ number of time steps. }
   \item{current_state}{ use a specified current state. 
     If \code{NULL}, the EMM's current state is used. }

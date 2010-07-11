@@ -1,5 +1,5 @@
 ## predict next n states using P^n
-setMethod("predict", signature(object = "EMMLayer"),
+setMethod("predict", signature(object = "TRACDS"),
 	function(object, n=1, current_state=NULL, 
 		probabilities = FALSE) {
 

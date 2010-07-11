@@ -6,7 +6,7 @@
 \description{
 Visualize EMM objects.}
 \usage{
-\S4method{plot}{EMM,missing}(x, y, method=c("MDS", "graph", "state_counts", 
+\S4method{plot}{EMM,missing}(x, y, method=c("MDS", "graph", "cluster_counts", 
     "transition_counts"), data = NULL, 
     parameter=NULL, ...)
 }
@@ -21,11 +21,11 @@ Visualize EMM objects.}
   \item{\dots}{ further arguments passed on to \code{plot.default}. }
 }
 \details{
-\code{"MDS"} projects the state centers into 2-dimensional space.
+\code{"MDS"} projects the cluster centers into 2-dimensional space.
 
 \code{"graph"} produces a graph representation of the EMM.
 
-\code{"state_counts"} produces a barplot for state counts.
+\code{"cluster_counts"} produces a barplot for cluster counts.
 
 \code{"transition_counts"} produces a barplot for transition counts.
 
@@ -40,7 +40,7 @@ The following plotting parameters are currently supported:
 \item{arrow_width_multiplier, state_size_multiplier}{ Controls the variation
     of vertex sizes and edge widths (default: 1).}
 \item{add_labels}{add labels for centers (n/a for \code{type="graph"}).}
-\item{state_labels}{state labels to use instead of 1,2,....}
+\item{cluster_labels}{cluster labels to use instead of 1,2,....}
 \item{mark_clusters}{Use different markers for points depending on the
     state they belong to (only available when \code{data} is specified).}
 \item{mark_states}{a vector of state names to be marked.}
@@ -53,12 +53,12 @@ The following plotting parameters are currently supported:
 \seealso{\code{\linkS4class{EMM}}}
 \examples{
 data("EMMTraffic")
-emm <- EMM(measure="eJaccard", threshold=0.2)
+emm <- EMM(threshold=0.2, measure="eJaccard")
 emm <- build(emm, EMMTraffic)
 
 op <- par(mfrow = c(2, 2), pty = "s")
 plot(emm, method="graph", main="Graph (plain)", 
-    parameter=list(state_counts=FALSE, arrow_width=FALSE))
+    parameter=list(cluster_counts=FALSE, arrow_width=FALSE))
 plot(emm, method="graph", main="Graph")
 plot(emm, method="MDS", main="MDS projection", 
     xlim=c(-0.5,0.5), ylim= c(-0.5,0.5))

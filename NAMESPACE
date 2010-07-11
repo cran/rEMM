@@ -6,39 +6,46 @@ importFrom(graphics, plot)
 
 importFrom(stats, predict)
 
-exportClasses(EMM, EMMLayer, tNN)
+exportClasses(EMM, TRACDS, StreamClustering, tNN)
 
 export(
     EMM,
-    states,
     size,
-    state_counts,
-    state_centers,
-    transitions,
-    current_state,
-
+    fade,
+    predict,
+    score,
+    prune,
+    plot,
+    merge_clusters,
+    remove_clusters,
+    
+    tNN,
+    cluster,
+    cluster_counts,
+    cluster_centers,
+    find_clusters,
+    rare_clusters,
+    
+    ## TRACDS
     build,
+    #update,
     reset,
+    states,
+    current_state,
+    transitions,
     transition,
     transition_matrix,
     transition_table,
     initial_transition,
-    merge_states,
-    remove_states,
+    rare_transitions,
     remove_transitions,
     remove_selftransitions,
+    
     recluster_hclust,
     recluster_kmeans,
     recluster_pam,
-    predict,
-    find_states,
-    score,
-    fade,
-    rare_states,
-    rare_transitions,
-    prune,
-    plot,
-
+    recluster_reachability,
+    
     synthetic_stream
 )
 

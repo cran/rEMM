@@ -16,7 +16,7 @@ synthetic_stream <- function(k=10, d=2, n_subseq=100, p_transition=.5, p_swap=0,
 
     Sigma <- replicate(k, genPositiveDefMat("unifcorrmat", 
                     rangeVar=rangeVar, dim=d)$Sigma, 
-            simplify=F)
+            simplify=FALSE)
 
     #subseq <- sample(1:k, replace=TRUE)
     subseq <- integer(n_subseq)
