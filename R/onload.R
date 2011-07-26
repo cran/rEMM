@@ -17,31 +17,19 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-## predict next n states using P^n
-setMethod("predict", signature(object = "TRACDS"),
-	function(object, n=1, current_state=NULL, 
-		probabilities = FALSE) {
+## add Euclidean Squared Distance
 
-		## probabilistic max with random tie breaking
-		.prob_max <- function(x) {
-			m <- which(x==max(x))
-			if(length(m)>1) m <- sample(m,1)
-			m
-		}
-
-		
-		if(is.null(current_state)) current_state <- current_state(object)
-		else current_state <- as.character(current_state)
-
-
-		P <- transition_matrix(object)
-		## calculate P^n
-		if(n>1) for(i in 1:(n-1)) P <- P%*%P
-
-		prob <- P[current_state,]
-		if(probabilities) return(prob)
-
-		## we need random-tie breaking
-		return(states(object)[.prob_max(prob)])
-	}
-)
+.onLoad <- function(libname, pkgname) {
+    pr_DB$set_entry(
+	    names = c("Euclidean2"), 
+	    FUN = function(x,y) dist(x,y)^2, 
+	    PREFUN = NA,
+	    POSTFUN = NA,
+	    convert = pr_dist2simil,
+	    type = "metric",
+	    loop = FALSE,
+	    C_FUN = FALSE,
+	    abcd = FALSE,
+	    description="Euclidean Squared Distance."
+	    )
+}

@@ -1,6 +1,25 @@
+#######################################################################
+# rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
+# Copyrigth (C) 2011 Michael Hahsler
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 ## the generic with x, y, ... comes from graphics
 setMethod("plot", signature(x = "EMM", y = "missing"),
-        function(x, y, method = c("MDS", "graph", "cluster_counts",
+        function(x, y, method = c("MDS", "igraph", "interactive", 
+			"graph", "cluster_counts",
                         "transition_counts"), data = NULL, 
                 parameter=NULL, ...){ 
 
@@ -21,6 +40,11 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                             eAttrs = list()
                             ), parameter)
 
+	    if(size(x)<1) {
+		warning("Empty EMM. No plot produced!")
+		return(invisible(NULL))
+	    }
+
             emm_centers <- cluster_centers(x)
 
             if(method=="cluster_counts") {
@@ -35,10 +59,58 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                 barplot(sort(cnt, decreasing=TRUE), 
                         ylab="Transition counts", ...)
 
+            }else if(method=="igraph" || method=="interactive") {
+                g <- smc_as.igraph(x@tracds_d$mm)
+		
+		if(method=="interactive") plot_fun <- tkplot
+		else plot_fun <- plot
+		
+
+		if(p$arrow_width) {
+		    e.width <- map(get.edge.attribute(g, "weight"),c(.1,4))
+		}else{
+		    e.width <- 1
+		}
+
+		if(p$cluster_counts) {
+		    v.size <- map(cluster_counts(x), 
+			    c(5,20)) * p$state_size_multiplier
+		}else{
+		    v.size <- 10
+		}
+
+		if(is.null(p$cluster_labels)) {
+		    v.labels <- states(x)
+		}else{
+		    v.labels <- ""
+		}
+		
+		plot_fun(g, 
+			#layout=layout.fruchterman.reingold,
+			layout=layout.reingold.tilford(g, root=0)*-1,
+			vertex.label.family="Helvetica",
+			edge.label.family="Helvetica",
+			#vertex.shape=v.shape,
+			vertex.label=v.labels,
+			vertex.size=v.size,
+			#vertex.label.cex=p$cex,
+			#vertex.label.color="black",
+			#vertex.color = v.color,
+			#vertex.size=v.size,
+			edge.width=e.width,
+			#edge.label=e.label,
+			#edge.label.cex=p$cex*.6,
+			#edge.color=e.color,
+			edge.arrow.size=p$arrow_width_multiplier*.5,
+			#edge.arrow.size=p$arrowSize,
+			...
+			)
+
+
             }else if(method=="graph") {
                 if(!require("Rgraphviz")) stop ("Package Rgraphviz needed!")
 
-                g <- smc_as.graph(x@mm)
+                g <- smc_as.graph(x@tracds_d$mm)
 		
 		nAttrs <- p$nAttrs
                 eAttrs <- p$eAttrs
@@ -64,11 +136,11 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 
                 ## vertex size
                 if(p$cluster_counts){
-                    nAttrs$width <- .5 +
-                    x@counts/max(x@counts)*p$state_size_multiplier
+                    nAttrs$width <- (.5 +
+                    cluster_counts(x)/max(cluster_counts(x))) * p$state_size_multiplier * .75
                 }
 
-		if(p$arrow_width) {
+		if(p$arrow_width && numEdges(g)>0) {
 		    ## this should work but the order in graph
 		    ## lwd ordering seems to be broken in graph
 		    #edges <- transitions(x)
@@ -85,8 +157,8 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 		    
 		    ## normalize 
 		    lwd <- lwd-min(lwd)
-		    lwd <- lwd/max(lwd)
-		    lwd <- 1 + lwd * 4 * p$arrow_width_multiplier
+		    if(max(lwd)>0) lwd <- lwd/max(lwd)
+		    lwd <- (1 + lwd * 4 ) * p$arrow_width_multiplier
 
 		    names(lwd) <- apply(edges, 
 		    	    MARGIN=1, FUN = function(z) paste(z, collapse="~"))
@@ -96,7 +168,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                 pl <- plot(g, recipEdges="distinct",
                         nodeAttrs = nAttrs, edgeAttrs = eAttrs, ...)
             } else {
-                if(nrow(emm_centers)<3) stop('Less than 3 centers! Use plot_type="graph".')
+                if(nrow(emm_centers)<3) stop('Less than 3 centers! Use method="graph".')
 
                 ## self transitions are not visible for these plots
                 x <- remove_selftransitions(x)
@@ -107,24 +179,28 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                             tolower(x@measure)=="euclidean" ) {
                         ## we need no MDS
                         mds <- list(points = emm_centers, GOF=c(0,1))
-                    }else{
+			pts <- mds$points
+			rownames(pts) <- states(x)
+			sub <- ''
+
+		    }else{
                         d <- dist(emm_centers, method=x@measure)
                         mds <- cmdscale(d, eig=TRUE, add=TRUE)
-                    }
-                    pts <- mds$points
-                    dimnames(pts) <- list(states(x), NULL)
+			pts <- mds$points
+			dimnames(pts) <- list(states(x), 
+				c("Dimension 1", "Dimension 2"))
+			sub <- paste("These two dimensions explain",
+				round(100 * mds$GOF[2], digits = 2),
+				"% of the point variability.")
+		    }
 
-                    ## start plotting
-                    plot(pts, xlab="Dimension 1", ylab="Dimension 2", type="n", ...,
-                            sub= paste("These two dimensions explain",
-                                    round(100 * mds$GOF[2], digits = 2), 
-                                    "% of the point variability."))
-
+		    ## start plotting
+		    plot(pts, type="n", ..., sub=sub)
 
                     ## use cex for point size
                     cex <- 2
                     if(p$cluster_counts) cex <- 
-                    2+x@counts/max(x@counts) * p$state_size_multiplier*5
+                    (2+cluster_counts(x)/max(cluster_counts(x)) * 5 ) * p$state_size_multiplier
 
                     ## arrows
                     edges <- transitions(x)
@@ -166,7 +242,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                         ## normalize 
                         lwd <- lwd-min(lwd)
                         lwd <- lwd/max(lwd)
-                        lwd <- 1 + lwd * 4 * p$arrow_width_multiplier
+                        lwd <- (1 + lwd * 4) * p$arrow_width_multiplier
                     }
 
                     ## arrows whines about zero length arrows
@@ -193,20 +269,29 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 
                 } else {
                     ## project state centers onto dataset
-                    if(ncol(emm_centers)==2 && 
+                    
+		    ## remove NA rows (resets)
+		    data <- data[!apply(data, FUN=function(x) all(is.na(x)), MARGIN=1),]
+		    
+		    if(ncol(emm_centers)==2 && 
                             tolower(x@measure)=="euclidean" ) {
                         ## we need no MDS
                         mds <- list(points = emm_centers, GOF=c(0,1))
                         centers <- emm_centers
                         allpoints <- data
+			sub <- ''
                     
                     }else{
 
                         d <- dist(rbind(emm_centers, data), method=x@measure)
                         mds <- cmdscale(d, eig=TRUE, add=TRUE)
-                        centers <- mds$points[1:nrow(emm_centers),]
-                        allpoints <- mds$points[-c(1:nrow(emm_centers)),]
-                    }
+                        centers <- mds$points[1:nrow(emm_centers),1:2]
+                        allpoints <- mds$points[-c(1:nrow(emm_centers)),1:2]
+			colnames(allpoints) <- c("Dimension 1", "Dimension 2")
+			sub <- paste("These two dimensions explain",
+				round(100 * mds$GOF[2], digits = 2),
+				"% of the point variability.")
+		    }
                     ## points
                     if(p$mark_clusters){
                         point_center <- find_clusters(x, data, 
@@ -226,11 +311,8 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                             pch_center[pch_center>25] -25
 
 
-                        plot(allpoints, xlab="Dimension 1", ylab="Dimension 2", 
-                                col="grey", pch=pch, ...,
-                                sub= paste("These two dimensions explain",
-                                        round(100 * mds$GOF[2], digits = 2),
-                                        "% of the point variability."))
+                        plot(allpoints, col="grey", pch=pch, ...,
+                                sub=sub)
 
                         ## plot points which do not belong to any state
                         if(any(is.na(point_center)))
@@ -261,7 +343,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                     cex <- 1
 
                     ## use cex for point size (scale: 1...3)
-                    if(p$cluster_counts) cex <- 1+x@counts/max(x@counts)*2
+                    if(p$cluster_counts) cex <- 1+cluster_counts(x)/max(cluster_counts(x))*2
 
                     ## centers
                     if(p$mark_clusters) points(centers, 
@@ -274,3 +356,21 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
             }
         }
         )
+
+
+
+setMethod("plot", signature(x = "TRACDS", y = "missing"),
+        function(x, y, ...){ 
+                
+	    if(!require("Rgraphviz")) stop ("Package Rgraphviz needed!")
+
+                g <- smc_as.graph(x@tracds_d$mm)
+		plot(g, recipEdges="distinct")	
+	})
+
+
+setMethod("plot", signature(x = "tNN", y = "missing"),
+        function(x, y, ...){ 
+		
+	    pairs(cluster_centers(x))
+	})

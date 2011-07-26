@@ -670,7 +670,7 @@ or perform changes on the temporal layer without breaking the whole system.
 \end{figure}
 
 
-Class~\class{tNN} contains slots for all the clustering information
+Class~\class{tNN} contains the clustering information
 used by threshold NN:
 \begin{itemize}
 \item Used dissimilarity measure
@@ -701,6 +701,22 @@ vector $\vect{c^\epsilon}$.
 no state~($\epsilon$).
 \end{itemize}
 
+To improve performance
+we emulate pass-by-reference semantics for 
+objects of the classes~\class{EMM}, \class{TRACDS} and \class{tNN}.
+This is achieved by storing all variable information
+in the objects inside of an environment which lets to the objects 
+without copying the whole object. For example,  for
+an object of class \class{EMM} called \code{emm} and some new data
+\begin{center}
+\code{build(emm, newdata)}
+\end{center}
+will change the information inside the \code{emm} object even though
+the function's result is not assigned back to \code{emm}.
+Note that this means that \class{EMM}, \class{TRACDS} and \class{tNN} objects
+have to be explicitely copied with the provided \func{copy} method if
+a true (deep) copy is needed.
+
 An \class{EMM}~object is created by function \func{EMM} which
 initializes an empty clustering with a temporal layer. 
 Several methods are defined
@@ -709,21 +725,31 @@ clustering and temporal information together (e.g., building a new EMM or
 plotting an EMM) are directly defined for \class{EMM}.  Since \class{EMM}
 contains \class{tNN} and \class{TRACDS}, all methods can directly be used
 for \class{EMM} objects. The reason of separation is flexibility for
-future development.
+future development. 
 
-The temporal layer information can be accessed using
-\func{size} (number of states), 
-\func{states} (names of states),
-\func{current\_state} (get current state),
-\func{transition} (access count or probability of a certain transition),
-\func{transition\_matrix} (compute a transition count or probability
+The temporal layer information from class \class{TRACDS} can be accessed using
+\begin{itemize}
+\item \func{nstates} (number of states), 
+\item \func{states} (names of states),
+\item \func{current\_state} (get current state),
+\item \func{transition} (access count or probability of a certain transition),
+\item \func{transition\_matrix} (compute a transition count or probability
     matrix),
-\func{initial\_transition} (get initial transition count vector).
-To access information about the clustering,
+\item \func{initial\_transition} (get initial transition count vector).
+\end{itemize}
+
+To access information about the clustering from class \class{tNN},
 we provide the functions 
-\func{clusters} (names of clusters),
-\func{cluster\_counts} (number of observations assigned to each cluster) 
-and \func{cluster\_centers} (centroids/medoids of clusters). 
+\begin{itemize}
+\item \func{nclusters} (number of clusters),
+\item \func{clusters} (names of clusters),
+\item \func{cluster\_counts} (number of observations assigned to each cluster),
+\item \func{cluster\_centers} (centroids/medoids of clusters). 
+\end{itemize}
+
+For convenience, a method \func{size} is provides for \class{EMM} which
+uses \func{nclusters} in \class{tNN} to return the number of clusters/states
+in the model.
 
 Clustering and building the EMM is integrated in the 
 function~\func{build}. It adds new data points by first 
@@ -836,9 +862,13 @@ points are processed
 as a data stream, strictly one after the other in a single pass.
 <<>>=
 emm <- EMM(threshold=0.2, measure="eJaccard")
-emm <- build(emm, EMMTraffic)
+build(emm, EMMTraffic)
 size(emm)
 @
+
+Note that we do not need to assign the result of \func{build} back to
+\code{emm}. The information in \code{emm} is changed by \func{build} inside the
+object since class \class{EMM} emulates pass-by-reference semantics.
 
 The resulting EMM has \Sexpr{size(emm)} states.
 The number of data points represented by each cluster can be accessed
@@ -928,9 +958,13 @@ with \func{remove\_clusters}. For example, we remove cluster~3 and
 display the resulting EMM in Fig~\ref{fig:Traffic_man}(b).
 
 <<Traffic_r3, fig=TRUE, include=FALSE>>=
-emm_3removed <- remove_clusters(emm, "3")
+emm_3removed <- copy(emm)
+remove_clusters(emm_3removed, "3")
 plot(emm_3removed, method = "graph")
 @
+
+Note that a copy of \code{emm} is explicitely created 
+in order have two independent copies in memory.
 
 Removing transitions is done with \func{remove\_transitions}.
 In the following example we remove the transition from cluster~5 to cluster~2
@@ -938,9 +972,12 @@ from the original EMM for EMMTraffic in Figure~\ref{fig:Traffic_man}(a).
 The resulting graph is shown in Fig~\ref{fig:Traffic_man}(c).
 
 <<Traffic_rt52, fig=TRUE, include=FALSE>>=
-emm_52removed <- remove_transitions(emm, "5", "2")
+emm_52removed <- remove_transitions(copy(emm), "5", "2")
 plot(emm_52removed, method = "graph")
 @
+
+Here a reference of a copy of \code{emm} is passed on to 
+\func{remove\_transitions} and then assigned to \code{emm\_52removed}.
 
 Clusters can be merged using \func{merge\_clusters}. Here we merge 
 clusters~2 and 5 into a combined cluster. 
@@ -949,7 +986,7 @@ merge vector. The resulting EMM is shown in Fig~\ref{fig:Traffic_man}(d).
 
 
 <<Traffic_m25, fig=TRUE, include=FALSE>>=
-emm_25merged <- merge_clusters(emm, c("2","5"))
+emm_25merged <- merge_clusters(copy(emm), c("2","5"))
 plot(emm_25merged, method = "graph")
 @
 
@@ -995,7 +1032,7 @@ the observations are weighted $1, \frac{1}{2}, \frac{1}{4},\dots$.
 
 <<Traffic_l, fig=TRUE, include=FALSE>>=
 emm_fading <- EMM(threshold=0.2, measure="eJaccard", lambda = 1)
-emm_fading <- build(emm_fading, EMMTraffic)
+build(emm_fading, EMMTraffic)
 plot(emm_fading, method = "graph")
 @
 
@@ -1014,8 +1051,8 @@ and transitions which have a weighted count of less than $0.1$ and
 show the resulting model in Figure~\ref{fig:Traffic_learning}(c).
 
 <<Traffic_lp, fig=TRUE, include=FALSE>>=
-emm_pruned <- prune(emm_fading, count_threshold=0.1)
-plot(emm_pruned, method = "graph")
+prune(emm_fading, count_threshold=0.1)
+plot(emm_fading, method = "graph")
 @
 
 
@@ -1099,7 +1136,7 @@ We create an EMM by clustering using Euclidean distance and a threshold of
 
 <<sim_graph, fig=TRUE, include=FALSE>>=
 emm <- EMM(threshold=0.1, measure="euclidean")
-emm <- build(emm, EMMsim_train)
+build(emm, EMMsim_train)
 plot(emm, method="graph")
 @
 
@@ -1287,7 +1324,7 @@ Here we plot the dendrogram which is shown in Fig~\ref{fig:sim_hc}.
 <<sim_hc, fig=TRUE, include=FALSE>>=
 ## find best predicting model (clustering)
 k <- 2:10
-emmc <- recluster_hclust(emm, k=k, method ="average") 
+emmc <- recluster_hclust(copy(emm), k=k, method ="average") 
 plot(attr(emmc, "cluster_info")$dendrogram)
 @
 
@@ -1395,7 +1432,7 @@ to give useful results.
 <<Derwent_cluster_counts, fig=TRUE, include=FALSE, width=10>>=
 Derwent_scaled <- scale(Derwent)
 emm <- EMM(measure="euclidean", threshold=3)
-emm <- build(emm, Derwent_scaled)
+build(emm, Derwent_scaled)
 #cluster_counts(emm)
 #state_centers(emm)
 plot(emm, method = "cluster_counts", log="y")
@@ -1444,12 +1481,13 @@ clusters/transitions that represent less than 0.5\% of the observations.
 On average this translates into less than two daily observation per year.
 We calculate a count threshold,
 use \func{prune} to remove rare clusters/transitions
-and then we plot the pruned EMM.
+(we use copy to retain the original model in 
+\code{emm}) and then we plot the pruned EMM.
 
 <<Derwent_EMM2, fig=TRUE, include=FALSE>>=
 rare_threshold <- sum(cluster_counts(emm))*0.005
 rare_threshold
-plot(prune(emm, rare_threshold))
+plot(prune(copy(emm), rare_threshold))
 @
 
 The pruned model depicted in Figure~\ref{fig:Derwent_EMM}(b) shows that 5
@@ -1601,7 +1639,7 @@ We use an experimentally found threshold of 0.1.
 data("16S")
 
 emm <- EMM(threshold=0.1, "Kullback")
-emm <- build(emm, Mollicutes16S+1)
+build(emm, Mollicutes16S+1)
 @
 
 <<Mollicutes_graph, fig=TRUE, include=FALSE>>=
@@ -1664,9 +1702,9 @@ reading data directly from data stream sources.
 \section*{Acknowledgments}
 The authors would like to thank the anonymous reviewers for their valuable
 comments.
-Part of the research presented in this paper was supported by
-by NSF IIS-0948893.
 
+Part of the research presented in this paper was supported by
+the National Science Foundation under Grant No. IIS-0948893.
 
 %\bibliographystyle{abbrvnat}
 \bibliography{rEMM}

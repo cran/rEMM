@@ -38,8 +38,8 @@ emm <- EMM(measure="eJaccard", threshold=0.2)
 emm <- build(emm, EMMTraffic)
 states(emm)
 
-## merge states 1-3
-emm_m123 <- merge_clusters(emm, c("1", "2", "3"))
+## merge states 1-3 and create a new emm called emm_m123 (note the copy)
+emm_m123 <- merge_clusters(copy(emm), c("1", "2", "3"))
 states(emm_m123)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

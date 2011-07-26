@@ -2,12 +2,16 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{TRACDS-class}
+\alias{TRACDS}
 \alias{current_state}
 \alias{current_state,TRACDS-method}
-\alias{size}
-\alias{size,TRACDS-method}
+\alias{nstates}
+\alias{nstates,TRACDS-method}
+\alias{copy,TRACDS-method}
 \alias{states}
 \alias{states,TRACDS-method}
+\alias{show,TRACDS-method}
+\alias{plot,TRACDS,missing-method}
 \alias{transitions}
 \alias{transitions,TRACDS-method}
 %\alias{initial_transition,TRACDS-method}
@@ -19,12 +23,21 @@
 \title{Class "TRACDS"}
 \description{Representation of the temporal structure of a data stream clustering using a extensible Markov model.}
 \section{Objects from the Class}{
-No objects are created from this class. It is extended by the class \code{"EMM"}
-to build the Extensible Markov Model.
+Objects can be created using the creator function \code{TRACDS} or by
+directly calling \code{new("TRACDS", ...)}. Most slots for the extended
+classes can be used as parameters.
 }
 \section{Slots}{
 	 \describe{
-    \item{\code{mm}:}{Object of class \code{"graphNEL"} representing the 
+	\item{\code{lambda}:}{Object of class \code{"numeric"} specifying the
+		 rate for fading.}
+       \item{\code{lambda_factor}:}{Object of class \code{"numeric"} expressing
+		 the fading rate expressed as a factor.}
+
+   \item{\code{tracds_d}:}{An environment containing all the
+    variable data of the TRACDS object:
+      \describe{
+      \item{\code{mm}:}{Object of class \code{"SimpleMC"} representing the 
 		first order Markov model of the EMM. }
     \item{\code{current_state}:}{Object of class \code{"character"} with the
 		name of current state in the EMM. \code{NA} means
@@ -32,18 +45,25 @@ to build the Extensible Markov Model.
 %	\item{\code{initial_counts}:}{Object of class \code{"numeric"} indicating
 %		how often a state is the first state in a sequence
 %		(used to calculate initial state probabilities for the Markov chain).}
+	 }}
 	 }
 }
 \section{Methods}{
   \describe{
+      \item{copy}{\code{signature(x = "TRACDS")}: Make a copy of the TRACDS object.
+	  Making explicit copies is necessary since
+	      information is stored in an environment which is not copied for regular
+	      assignements.}
+
     \item{current_state}{\code{signature(x = "TRACDS")}: returns the name of 
 		the current state. }
 %    \item{initial_transition}{\code{signature(x = "TRACDS")}: ...}
 %    \item{predict}{\code{signature(object = "TRACDS")}: ... }
-    \item{size}{\code{signature(x = "TRACDS")}: returns the number of states 
-		in the EMM.}
+    \item{nstates}{\code{signature(x = "TRACDS")}: returns the number of states.}
+    \item{plot}{\code{signature(x = "TRACDS", y = "missing")}: Plots the
+    object as a directed graph.}
     \item{states}{\code{signature(x = "TRACDS")}: returns the names of the
-		states in the EMM.}
+		states.}
 %    \item{transition_matrix}{\code{signature(x = "TRACDS")}: ... }
 %    \item{transition}{\code{signature(x = "TRACDS", from = "data.frame", to = "missing")}: ... }
 %    \item{transition}{\code{signature(x = "TRACDS", from = "character", to = "character")}: ... }
@@ -71,6 +91,5 @@ URL \url{http://www.jstatsoft.org/v35/i05/}
 	\code{\linkS4class{EMM}} extends \code{"TRACDS"}.
 }
 %\examples{
-%showClass("TRACDS")
 %}
 \keyword{classes}

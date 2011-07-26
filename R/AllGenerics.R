@@ -1,3 +1,21 @@
+#######################################################################
+# rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
+# Copyrigth (C) 2011 Michael Hahsler
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 
 ## These generics already exist:
 ## setGeneric("predict", function(object, ...) standardGeneric("predict"))
@@ -5,7 +23,11 @@
 
 ## TRACDS
 ## size is also used in package arules
+setGeneric("update", function(object, ...) standardGeneric("update"))
+setGeneric("copy", function(x) standardGeneric("copy"))
 setGeneric("size", function(x, ...) standardGeneric("size"))
+setGeneric("nclusters", function(x, ...) standardGeneric("nclusters"))
+setGeneric("nstates", function(x, ...) standardGeneric("nstates"))
 setGeneric("current_state", function(x) standardGeneric("current_state"))
 setGeneric("states", function(x) standardGeneric("states"))
 setGeneric("transitions", function(x) standardGeneric("transitions"))
@@ -36,7 +58,6 @@ setGeneric("rare_clusters", function(x, count_threshold, ...)
 
 ## EMM
 setGeneric("build", function(x, newdata, ...) standardGeneric("build"))
-#setGeneric("update", function(object, ...) standardGeneric("update"))
 setGeneric("reset", function(x) standardGeneric("reset"))
 setGeneric("score", function(x, newdata, ...) standardGeneric("score"))
 setGeneric("fade", function(x, t, lambda) standardGeneric("fade"))

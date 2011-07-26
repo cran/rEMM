@@ -8,18 +8,21 @@
 %\alias{find_clusters,tNN,matrix-method}
 \alias{cluster_centers}
 \alias{cluster_centers,tNN-method}
+\alias{copy,tNN-method}
 \alias{cluster_counts}
 \alias{cluster_counts,tNN-method}
+\alias{clusters}
 \alias{clusters,tNN-method}
-\alias{size,tNN-method}
+\alias{nclusters}
+\alias{nclusters,tNN-method}
+\alias{plot,tNN,missing-method}
 
 \title{Class "tNN"}
 \description{Implements the threshold Nearest Neighbor clustering algorithm
 used by EMM.}
 \section{Objects from the Class}{
 Objects can be created with \code{new()} or by the creator function 
-\code{tNN()}. It is extended by the class \code{"EMM"}
-to build the Extensible Markov Model.}
+\code{tNN}.}
 \section{Slots}{
 	 \describe{
     \item{\code{measure}:}{Object of class \code{"character"} containing
@@ -33,6 +36,13 @@ to build the Extensible Markov Model.}
 		with the dissimilarity threshold used
 	    by the NN clustering algorithm for assigning a new
 		observation to existing clusters.}
+    \item{\code{lambda}:}{Object of class \code{"numeric"} specifying the
+		 rate for fading.}
+    \item{\code{lambda_factor}:}{Object of class \code{"numeric"} expressing
+		the fading rate expressed as a factor.}
+    \item{\code{tnn_d}:}{An environment containing the variable
+    data for the tNN object:
+  \describe{
     \item{\code{centers}:}{Object of class \code{"matrix"} containing 
 		the cluster centers. }
     \item{\code{counts}:}{Object of class \code{"numeric"} with the 
@@ -40,29 +50,30 @@ to build the Extensible Markov Model.}
     \item{\code{var_thresholds}:}{Object of class \code{"numeric"} with the
 		dissimilarity thresholds for individual clusters (usually
 		the same as threshold).}
-    \item{\code{lambda}:}{Object of class \code{"numeric"} specifying the
-		 rate for fading.}
-    \item{\code{lambda_factor}:}{Object of class \code{"numeric"} expressing
-		the fading rate expressed as a factor.}
     \item{\code{last}:}{A \code{"character"} vector containing the
 		cluster names the points for the previous call of
 		\code{cluster()} were assigned to.}
   }
+    }
+	 }
 }
 \section{Methods}{
   \describe{
+      \item{copy}{\code{signature(x = "tNN")}: Make a copy of the tNN object. 
+	  Making explicit copies is necessary since 
+	      information is stored in an environment which is not copied for regular 
+	      assignements.}
 %    \item{find_clusters}{\code{signature(x = "tNN", newdata = "numeric")}: ... }
 %    \item{find_clusters}{\code{signature(x = "tNN", newdata = "matrix")}: ... }
     \item{cluster_centers}{\code{signature(x = "tNN")}: returns the cluster
 		centers as a matrix.}
     \item{cluster_counts}{\code{signature(x = "tNN")}: returns the cluster 
 		counts as a vector.}
-
-    \item{size}{\code{signature(x = "tNN")}: returns the number of clusters/states
-	in the clustering.}
     \item{clusters}{\code{signature(x = "tNN")}: returns the names of the
 	clusters.}
-
+    \item{nclusters}{\code{signature(x = "tNN")}: returns the number of clusters
+	in the clustering.}
+    \item{plot}{\code{signature(x = "tNN", y = "missing")}: plots the cluster centers using a scatterplot matrix (see \code{pairs}).}
 	 }
 }
 \references{
@@ -73,11 +84,11 @@ Conference on Data Mining,} pp. 371--374.
 %\author{ ~~who you are~~ }
 %\note{ ~~further notes~~ }
 \seealso{
-	\code{\link{find_clusters}} to find the nearest neighbor state for given data
-	points.
+	\code{\link{cluster}} for adding new data to the clustering.
+	\code{\link{find_clusters}} to find the nearest neighbor cluster 
+	    for given data points.
 	\code{\linkS4class{EMM}} extends "tNN".
 }
 %\examples{
-%showClass("tNN")
 %}
 \keyword{classes}

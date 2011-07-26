@@ -1,5 +1,23 @@
+#######################################################################
+# rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
+# Copyrigth (C) 2011 Michael Hahsler
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-## clustering = TRUE gets integer
+
+## clustering = TRUE gets integer in to_merge
 setMethod("merge_clusters", signature(x = "EMM", to_merge = "integer"),
 	function(x, to_merge, clustering = FALSE, new_center = NULL) {
 		
@@ -31,44 +49,38 @@ setMethod("merge_clusters", signature(x = "EMM", to_merge = "character"),
 
 		
 		## TRACDS
-		x@mm <- smc_mergeStates(x@mm, to_merge)
+		x@tracds_d$mm <- smc_mergeStates(x@tracds_d$mm, to_merge)
 		
-		## fix current state
-		if(x@current_state %in% to_delete) 
-		    x@current_state <- new_state
+		if(x@tracds_d$current_state %in% to_delete) 
+		    x@tracds_d$current_state <- new_state
 		
-
-		## Clustering
+		## tNN
 		## save old state centers
 		old_centers <- cluster_centers(x)[to_merge,]
 
 		## create new state
 		if(is.null(new_center)) {
 			if(x@centroids) {
-				x@centers[new_state,] <- 
-				colSums(old_centers*x@counts[to_merge])/
-				sum(x@counts[to_merge])
-				#x@sum_x[new_state,] <- colSums(x@sum_x[to_merge,]) 
-				#x@sum_x2[new_state,] <- colSums(x@sum_x2[to_merge,]) 
+				x@tnn_d$centers[new_state,] <- 
+				colSums(old_centers*x@tnn_d$counts[to_merge])/
+				sum(x@tnn_d$counts[to_merge])
 			}else {
 				## we take the medoid of the larger cluster
-				x@centers[new_state,] <-
+				x@tnn_d$centers[new_state,] <-
 				old_centers[which.max(cluster_counts(x)[to_merge]),]
 			}
 		}else{ 
 			## user supplied new center
-			if(identical(length(new_center), ncol(x@centers))) 
-			x@centers[new_state,] <- new_center
+			if(identical(length(new_center), ncol(x@tnn_d$centers))) 
+			x@tnn_d$centers[new_state,] <- new_center
 			else stop("new_center does not have the correct length/ncol!")
 		}
 
 
-		x@counts[new_state] <- sum(x@counts[to_merge])
+		x@tnn_d$counts[new_state] <- sum(x@tnn_d$counts[to_merge])
 
-		x@centers <- x@centers[!to_delete,]
-		#x@sum_x <- x@sum_x[!to_delete,]
-		#x@sum_x2 <- x@sum_x2[!to_delete,]
-		x@counts <- x@counts[!to_delete]
+		x@tnn_d$centers <- x@tnn_d$centers[!to_delete,]
+		x@tnn_d$counts <- x@tnn_d$counts[!to_delete]
 
 
 
@@ -79,13 +91,13 @@ setMethod("merge_clusters", signature(x = "EMM", to_merge = "character"),
 		d <- dist(cluster_centers(x)[new_state,,drop=FALSE], old_centers, 
 			method=x@measure)[1,]
 
-		new_threshold <- max(d + x@var_thresholds[names(d)])
+		new_threshold <- max(d + x@tnn_d$var_thresholds[names(d)])
 		names(new_threshold) <- new_state
 
-		x@var_thresholds[new_state] <- new_threshold
+		x@tnn_d$var_thresholds[new_state] <- new_threshold
 
 		## remove var. thresholds
-		x@var_thresholds <- x@var_thresholds[!to_delete]
+		x@tnn_d$var_thresholds <- x@tnn_d$var_thresholds[!to_delete]
 
 		x
 	}

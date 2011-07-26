@@ -1,3 +1,22 @@
+#######################################################################
+# rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
+# Copyrigth (C) 2011 Michael Hahsler
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
 ## make  newdata a matrix (with a single row)
 setMethod("cluster", signature(x = "tNN", newdata = "numeric"),
 	function(x, newdata, verbose = FALSE) cluster(x, 
@@ -12,50 +31,46 @@ setMethod("cluster", signature(x = "tNN", newdata = "data.frame"),
 setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 	function(x, newdata, verbose = FALSE) {
 
-	    #x@last <- character(nrow(newdata)) 
-	    last <- character(nrow(newdata)) 
-	    counts <- x@counts
-	    centers <- x@centers
-	    var_thresholds <- x@var_thresholds
+	    tnn_d <- x@tnn_d
+	    
+	    tnn_d$last <- character(nrow(newdata))
 
 	    for(i in 1:nrow(newdata)) 
 	    {
 
 		nd <- newdata[i,, drop = FALSE]
-		if(verbose && i%%50==0) 
-		    cat("Added", i, "observations -",nrow(centers), "states.\n")
-		    #cat("Added", i, "observations -",size(x), "states.\n")
+		if(verbose && i%%100==0) 
+		    cat("Added", i, "observations - ",
+			nclusters(x), "clusters.\n")
 
-		## reset on all NAs
+		## cluster is NA for rows with all NAs
 		if(all(is.na(nd))) {
-		    #x@last[i] <- as.character(NA)
-		    last[i] <- as.character(NA)
+		    tnn_d$last[i] <- as.character(NA)
 		    next
 		}
 
 		## fade cluster structure?
-		#if(x@lambda>0) x@counts <- x@counts * x@lambda_factor
-		if(x@lambda>0) counts <- counts * x@lambda_factor
+		if(x@lambda>0) 
+		    tnn_d$counts <- tnn_d$counts * x@lambda_factor
 
 		## first cluster
-		#if(size(x)==0) {
-		if(nrow(centers)==0) {
+		if(nclusters(x)<1) {
 		    sel <- "1"
 		    rownames(nd) <- sel
-		    #x@centers <- nd
-		    centers <- nd
-		    #x@counts[sel] <- 1 
-		    counts[sel] <- 1 
-		    ## initialize threshold
-		    #x@var_thresholds[sel] <- x@threshold
-		    var_thresholds[sel] <- x@threshold
+		    tnn_d$centers <- nd
+		    tnn_d$counts[sel] <- 1 
+		    ## initialize variable threshold
+		    tnn_d$var_thresholds[sel] <- x@threshold
 
 		}else{
 		    ## find a matching state
 		    #sel <- find_clusters(x, nd, match_cluster="exact")
-		    inside <- dist(nd, centers, method=x@measure) - var_thresholds
+
+		    ## doing it inline is much faster
+		    inside <- dist(nd, tnn_d$centers, 
+		        method=x@measure) - tnn_d$var_thresholds
 		    min <- which.min(inside)
-		    if(inside[min]<=0) sel <- rownames(centers)[min]
+		    if(inside[min]<=0) sel <- rownames(tnn_d$centers)[min]
 		    else sel <- NA
 
 		    ## NA means no match -> create a new node
@@ -63,19 +78,14 @@ setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 			## New node
 			## get new node name (highest node 
 			## number is last entry in count)
-			#sel <- as.character(as.integer(tail(names(x@counts),1)) + 1)
-			sel <- as.character(as.integer(tail(names(counts),1)) + 1)
+			sel <- as.character(as.integer(
+					tail(names(tnn_d$counts),1)) + 1)
 
 			rownames(nd) <- sel
-			#x@centers <- rbind(x@centers, nd)
-			centers <- rbind(centers, nd)
-			#x@sum_x <- rbind(x@sum_x, nd)
-			#x@sum_x2 <- rbind(x@sum_x2, nd^2)
-			#x@counts[sel] <- 1
-			counts[sel] <- 1
+			tnn_d$centers <- rbind(tnn_d$centers, nd)
+			tnn_d$counts[sel] <- 1
 			## initialize threshold
-			#x@var_thresholds[sel] <- x@threshold
-			var_thresholds[sel] <- x@threshold
+			tnn_d$var_thresholds[sel] <- x@threshold
 
 		    }else{ 
 			## assign observation to existing node
@@ -83,48 +93,29 @@ setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 			## update center (if we use centroids)
 			if(x@centroids) {
 
-			    #nnas <- !is.na(nd)
-			    #x@centers[sel,nnas] <- (x@centers[sel,nnas] * 
-			    #    x@counts[sel] + nd[nnas])/(x@counts[sel]+1)
-			    #nas <- is.na(x@centers[sel,])
-			    #x@centers[sel,nas] <- nd[nas]
-			    
 			    nnas <- !is.na(nd)
-			    centers[sel,nnas] <- (centers[sel,nnas] * 
-				    counts[sel] + nd[nnas])/(counts[sel]+1)
-			    nas <- is.na(centers[sel,])
-			    centers[sel,nas] <- nd[nas]
+			    tnn_d$centers[sel,nnas] <- 
+			    (tnn_d$centers[sel,nnas] * 
+				    tnn_d$counts[sel] 
+				    + nd[nnas])/(tnn_d$counts[sel]+1)
+			    nas <- is.na(tnn_d$centers[sel,])
+			    tnn_d$centers[sel,nas] <- nd[nas]
 
-			    #nnas <- !is.na(nd)
-			    ## for sum_x and sum_x2 we have additivity
-			    #x@sum_x[sel,nnas] <- x@sum_x[sel,nnas] + nd[nnas]
-			    #x@sum_x2[sel,nnas] <- x@sum_x2[sel,nnas] + nd[nnas]^2
-			    #nas <- is.na(x@sum_x[sel,])
-			    #if(any(nas)) {
-			    #    x@sum_x[sel,nas] <- nd[nas]
-			    #x@sum_x2[sel,nas] <- nd[nas]^2
-			    #}
 			}
 
-			## update counts
-			#x@counts[sel] <- x@counts[sel] + 1
-			counts[sel] <- counts[sel] + 1
+			## update counts 
+			tnn_d$counts[sel] <- tnn_d$counts[sel] + 1
 		    }
 		}
 
-		#x@last[i] <- sel
-		last[i] <- sel
+		tnn_d$last[i] <- sel
 
 	    }
 
-	    ## fix emm object
-	    x@last <- last 
-	    x@counts <- counts
-	    x@centers <- centers
-	    x@var_thresholds <- var_thresholds
 
-	    if(verbose) cat ("Done -",size(x), "states.\n")
-	    x
+	    if(verbose) cat ("Done -", nclusters(x), "clusters.\n")
+
+	    invisible(x)
 
 	}
 	)

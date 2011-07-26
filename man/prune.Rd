@@ -55,7 +55,7 @@ transition_matrix(emm_l, type="counts")
 ## remove all states and edges with a threshold of 0.1
 rare_clusters(emm_l, count_threshold=0.1)
 rare_transitions(emm_l, count_threshold=0.1)
-emm_lr <- prune(emm_l, count_threshold=0.1)
+emm_lr <- prune(copy(emm_l), count_threshold=0.1)
 
 ## compare graphs
 op <- par(mfrow = c(1, 2), pty = "m")

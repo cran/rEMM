@@ -2,8 +2,11 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{EMM-class}
-\alias{EMM}
-\alias{show,EMM}
+\alias{show,EMM-method}
+\alias{size}
+\alias{size,EMM-method}
+\alias{copy}
+\alias{copy,EMM-method}
 %\alias{build,EMM,numeric-method}
 %\alias{build,EMM,data.frame-method}
 %\alias{build,EMM,matrix-method}
@@ -54,8 +57,14 @@ classes can be used as parameters for \code{EMM}.
 Class \code{"\linkS4class{tNN}"}, directly.
 Class \code{"\linkS4class{TRACDS}"}, directly.
 }
-%\section{Methods}{
-%  \describe{
+\section{Methods}{
+  \describe{
+    \item{copy}{\code{signature(x = "EMM")}: Make a copy of the EMM object. 
+    Making explicit copies is necessary since the subclasses store 
+    information in environments which are not copied for regular 
+    assignements.}
+    \item{size}{\code{signature(x = "EMM")}: Returns the size of
+    the EMM (number of clusters/states).}
 %    \item{build}{\code{signature(x = "EMM", newdata = "numeric")}: ... }
 %    \item{build}{\code{signature(x = "EMM", newdata = "data.frame")}: ... }
 %    \item{build}{\code{signature(x = "EMM", newdata = "matrix")}: ... }
@@ -74,8 +83,8 @@ Class \code{"\linkS4class{TRACDS}"}, directly.
 %    \item{remove_transitions}{\code{signature(x = "EMM", from = "character", to = "character")}: ... }
 %    \item{score}{\code{signature(x = "EMM", newdata = "numeric")}: ... }
 %    \item{score}{\code{signature(x = "EMM", newdata = "matrix")}: ... }
-%	 }
-%}
+	 }
+}
 \references{
 M.H. Dunham, Y. Meng, J. Huang (2004): Extensible Markov Model, In:
 \emph{ICDM '04: Proceedings of the Fourth IEEE International

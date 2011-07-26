@@ -1,3 +1,21 @@
+#######################################################################
+# rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
+# Copyrigth (C) 2011 Michael Hahsler
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 
 ## fixme: find medoids for hclust
 
@@ -22,20 +40,19 @@ setMethod("recluster_hclust", signature(x = "EMM"),
 
 		d <- dist(cluster_centers(x), method = x@measure)
 		hc <- hclust(d, method=method)
-		cl <- cutree(hc , k=k, h=h)
+		cl <- cutree(hc, k=k, h=h)
 
 		## if only h was given
 		if(is.null(k)) k <- max(cl)
 
 		if(is(cl, "matrix")) x <- lapply(1:ncol(cl), 
-			FUN=function(i) 
-			{
-				if(!x@centroids) 
+			FUN=function(i){
+			    if(!x@centroids) 
 				new_center <- cluster_centers(x)[.find_medoids(d, k, cl[,i]),]
-				## centroids are handled by merge_clusters!
-				else new_center <- NULL
-				merge_clusters(x, cl[,i], 
-					clustering=TRUE, new_center = new_center)
+			    ## centroids are handled by merge_clusters!
+			    else new_center <- NULL
+				merge_clusters(copy(x), cl[,i], 
+				    clustering=TRUE, new_center = new_center)
 			})
 		else{ 
 			if(!x@centroids) 

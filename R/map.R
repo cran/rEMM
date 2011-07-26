@@ -16,32 +16,28 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+## mapping helper
 
-## predict next n states using P^n
-setMethod("predict", signature(object = "TRACDS"),
-	function(object, n=1, current_state=NULL, 
-		probabilities = FALSE) {
+map <- function(x, range = c(0,1), from.range=NA) {
+    if(any(is.na(from.range))) from.range <- range(x, na.rm=TRUE)
+    
+    ## check if all values are the same
+    if(!diff(from.range)) return(
+	    matrix(mean(range), ncol=ncol(x), nrow=nrow(x), 
+		    dimnames = dimnames(x)))
+    
+    ## map to [0,1]
+    x <- (x-from.range[1])
+    x <- x/diff(from.range)
+    ## handle single values
+    if(diff(from.range) == 0) x <- 0 
+    
+    ## map from [0,1] to [range]
+    if (range[1]>range[2]) x <- 1-x
+    x <- x*(abs(diff(range))) + min(range)
+    
+    x[x<min(range) | x>max(range)] <- NA
+    
+    x
+}
 
-		## probabilistic max with random tie breaking
-		.prob_max <- function(x) {
-			m <- which(x==max(x))
-			if(length(m)>1) m <- sample(m,1)
-			m
-		}
-
-		
-		if(is.null(current_state)) current_state <- current_state(object)
-		else current_state <- as.character(current_state)
-
-
-		P <- transition_matrix(object)
-		## calculate P^n
-		if(n>1) for(i in 1:(n-1)) P <- P%*%P
-
-		prob <- P[current_state,]
-		if(probabilities) return(prob)
-
-		## we need random-tie breaking
-		return(states(object)[.prob_max(prob)])
-	}
-)

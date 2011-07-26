@@ -1,26 +1,73 @@
+#######################################################################
+# rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
+# Copyrigth (C) 2011 Michael Hahsler
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
 ## creator function
 tNN <- function(threshold = 0.2, measure = "euclidean", 
 	centroids = identical(tolower(measure), "euclidean"), lambda=0) {
     new("tNN", threshold=threshold, measure=measure, centroids=centroids,
-	    lambda=lambda, lambda_factor = 2^(-lambda))
+	    lambda=lambda)
 }
 
+## show
+setMethod("show", signature(object = "tNN"),
+	function(object) {
+	    cat("tNN with", nclusters(object), "clusters.\n", 
+		    "Measure:", object@measure, "\n",
+		    "Threshold:", object@threshold, "\n",
+		    "Centroid:", object@centroids, "\n",
+		    "Lambda:", object@lambda, "\n"
+		    )
+	    invisible(NULL)
+	})
+
+
+setMethod("copy", signature(x = "tNN"),
+	function(x) {
+
+	    r <- new("tNN", 
+		    threshold = x@threshold, 
+		    measure = x@measure, 
+		    centroids = x@centroids,
+		    lambda = x@lambda, 
+		    lambda_factor = x@lambda_factor)
+	    
+	    ## copy environment
+	    r@tnn_d <- as.environment(as.list(x@tnn_d))
+	
+	    r
+	})
 
 setMethod("cluster_counts", signature(x = "tNN"),
-	function(x) x@counts)
+	function(x) x@tnn_d$counts)
 
 setMethod("cluster_centers", signature(x = "tNN"),
-	function(x) x@centers)
+	function(x) x@tnn_d$centers)
 
-setMethod("size", signature(x = "tNN"),
-	function(x) nrow(x@centers))
+setMethod("nclusters", signature(x = "tNN"),
+	function(x) nrow(x@tnn_d$centers))
 
 setMethod("clusters", signature(x = "tNN"),
-	function(x) rownames(x@centers))
+	function(x) rownames(x@tnn_d$centers))
 
 setMethod("rare_clusters", signature(x = "tNN"),
 	function(x, count_threshold)
-	names(which(x@counts < count_threshold))
+	names(which(x@tnn_d$counts < count_threshold))
 	)
 
 
@@ -43,12 +90,15 @@ setMethod("find_clusters", signature(x = "tNN", newdata = "matrix"),
                 ## matrix can become too large for main memory
                 ## estimate block size with 64 bit per distance entry
                 ## and dist computation takes about 5* the memory
-                
-                maxmem <- 128L  ## max. approx. 128 MBytes
+               
+		## no clusters?
+		if(nclusters(x)==0) return(rep(NA, nrow(newdata)))
+		
+		maxmem <- 128L  ## max. approx. 128 MBytes
                 blocksize <- as.integer(floor(maxmem * 1024 * 1024 
-                                / size(x) / 8 / 5))
-
-                if(nrow(newdata) > blocksize && nrow(newdata)!=1) {
+                               / nclusters(x) / 8 / 5))
+    
+                if(nrow(newdata)>1 && nrow(newdata)>blocksize) {
                     states <- character(nrow(newdata))
                     if(dist) d_state <- numeric(nrow(newdata))
 
@@ -85,7 +135,7 @@ setMethod("find_clusters", signature(x = "tNN", newdata = "matrix"),
 		
                 if(match_cluster=="nn") {
                     min <- apply(d, MARGIN=1, .which.min_NA)
-                    closest <- states(x)[min]
+                    closest <- clusters(x)[min]
                     if(dist) { 
                         d_state <- sapply(1:nrow(newdata),
                                 FUN = function(i) d[i,min[i]])
@@ -97,15 +147,19 @@ setMethod("find_clusters", signature(x = "tNN", newdata = "matrix"),
 		## NA ... no match
 
 		## subtract threshold and take the smallest value if <=0
-		d2 <- d - matrix(x@var_thresholds,
-			ncol=length(x@var_thresholds), nrow=nrow(d), byrow=TRUE)
+		d2 <- d - matrix(x@tnn_d$var_thresholds,
+			ncol=length(x@tnn_d$var_thresholds), 
+			nrow=nrow(d), byrow=TRUE)
 
                 min <- apply(d2, MARGIN=1, .which.min_NA)
-                closest <- states(x)[min]
+               
+
+		closest <- clusters(x)[min]
                 closest_val <- sapply(1:nrow(newdata),
                         FUN = function(i) d2[i,min[i]])
 		closest[closest_val>0] <- NA
-		
+
+
                 if(dist) {
                     d_state <- sapply(1:nrow(newdata),
                             FUN = function(i) d[i,min[i]])

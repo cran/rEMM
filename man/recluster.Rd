@@ -60,7 +60,7 @@ emm <- EMM(measure="eJaccard", threshold=0.2)
 emm <- build(emm, EMMTraffic)
 
 ## do clustering and plot dendrogram
-emm_hc <- recluster_hclust(emm, h=0.5)
+emm_hc <- recluster_hclust(copy(emm), h=0.5)
 
 attr(emm_hc, "cluster_info")
 

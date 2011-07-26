@@ -6,29 +6,39 @@ importFrom(graphics, plot)
 
 importFrom(stats, predict)
 
+importFrom(proxy, pr_DB, pr_dist2simil)
+
 exportClasses(EMM, TRACDS, StreamClustering, tNN)
 
 export(
     EMM,
-    size,
+    TRAC,
+    build,
+    copy,
     fade,
     predict,
     score,
+    size,
     prune,
     plot,
     merge_clusters,
     remove_clusters,
     
+    ## tNN
     tNN,
     cluster,
+    clusters,
     cluster_counts,
     cluster_centers,
     find_clusters,
+    nclusters,
     rare_clusters,
-    
+    update,
+
     ## TRACDS
-    build,
-    #update,
+    TRACDS,
+    update,
+    nstates,
     reset,
     states,
     current_state,
