@@ -22,6 +22,7 @@ setClass("tNN",
 	contains = ("StreamClustering"),
 	representation(
 		measure		= "character",
+		distFun		= "ANY",
 		centroids	= "logical",
 		threshold	= "numeric",
 		lambda		= "numeric",
@@ -32,20 +33,6 @@ setClass("tNN",
 		#var_thresholds	= "numeric",
 		#last		= "character"
 		tnn_d		= "environment"
-	),
-
-	prototype(
-		measure		= "euclidean", 
-		centroids	= TRUE,
-		threshold	= 0.2,
-		lambda		= 0,
-		lambda_factor	= 1,
-		tnn_d		= emptyenv()
-		### these are in data as a reference
-		#centers		= matrix(nrow=0, ncol=0),
-		#counts		= numeric(),
-		#var_thresholds  = numeric(),
-		#last		= as.character(NA)
 	)
 
 	## FIXME: Implement check
@@ -55,6 +42,7 @@ setClass("tNN",
 setMethod("initialize", "tNN", function(.Object, 
 		threshold = 0.2, 
 		measure = "euclidean", 
+		distFun = NULL,
 		centroids = identical(tolower(measure), "euclidean"), 
 		lambda=0, ...){
 	    
@@ -70,7 +58,10 @@ setMethod("initialize", "tNN", function(.Object,
 	    assign("var_thresholds", numeric(), envir = .Object@tnn_d)
 	    assign("last", as.character(NA), envir = .Object@tnn_d)
 	    
-	    #cat("tNN initializes.\n")
+	    ### get dist function from proxy registry
+	    if(!is.null(distFun)) .Object@distFun <- distFun
+	    else .Object@distFun <- pr_DB[[measure]]
+	    
 	    #validObject(.Object)
 	    #.Object <- callNextMethod(.Object, ...)
 	    

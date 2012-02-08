@@ -1,0 +1,16 @@
+CHANGES
+
+Pending changes for rEMM 1.0-3
+* Finished the transition to reference objects implemented using environments.
+* transition_table() now has for consitency also the default of 
+    add_one set to FALSE.
+* last_clustering() was added as an accessor function to tNN.
+* 'igraph' is now the default plot method.
+* Added combining EMMs.
+* Added reclustering using tNN.
+* Added coloring of states and transitions to plot().
+* Added coercion functions as.igraph() and as.graph from TRACDS.
+
+
+rEMM 1.0-2 (2011-07-26)
+* service release

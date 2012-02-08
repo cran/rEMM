@@ -21,7 +21,7 @@
 
 setMethod("score", signature(x = "EMM", newdata = "numeric"),
 	function(x, newdata, method = c("prod", "sum", "log_odds"), 
-		match_cluster="nn", plus_one = TRUE, 
+		match_cluster="nn", plus_one = FALSE, 
 		initial_transition = FALSE) 
 	score(x, as.matrix(rbind(newdata)), method, 
 		match_cluster, plus_one, initial_transition)
@@ -29,7 +29,7 @@ setMethod("score", signature(x = "EMM", newdata = "numeric"),
 
 setMethod("score", signature(x = "EMM", newdata = "data.frame"),
 	function(x, newdata, method = c("prod", "sum", "log_odds"), 
-		match_cluster="nn", plus_one = TRUE, 
+		match_cluster="nn", plus_one = FALSE, 
 		initial_transition = FALSE) 
 	score(x, as.matrix(newdata), method, 
 		match_cluster, plus_one, initial_transition)
@@ -37,7 +37,7 @@ setMethod("score", signature(x = "EMM", newdata = "data.frame"),
 
 setMethod("score", signature(x = "EMM", newdata = "matrix"),
         function(x, newdata, method = c("prod", "sum", "log_odds"), 
-                match_cluster="nn", plus_one = TRUE, 
+                match_cluster="nn", plus_one = FALSE, 
                 initial_transition = FALSE) {
 
             method <- match.arg(method)

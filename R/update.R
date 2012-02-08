@@ -26,6 +26,7 @@ setMethod("update", signature(object = "TRACDS"),
 		    "assignments","\n")
 
 	    x <- object
+	    
 	    tracds_d <- x@tracds_d  ### get the environment
 	    
 	    counts <- tracds_d$mm@counts ### get matrix for performance

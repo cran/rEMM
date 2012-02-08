@@ -29,7 +29,7 @@
 	## fade transition counts (TRACDS)
 	x@tracds_d$mm <- smc_fade(x@tracds_d$mm, lambda_factor^t)
 	
-	x
+	invisible(x)
 }
 
 
@@ -43,4 +43,8 @@ setMethod("fade", signature(x = "EMM", t= "missing", lambda = "missing"),
 
 setMethod("fade", signature(x = "EMM", t= "numeric", lambda = "numeric"),
 	function(x, t, lambda) .fade(x, t, lambda) 
+)
+
+setMethod("fade", signature(x = "EMM", t= "missing", lambda = "numeric"),
+	function(x, t, lambda) .fade(x, , lambda) 
 )

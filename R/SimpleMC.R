@@ -36,6 +36,7 @@ smc_size <- function(x) {
     length(x@unused) - x@top
 }
 
+## state names are stored as names of the initial counts!!!
 smc_states <- function(x, ...) {
     names(x@initial_counts)[!is.na(names(x@initial_counts))] 
 }

@@ -1,11 +1,3 @@
-#######################################################################
-# rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,8 +10,8 @@
 
 ## the generic with x, y, ... comes from graphics
 setMethod("plot", signature(x = "EMM", y = "missing"),
-        function(x, y, method = c("MDS", "igraph", "interactive", 
-			"graph", "cluster_counts",
+        function(x, y, method = c("igraph", "interactive", 
+			"graph", "MDS", "cluster_counts",
                         "transition_counts"), data = NULL, 
                 parameter=NULL, ...){ 
 
@@ -33,10 +25,20 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                             state_size_multiplier=1,
                             add_labels = TRUE,
                             cluster_labels = NULL,
-                            mark_clusters = TRUE,
-                            mark_states = NULL,
+                            
+			    ## MDS
+			    mark_clusters = TRUE,
                             draw_ellipses = FALSE,
-                            nAttrs = list(),
+                            
+			    ## graph, igraph
+                            mark_states = NULL,
+			    ## may be a vector of same length as mark_state
+			    mark_states_color = "red", 
+			    mark_transitions = NULL,
+			    mark_transitions_color = "red",
+			    
+			    
+			    nAttrs = list(),
                             eAttrs = list()
                             ), parameter)
 
@@ -48,7 +50,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
             emm_centers <- cluster_centers(x)
 
             if(method=="cluster_counts") {
-                barplot(sort(cluster_counts(x), decreasing=TRUE), 
+                pl <- barplot(sort(cluster_counts(x), decreasing=TRUE), 
                         ylab="Count", xlab = "State", ...)
 
             }else if(method=="transition_counts") {
@@ -56,70 +58,109 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                 cnt <- transition(x, tr, type="counts")
                 names(cnt) <- apply(tr, MARGIN=1, FUN = 
                         function(x) paste(x, collapse="->"))
-                barplot(sort(cnt, decreasing=TRUE), 
+                pl <- barplot(sort(cnt, decreasing=TRUE), 
                         ylab="Transition counts", ...)
 
             }else if(method=="igraph" || method=="interactive") {
-                g <- smc_as.igraph(x@tracds_d$mm)
+                g <- as.igraph(x)
 		
 		if(method=="interactive") plot_fun <- tkplot
 		else plot_fun <- plot
-		
 
 		if(p$arrow_width) {
-		    e.width <- map(get.edge.attribute(g, "weight"),c(.1,4))
+		    e.width <- map(get.edge.attribute(g, "weight"),
+			    c(.5,3))*p$arrow_width_multiplier
 		}else{
-		    e.width <- 1
+		    e.width <- 1*p$arrow_width_multiplier
 		}
 
 		if(p$cluster_counts) {
 		    v.size <- map(cluster_counts(x), 
-			    c(5,20)) * p$state_size_multiplier
+			    c(8,30)) * p$state_size_multiplier
 		}else{
-		    v.size <- 10
+		    v.size <- 10*p$state_size_multiplier
+		}
+		#v.cex <- v.size/10
+
+		## cluster labels
+		v.labels <- states(x)
+		if(!is.null(p$cluster_labels)) 
+		    v.labels <- p$cluster_labels
+		if(!p$add_labels) 
+		    v.labels <- ""
+
+	
+		## mark_states
+		v.label.color <- "black"
+                V(g)$color <- "white"
+                if(!is.null(p$mark_states)) {
+		    V(g)[p$mark_states]$color <- p$mark_states_color
+                }
+
+		## mark_transitions
+		E(g)$color <- "black"
+		if(!is.null(p$mark_transitions)) {
+		E(g)$color <- "grey"
+		    if(length(p$mark_transitions_color)==1) 
+			p$mark_transitions_color <- rep(
+			    p$mark_transitions_color, 
+			    length(p$mark_transitions))
+		    for(i in 1:length(p$mark_transitions)) {
+			x <- strsplit(p$mark_transitions[i], "->")[[1]]
+			E(g)[V(g)[x[1]] %->% V(g)[x[2]]]$color <- p$mark_transitions_color[i]
+		    }
 		}
 
-		if(is.null(p$cluster_labels)) {
-		    v.labels <- states(x)
-		}else{
-		    v.labels <- ""
-		}
-		
-		plot_fun(g, 
-			#layout=layout.fruchterman.reingold,
-			layout=layout.reingold.tilford(g, root=0)*-1,
+
+
+		pl <- plot_fun(g, 
+			...,
+			
+			## our default values
+			layout=layout.fruchterman.reingold,
+			#layout=layout.reingold.tilford(g, root=0)*-1,
 			vertex.label.family="Helvetica",
 			edge.label.family="Helvetica",
 			#vertex.shape=v.shape,
 			vertex.label=v.labels,
 			vertex.size=v.size,
-			#vertex.label.cex=p$cex,
+			
+			## this does not work for interactive
+			#vertex.label.cex=v.cex,
+			
+			## b/w
 			#vertex.label.color="black",
+			#vertex.color = "white",
+			#edge.color = "black",
+			vertex.label.color=v.label.color,
 			#vertex.color = v.color,
-			#vertex.size=v.size,
+			
+			#edge.color = e.color,
 			edge.width=e.width,
 			#edge.label=e.label,
 			#edge.label.cex=p$cex*.6,
-			#edge.color=e.color,
-			edge.arrow.size=p$arrow_width_multiplier*.5,
-			#edge.arrow.size=p$arrowSize,
-			...
+			
+			
+			## only accepts a single value for now!
+			#edge.arrow.size=(e.width-.5)*.3,
+			edge.arrow.size=.5,
+			asp=0 ## fill whole plot
 			)
 
 
             }else if(method=="graph") {
                 if(!require("Rgraphviz")) stop ("Package Rgraphviz needed!")
 
-                g <- smc_as.graph(x@tracds_d$mm)
+                g <- as.graph(x)
 		
 		nAttrs <- p$nAttrs
                 eAttrs <- p$eAttrs
 
-                if(!is.null(p$mark_states)) {
-                    nAttrs$color <- rep("red", length(p$mark_states))
-                    names(nAttrs$color) <- p$mark_states
-                    nAttrs$fontcolor <- rep("red", length(p$mark_states))
-                    names(nAttrs$fontcolor) <- p$mark_states
+		## vertex colors
+		if(!is.null(p$mark_states)) {
+                    nAttrs$fillcolor <- rep(p$mark_states_color, 
+			    length(p$mark_states))
+                    names(nAttrs$fillcolor) <- p$mark_states
                 }
 
                 ## vertex labels
@@ -165,6 +206,18 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 		    eAttrs$lwd <- lwd
 		}
 
+		## edge color
+		if(!is.null(p$mark_transitions)) {
+		    e.cols <- p$mark_transitions_color
+
+		    if(length(e.cols)==1)
+			e.cols <- rep(e.cols, length(p$mark_transitions))
+		    names(e.cols) <- sapply(strsplit(p$mark_transitions, 
+				    "->"), paste, collapse="~")
+		
+		    eAttrs$color <- e.cols
+		}
+
                 pl <- plot(g, recipEdges="distinct",
                         nodeAttrs = nAttrs, edgeAttrs = eAttrs, ...)
             } else {
@@ -184,7 +237,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 			sub <- ''
 
 		    }else{
-                        d <- dist(emm_centers, method=x@measure)
+                        d <- dist(emm_centers, method=x@distFun)
                         mds <- cmdscale(d, eig=TRUE, add=TRUE)
 			pts <- mds$points
 			dimnames(pts) <- list(states(x), 
@@ -204,10 +257,27 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 
                     ## arrows
                     edges <- transitions(x)
-                    arrows_fromto <- cbind(
+		    arrows_fromto <- cbind(
                             from_x = pts[edges[,1],1], from_y = pts[edges[,1],2],
                             to_x = pts[edges[,2],1],to_y = pts[edges[,2],2]
                             )
+                    
+		    ## edge colors
+		    edge_colors <- "grey"
+		    if(!is.null(p$mark_transitions)) {
+			edge_colors <- rep("grey", nrow(edges))
+			if(length(p$mark_transitions_color)==1)
+			    p$mark_transitions_color <- rep(
+				p$mark_transitions_color,
+				length(p$mark_transitions))
+			
+			sl <- strsplit(p$mark_transitions, "->")
+			for(i in 1:length(sl)) {
+			    edge_colors[apply(edges == sl[[i]], MARGIN=1, 
+				    all)] <- p$mark_transitions_color[i]
+			}
+		    }
+
 
                     ## make arrows shorter so they do not cover the nodes 
                     nodeRad2 <- cbind(
@@ -249,11 +319,18 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                     suppressWarnings(
                             arrows(arrows_fromto[,1], arrows_fromto[,2], 
                                     arrows_fromto[,3],arrows_fromto[,4],
-                                    length=0.15, col="grey", angle=20, lwd=lwd)
+                                    length=0.15, col=edge_colors, angle=20, lwd=lwd)
                             )
 
                     ## overplot points and text
-                    points(pts, cex=cex,...)
+		    if(!is.null(p$mark_states)) {
+			s <- states(x) %in% p$mark_states
+			points(pts[s,,drop=FALSE], cex=cex[s], 
+				col=p$mark_states_color, pch=19)
+			#points(pts[!s,,drop=FALSE], cex=cex[!s])
+		    } 
+		    
+		    points(pts, cex=cex,...)
 
                     if(p$add_labels) {
                         ## plot labels
@@ -266,8 +343,11 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                                         MARGIN=1, max))
                         text(pts, labels=labels, cex=cex)
                     }
+	
+		    pl <- mds
 
                 } else {
+		    ### MDS + data
                     ## project state centers onto dataset
                     
 		    ## remove NA rows (resets)
@@ -283,7 +363,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                     
                     }else{
 
-                        d <- dist(rbind(emm_centers, data), method=x@measure)
+                        d <- dist(rbind(emm_centers, data), method=x@distFun)
                         mds <- cmdscale(d, eig=TRUE, add=TRUE)
                         centers <- mds$points[1:nrow(emm_centers),1:2]
                         allpoints <- mds$points[-c(1:nrow(emm_centers)),1:2]
@@ -324,10 +404,10 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 			if(p$draw_ellipses) {
 			    library(sfsmisc)
 			    for (i in 1:size(x)) {
-				thr <- x@var_thresholds[i]
+				thr <- x@tnn_d$var_thresholds[i]
 				loc <- cluster_centers(x)[i,]
 				lines(ellipsePoints(thr, thr, loc=loc), 
-					col = "black", lty=2)
+					col = "grey", lty=2)
 			    }
 			}
 
@@ -352,20 +432,38 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                     #points(centers, col="red", pch=1:size(x), cex=cex)
                     if(p$add_labels) text(centers, labels=states(x), pos=3)
                 }
+		    pl <- mds
 
             }
-        }
+        
+	return(pl)
+	}
         )
 
 
 
 setMethod("plot", signature(x = "TRACDS", y = "missing"),
         function(x, y, ...){ 
-                
-	    if(!require("Rgraphviz")) stop ("Package Rgraphviz needed!")
+                g <- as.igraph(x)
+		plot(g, ...,
+			layout=layout.fruchterman.reingold,
+			#layout=layout.reingold.tilford(g, root=0)*-1,
+			vertex.label.family="Helvetica",
+			edge.label.family="Helvetica",
+			#vertex.shape=v.shape,
+			vertex.label=states(x),
+			#vertex.size=v.size,
 
-                g <- smc_as.graph(x@tracds_d$mm)
-		plot(g, recipEdges="distinct")	
+			## b/w
+			vertex.label.color="black",
+			vertex.color = "white",
+			edge.color = "black",
+
+			#edge.color = e.color,
+			#edge.width=e.width,
+			#edge.label=e.label,
+			#edge.label.cex=p$cex*.6,
+			)	
 	})
 
 

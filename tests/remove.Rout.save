@@ -1,0 +1,110 @@
+
+R version 2.13.1 (2011-07-08)
+Copyright (C) 2011 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: i686-pc-linux-gnu (32-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library("rEMM")
+Loading required package: proxy
+
+Attaching package: 'proxy'
+
+The following object(s) are masked from 'package:stats':
+
+    as.dist, dist
+
+Loading required package: cluster
+Loading required package: MASS
+Loading required package: clusterGeneration
+Loading required package: igraph
+
+Attaching package: 'rEMM'
+
+The following object(s) are masked from 'package:igraph':
+
+    clusters
+
+> data("16S")
+> 
+> data <- Mollicutes16S+1
+> test <- Mollicutes16S[2:10,]+1
+> 
+> ## create two EMMs for different data
+> emm <- EMM("Kullback", threshold=0.1, data=data)
+> emm
+EMM with 76 states/clusters.
+ Measure: Kullback 
+ Threshold: 0.1 
+ Centroid: FALSE 
+ Lambda: 0 
+> 
+> 
+> ## remove two states
+> nstates(emm)
+[1] 76
+> nclusters(emm)
+[1] 76
+> e <- remove_clusters(emm, c("3","4"))
+> nstates(e)
+[1] 74
+> nclusters(e)
+[1] 74
+> 
+> 
+> ## prune w/ copy and w/o copy
+> e <- prune(emm, 5)
+> nstates(emm)
+[1] 76
+> nstates(e)
+[1] 32
+> 
+> prune(emm, 5, copy=FALSE)
+> nstates(emm)
+[1] 32
+> 
+> ## adding new states again
+> clusters(e)
+ [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10" "11" "12" "13" "14" "15"
+[16] "16" "17" "18" "19" "21" "22" "28" "29" "38" "40" "41" "61" "62" "63" "65"
+[31] "66" "68"
+> build(e, data)
+> clusters(e)
+ [1] "1"   "2"   "3"   "4"   "5"   "6"   "7"   "8"   "9"   "10"  "11"  "12" 
+[13] "13"  "14"  "15"  "16"  "17"  "18"  "19"  "21"  "22"  "28"  "29"  "38" 
+[25] "40"  "41"  "61"  "62"  "63"  "65"  "66"  "68"  "69"  "70"  "71"  "72" 
+[37] "73"  "74"  "75"  "76"  "77"  "78"  "79"  "80"  "81"  "82"  "83"  "84" 
+[49] "85"  "86"  "87"  "88"  "89"  "90"  "91"  "92"  "93"  "94"  "95"  "96" 
+[61] "97"  "98"  "99"  "100" "101" "102" "103" "104" "105" "106" "107" "108"
+[73] "109" "110" "111"
+> 
+> nclusters(e)
+[1] 75
+> nstates(e)
+[1] 75
+> 
+> ## merge clusters
+> nclusters(emm)
+[1] 32
+> e <- merge_clusters(emm, c("2", "3", "4", "5"))
+> nclusters(e)
+[1] 29
+> nstates(e)
+[1] 29
+> clusters(e)
+ [1] "1"  "2"  "6"  "7"  "8"  "9"  "10" "11" "12" "13" "14" "15" "16" "17" "18"
+[16] "19" "21" "22" "28" "29" "38" "40" "41" "61" "62" "63" "65" "66" "68"
+> 

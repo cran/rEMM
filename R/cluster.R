@@ -31,6 +31,7 @@ setMethod("cluster", signature(x = "tNN", newdata = "data.frame"),
 setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 	function(x, newdata, verbose = FALSE) {
 
+	    ## get a reference to the environment
 	    tnn_d <- x@tnn_d
 	    
 	    tnn_d$last <- character(nrow(newdata))
@@ -67,8 +68,10 @@ setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 		    #sel <- find_clusters(x, nd, match_cluster="exact")
 
 		    ## doing it inline is much faster
+		    #inside <- dist(nd, tnn_d$centers, 
+		    #    method=x@measure) - tnn_d$var_thresholds
 		    inside <- dist(nd, tnn_d$centers, 
-		        method=x@measure) - tnn_d$var_thresholds
+		        method=x@distFun) - tnn_d$var_thresholds
 		    min <- which.min(inside)
 		    if(inside[min]<=0) sel <- rownames(tnn_d$centers)[min]
 		    else sel <- NA
@@ -78,8 +81,10 @@ setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 			## New node
 			## get new node name (highest node 
 			## number is last entry in count)
-			sel <- as.character(as.integer(
-					tail(names(tnn_d$counts),1)) + 1)
+			sel <- as.character(
+				max(suppressWarnings(
+						as.integer(names(tnn_d$counts))
+						), na.rm=TRUE) + 1L)
 
 			rownames(nd) <- sel
 			tnn_d$centers <- rbind(tnn_d$centers, nd)

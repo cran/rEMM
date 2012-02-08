@@ -43,6 +43,7 @@ setMethod("copy", signature(x = "tNN"),
 	    r <- new("tNN", 
 		    threshold = x@threshold, 
 		    measure = x@measure, 
+		    distFun = x@distFun, 
 		    centroids = x@centroids,
 		    lambda = x@lambda, 
 		    lambda_factor = x@lambda_factor)
@@ -53,6 +54,8 @@ setMethod("copy", signature(x = "tNN"),
 	    r
 	})
 
+## accessors
+
 setMethod("cluster_counts", signature(x = "tNN"),
 	function(x) x@tnn_d$counts)
 
@@ -62,8 +65,12 @@ setMethod("cluster_centers", signature(x = "tNN"),
 setMethod("nclusters", signature(x = "tNN"),
 	function(x) nrow(x@tnn_d$centers))
 
+## names are stored as the rownames of the centers
 setMethod("clusters", signature(x = "tNN"),
 	function(x) rownames(x@tnn_d$centers))
+
+setMethod("last_clustering", signature(x = "tNN"), 
+	function(x) x@tnn_d$last)
 
 setMethod("rare_clusters", signature(x = "tNN"),
 	function(x, count_threshold)
@@ -125,7 +132,7 @@ setMethod("find_clusters", signature(x = "tNN", newdata = "matrix"),
                 }
                 
                 ## do it in one run 
-                d <- dist(newdata, cluster_centers(x), method=x@measure)
+                d <- dist(newdata, cluster_centers(x), method=x@distFun)
 
                 .which.min_NA <- function(x) {
 			m <- which.min(x)

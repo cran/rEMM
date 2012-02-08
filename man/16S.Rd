@@ -30,7 +30,7 @@ http://www.ncbi.nih.gov/
 data("16S")
 
 emm <- EMM("Kullback", threshold=0.1)
-emm <- build(emm, Mollicutes16S+1)
+build(emm, Mollicutes16S+1)
 
 plot(emm, method = "graph")
 

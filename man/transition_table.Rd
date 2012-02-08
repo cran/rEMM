@@ -10,7 +10,7 @@ Finds the state sequence of a new sequence in an EMM and returns a table
 with the transition probabilities or counts.
 }
 \usage{
-\S4method{transition_table}{EMM,matrix}(x, newdata, method = c("prob", "counts", "log_odds"), match_cluster = "nn", plus_one=TRUE, initial_transition = FALSE)
+\S4method{transition_table}{EMM,matrix}(x, newdata, method = c("prob", "counts", "log_odds"), match_cluster = "nn", plus_one=FALSE, initial_transition = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,9 +21,9 @@ with the transition probabilities or counts.
     the threshold of the cluster (\code{"exact"}) or is nearest neighbor 
     used (\code{"nn"})?}
   \item{plus_one}{ add one to each transition count. This is equal
-      to start with one for each transition count, i.e. initially all
-          transitions are equally likely. It prevents the product
-          of probabilities to be zero if a transition was never observed. }
+      to starting with a uniform prior for the transition count distribution, 
+	i.e. initially all transitions are equally likely. It also prevents the 
+	product of probabilities to be zero if a transition was never observed. }
   \item{initial_transition}{ include the initial transition 
 	 in the table?}
 }

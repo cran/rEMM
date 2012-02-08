@@ -19,11 +19,6 @@
 
 ## build for EMM
 
-### alias update
-#setMethod("update", signature(object = "EMM"),
-#	function(object, newdata, verbose = FALSE) build(object, 
-#		newdata, verbose)
-#)
 
 ## make  newdata a matrix (with a single row)
 setMethod("build", signature(x = "EMM", newdata = "numeric"),
@@ -46,7 +41,7 @@ setMethod("build", signature(x = "EMM", newdata = "matrix"),
 	    cluster(x, newdata, verbose=verbose)
 
 	    ## now update TRACDS (iterate over cluster assignments in last)
-	    update(x, x@tnn_d$last, verbose=verbose)
+	    update(x, last_clustering(x), verbose=verbose)
 	    
 	    invisible(x)
 	}

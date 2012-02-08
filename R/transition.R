@@ -95,7 +95,7 @@ setMethod("initial_transition", signature(x = "TRACDS"),
 
 setMethod("transition_table", signature(x = "EMM", newdata = "numeric"),
 	function(x, newdata, method = c("prob", "counts", "log_odds"), 
-		match_cluster="nn", plus_one = TRUE, 
+		match_cluster="nn", plus_one = FALSE, 
 		initial_transition = FALSE) 
 	transition_table(x, as.matrix(rbind(newdata)), method, 
 		match_cluster, plus_one, initial_transition)
@@ -103,7 +103,7 @@ setMethod("transition_table", signature(x = "EMM", newdata = "numeric"),
 
 setMethod("transition_table", signature(x = "EMM", newdata = "data.frame"),
 	function(x, newdata, method = c("prob", "counts", "log_odds"), 
-		match_cluster="nn", plus_one = TRUE, 
+		match_cluster="nn", plus_one = FALSE, 
 		initial_transition = FALSE) 
 	transition_table(x, as.matrix(newdata), method, 
 		match_cluster, plus_one, initial_transition)
@@ -111,7 +111,7 @@ setMethod("transition_table", signature(x = "EMM", newdata = "data.frame"),
 
 setMethod("transition_table", signature(x = "EMM", newdata = "matrix"),
         function(x, newdata, method = c("prob", "counts", "log_odds"), 
-                match_cluster="nn", plus_one = TRUE, 
+                match_cluster="nn", plus_one = FALSE, 
                 initial_transition = FALSE) {
 
             method <- match.arg(method)

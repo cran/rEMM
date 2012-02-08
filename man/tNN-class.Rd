@@ -15,6 +15,8 @@
 \alias{clusters,tNN-method}
 \alias{nclusters}
 \alias{nclusters,tNN-method}
+\alias{last_clustering}
+\alias{last_clustering,tNN-method}
 \alias{plot,tNN,missing-method}
 
 \title{Class "tNN"}
@@ -61,19 +63,23 @@ Objects can be created with \code{new()} or by the creator function
   \describe{
       \item{copy}{\code{signature(x = "tNN")}: Make a copy of the tNN object. 
 	  Making explicit copies is necessary since 
-	      information is stored in an environment which is not copied for regular 
-	      assignements.}
+	  information is stored in an environment which is not copied 
+	  for regular assignements.}
 %    \item{find_clusters}{\code{signature(x = "tNN", newdata = "numeric")}: ... }
 %    \item{find_clusters}{\code{signature(x = "tNN", newdata = "matrix")}: ... }
     \item{cluster_centers}{\code{signature(x = "tNN")}: returns the cluster
-		centers as a matrix.}
+	centers as a matrix.}
     \item{cluster_counts}{\code{signature(x = "tNN")}: returns the cluster 
-		counts as a vector.}
+	counts as a vector.}
     \item{clusters}{\code{signature(x = "tNN")}: returns the names of the
 	clusters.}
+    \item{last_clustering}{\code{signature(x = "tNN")}: returns the 
+	indices of the clusters the data points in the last cluster 
+	operation where assigned to.}
     \item{nclusters}{\code{signature(x = "tNN")}: returns the number of clusters
 	in the clustering.}
-    \item{plot}{\code{signature(x = "tNN", y = "missing")}: plots the cluster centers using a scatterplot matrix (see \code{pairs}).}
+    \item{plot}{\code{signature(x = "tNN", y = "missing")}: plots the cluster
+	centers using a scatterplot matrix (see \code{pairs}).}
 	 }
 }
 \references{

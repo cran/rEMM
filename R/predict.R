@@ -19,8 +19,10 @@
 
 ## predict next n states using P^n
 setMethod("predict", signature(object = "TRACDS"),
-	function(object, n=1, current_state=NULL, 
-		probabilities = FALSE) {
+	function(object, current_state=NULL, n=1,
+		probabilities = FALSE, 
+		randomized = FALSE,
+		plus_one = FALSE) {
 
 		## probabilistic max with random tie breaking
 		.prob_max <- function(x) {
@@ -29,19 +31,34 @@ setMethod("predict", signature(object = "TRACDS"),
 			m
 		}
 
+		## randomized
+		.randomized <- function(x)
+			sample((1:length(x))[x>0], 1, prob=x[x>0])
+
+
 		
-		if(is.null(current_state)) current_state <- current_state(object)
-		else current_state <- as.character(current_state)
+		if(is.null(current_state)) 
+		    current_state <- current_state(object)
+		else 
+		    current_state <- as.character(current_state)
+
+		current_state_i <- which(states(object) == current_state)
+		
+		## check is state exists!
+		if(!is.element(current_state, states(object))) 
+		    stop("State does not exist")
 
 
-		P <- transition_matrix(object)
+		P <- transition_matrix(object, plus_one=plus_one)
 		## calculate P^n
 		if(n>1) for(i in 1:(n-1)) P <- P%*%P
 
-		prob <- P[current_state,]
+		prob <- P[current_state_i,]
+		
+		## create result
 		if(probabilities) return(prob)
-
-		## we need random-tie breaking
+		if(randomized) return(states(object)[.randomized(prob)])
+		
 		return(states(object)[.prob_max(prob)])
 	}
 )

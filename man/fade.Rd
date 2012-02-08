@@ -1,6 +1,7 @@
 \name{fade}
 \alias{fade}
 \alias{fade,EMM,numeric,numeric-method}
+\alias{fade,EMM,missing,numeric-method}
 \alias{fade,EMM,missing,missing-method}
 \alias{fade,EMM,numeric,missing-method}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -20,9 +21,9 @@ rate, \code{fade} could be called at regular time intervals
 \usage{
 fade(x, t, lambda)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ an object of class \code{"EMM"}. }
+  \item{x}{ an object of class \code{"EMM"}. Note that this
+  function will change \code{x}. }
   \item{t}{ number of time intervals (if missing 1 is used) }
   \item{lambda}{ learning rate. If \code{lambda} is missing, 
 	the learning rate specified for the EMM is used.}
@@ -41,7 +42,7 @@ points assigned to the cluster) is faded. For the EMM the initial count vector
 and all transition counts are faded.
 }
 \value{
-    Returns an object of class \code{EMM}.
+    Returns a reference to the changed object \code{x}.
 }
 %\references{ ~put references to the literature/web site here ~ }
 %\author{ ~~who you are~~ }
@@ -50,12 +51,13 @@ and all transition counts are faded.
 data("EMMTraffic")
 
 ## For the example we use a very high learning rate
+## this calls fade after each new data point
 emm_l <- EMM(measure="eJaccard", threshold=0.2, lambda = 1)
-emm_l <- build(emm_l, EMMTraffic)
+build(emm_l, EMMTraffic)
 
 ## build a regular EMM for comparison
 emm <- EMM(measure="eJaccard", threshold=0.2)
-emm <- build(emm, EMMTraffic)
+build(emm, EMMTraffic)
 
 ## compare the transition matrix
 transition_matrix(emm)
@@ -63,8 +65,8 @@ transition_matrix(emm_l)
 
 ## compare graphs
 op <- par(mfrow = c(1, 2), pty = "m")
-plot(emm, method = "graph", main = "regular EMM")
-plot(emm_l, method = "graph", main = "EMM with high learning rate")
+plot(emm, main = "regular EMM")
+plot(emm_l, main = "EMM with high learning rate")
 par(op)
 
 }

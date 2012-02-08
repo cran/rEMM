@@ -6,29 +6,31 @@
 \alias{remove_transitions,EMM,matrix,missing-method}
 \alias{remove_selftransitions}
 \alias{remove_selftransitions,EMM-method}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Remove States/Clusters or Transitions from an EMM }
 \description{
 Remove states/clusters or transitions from an EMM.
 }
 \usage{
-remove_clusters(x, to_remove)
-remove_transitions(x, from, to)
-remove_selftransitions(x)
+remove_clusters(x, to_remove, copy = TRUE)
+remove_transitions(x, from, to,copy = TRUE)
+remove_selftransitions(x, copy = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ an \code{EMM} object.}
   \item{to_remove}{ Names of states/clusters to remove.}
   \item{from, to}{ Names of states for removing transitions. If \code{to} is 
     missing \code{from} has to contain a matrix with two columns
     (from and to state names).}
+  \item{copy}{ logical; make a copy of x before reclustering? Otherwise the function will change \code{x}!}
+
 }
 \details{
 \code{remove_selftransitions} removes the transitions from each state to itself.
 }
 \value{
-Returns a new EMM with removed states/transitions.
+Returns a EMM with removed states/transitions.
+If \code{copy=FALSE} a reference to the object \code{x} 
+with the states/transistions removed is returned.
 }
 %\references{ ~put references to the literature/web site here ~ }
 %\author{ ~~who you are~~ }
@@ -39,10 +41,10 @@ emm <- EMM(measure="eJaccard", threshold=0.2)
 emm <- build(emm, EMMTraffic)
 
 ## remove state 3
-emm_rs3 <- remove_clusters(copy(emm), "3")
+emm_rs3 <- remove_clusters(emm, "3")
 
 ## remove transition 5->2
-emm_rt52 <- remove_transitions(copy(emm), "5", "2")
+emm_rt52 <- remove_transitions(emm, "5", "2")
 
 ## compare EMMs
 op <- par(mfrow = c(2, 2), pty = "m")

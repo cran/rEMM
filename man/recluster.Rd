@@ -6,9 +6,10 @@
 \alias{recluster_kmeans,EMM-method}
 \alias{recluster_pam}
 \alias{recluster_pam,EMM-method}
+\alias{recluster_tNN}
+\alias{recluster_tNN,EMM-method}
 \alias{recluster_reachability}
 \alias{recluster_reachability,EMM-method}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Reclustering EMM states}
 \description{
 Use various clustering methods to recluster states/clusters
@@ -17,20 +18,25 @@ data points by the reclustering algorithm. States/centers put by reclustering
 into the same cluster are merged to produce a new reclustered EMM.
 }
 \usage{
-\S4method{recluster_hclust}{EMM}(x, k=NULL, h=NULL, method="average", prune=NULL)
-\S4method{recluster_kmeans}{EMM}(x, k, ..., prune=NULL)
-\S4method{recluster_pam}{EMM}(x, k, ..., prune=NULL)
-\S4method{recluster_reachability}{EMM}(x, h, ..., prune=NULL)
+\S4method{recluster_hclust}{EMM}(x, k=NULL, h=NULL, method="average", 
+    ...,prune=NULL, copy=TRUE)
+\S4method{recluster_kmeans}{EMM}(x, k, ..., prune=NULL, copy=TRUE)
+\S4method{recluster_pam}{EMM}(x, k, ..., prune=NULL, copy=TRUE)
+\S4method{recluster_reachability}{EMM}(x, h, ..., prune=NULL, copy=TRUE)
+\S4method{recluster_tNN}{EMM}(x, threshold=NULL, ..., prune=NULL, copy=TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ an \code{"EMM"} object. }
-  \item{prune}{ prune states/clusters with less 
-	than \code{prune} counts before reclustering. }
+  \item{x}{ an \code{"EMM"} object.}
   \item{k}{ number of clusters. }
   \item{h}{ heights where the dendrogram tree should be cut.}
+  \item{threshold}{ threshold used on the dissimilarity to join 
+    clusters for tNN. If no threshold is specified then the threshold
+    stored in the EMM is used. }
   \item{method}{ clustering method used by \code{hclust}. }
   \item{...}{ additional arguments passed on to the clustering algorithm. }
+  \item{prune}{ logical; prune states with less 
+	than \code{prune} counts before reclustering. }
+  \item{copy}{ logical; make a copy of x before reclustering? Otherwise the function will change \code{x}! }
 }
 \details{
 For \code{recluster_kmeans} \code{k} can also be a set of initial cluster 
@@ -45,9 +51,15 @@ from each other. A cluster \eqn{j} is reachable from \eqn{i} if
 reachable by any cluster reachable by \eqn{i}.
 }
 \value{
-An object of class \code{"EMM"}. Clustering information is available
-as the attribute \code{"cluster_info"}. The information provided depends
+An object of class \code{"EMM"} or, if \code{copy=FALSE} a refernece 
+to the changed object passed as \code{x}. 
+
+Clustering information is available
+as the attribute \code{"cluster_info"}.
+The information provided depends
 in the clustering algorithm (see \code{hclust}, \code{kmeans} and \code{pam}).
+
+
 }
 %\references{ ~put references to the literature/web site here ~ }
 %\author{ ~~who you are~~ }
@@ -57,18 +69,18 @@ in the clustering algorithm (see \code{hclust}, \code{kmeans} and \code{pam}).
 \examples{
 data("EMMTraffic")
 emm <- EMM(measure="eJaccard", threshold=0.2)
-emm <- build(emm, EMMTraffic)
+build(emm, EMMTraffic)
 
-## do clustering and plot dendrogram
-emm_hc <- recluster_hclust(copy(emm), h=0.5)
+## do reclustering on a copy of the emm and plot dendrogram
+emm_hc <- recluster_hclust(emm, h=0.5)
 
 attr(emm_hc, "cluster_info")
 
 ## compare original and clustered EMM
 op <- par(mfrow = c(2, 2), pty = "m")   
-plot(emm, main ="original EMM", data = EMMTraffic, 
+plot(emm, method= "MDS", main ="original EMM", data = EMMTraffic, 
 	ylim=c(-0.5, 0.5), xlim=c(-0.5, 0.5))
-plot(emm_hc, main ="clustered EMM", data = EMMTraffic, 
+plot(emm_hc, method="MDS", main ="clustered EMM", data = EMMTraffic, 
 	ylim=c(-0.5, 0.5), xlim=c(-0.5, 0.5))
 plot(attr(emm_hc, "cluster_info")$dendrogram)
 abline(h=0.5, col="red")

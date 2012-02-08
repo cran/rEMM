@@ -13,7 +13,7 @@ cluster(x, newdata, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ a \code{tNN} object. }
+  \item{x}{ a \code{tNN} object. Note that this function canges the original object!}
   \item{newdata}{ a vector (one observation), or a matrix or data.frame
     (each row is an observation). }
  \item{...}{ further arguments like \code{verbose}.}
@@ -31,6 +31,9 @@ cluster(x, newdata, ...)
 	dimensions if the data for dissimilarity computation
 	(see package~\pkg{proxy}).
 
+	The clusters which the data points in the last \code{cluster()}
+	operation where assigned to can be retrieved using the method 
+	\code{last_clustering()}.
 
 }
 \value{
@@ -53,9 +56,14 @@ data(EMMTraffic)
 tnn <- tNN(th=0.2, measure="eJaccard")
 tnn
 
+## cluster some data
 cluster(tnn, EMMTraffic)
 tnn
 
+## what clusters were the data points assigned to?
+last_clustering(tnn)
+
+## plot the clustering as a scatterplot matrix of the cluster centers
 plot(tnn)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

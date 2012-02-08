@@ -3,7 +3,6 @@
 \alias{build,EMM,data.frame-method}
 \alias{build,EMM,matrix-method}
 \alias{build,EMM,numeric-method}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Building an EMM using New Data}
 \description{
 Add new data to an EMM.
@@ -12,9 +11,8 @@ Add new data to an EMM.
 build(x, newdata, ...)
 %\S4method{update}{EMM}(object, newdata, verbose=FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ an \code{EMM} object. }
+  \item{x}{ an \code{EMM} object. Note that the function will change the original EMM!}
   \item{newdata}{ a vector (one observation), or a matrix or data.frame
     (each row is an observation) }
   \item{...}{ further arguments. If \code{newdata} is a matrix
@@ -57,10 +55,10 @@ build(emm, EMMTraffic)
 ## same as: emm <- build(emm, EMMTraffic)
 
 size(emm)
-plot(emm, method = "graph") ## plot needs Rgraphviz installed
+plot(emm)
 
 ## emm2 <- emm does not create a copy (just a reference)
-## a copy is created using copy()
+## a "deep" copy is created using copy()
 emm2<- copy(emm) 
 
 }

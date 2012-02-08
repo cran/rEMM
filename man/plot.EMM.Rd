@@ -1,16 +1,14 @@
 \name{plot}
 \alias{plot,EMM,missing-method}
 \alias{plot}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Visualize EMM Objects }
 \description{
 Visualize EMM objects.}
 \usage{
-\S4method{plot}{EMM,missing}(x, y, method=c("MDS", "igraph", "interactive", 
-    "graph", "cluster_counts", "transition_counts"), data = NULL, 
+\S4method{plot}{EMM,missing}(x, y, method=c("igraph", "interactive", 
+    "graph", "MDS", "cluster_counts", "transition_counts"), data = NULL, 
     parameter=NULL, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ an \code{EMM} object. }
   \item{y}{ unused (just for compatibility with the generic for plot in
@@ -22,19 +20,21 @@ Visualize EMM objects.}
   \item{\dots}{ further arguments passed on to \code{plot.default}. }
 }
 \details{
-\code{"MDS"} projects the cluster centers into 2-dimensional space.
 
 \code{"igraph"} produces a graph representation of the EMM (using \pkg{igraph}).
 
-\code{"interactive"} produces an interactive graph representation of the EMM (using \pkg{igraph}).
+\code{"interactive"} produces an interactive graph representation of the EMM (using \pkg{igraph}). Arguments suitable for \code{plot} in \pkg{igraph} can be
+passed on as \code{...}.
 
 \code{"graph"} produces a graph representation of the EMM (using \pkg{Rgraphviz}).
+
+\code{"MDS"} projects the cluster centers into 2-dimensional space.
 
 \code{"cluster_counts"} produces a barplot for cluster counts.
 
 \code{"transition_counts"} produces a barplot for transition counts.
 
-The following plotting parameters are currently supported:
+The following plotting parameters are currently supported (by some of the visualizations):
 \describe{
 \item{state_counts}{represent state counts by vertex size? 
 	(default: \code{TRUE})}
@@ -47,9 +47,22 @@ The following plotting parameters are currently supported:
 \item{add_labels}{add labels for centers (n/a for \code{type="graph"}).}
 \item{cluster_labels}{cluster labels to use instead of 1,2,....}
 \item{mark_clusters}{Use different markers for points depending on the
-    state they belong to (only available when \code{data} is specified).}
-\item{mark_states}{a vector of state names to be marked.}
+    state they belong to (only available for MDS when 
+    \code{data} is specified).}
+\item{draw_ellipse}{draw an ellipse around state centers to indicate the area in which points are assigned to the cluster (experimental, only available for 
+MDS when \code{data} is specified). }
+\item{mark_states, mark_state_color}{a vector of state names to be marked 
+and the color(s) used for marking (default: red).}
+\item{mark_transitions, mark_transitions_color}{a vector of transition names 
+in the format "3->2" to be marked and the color(s) 
+used for marking (default: red).}
 }
+
+For some plots (e.g., \code{"igraph"}) \code{...} is passed on to the 
+primitive plotting function and can be used to change the plot (colors, etc.).
+For \code{"graph"} the two special parameters "nAttrs" and "eAttrs" 
+for node and edge attributes can be used. 
+
 }
 %\value{
 %}
@@ -58,13 +71,12 @@ The following plotting parameters are currently supported:
 \seealso{\code{\linkS4class{EMM}}}
 \examples{
 data("EMMTraffic")
-emm <- EMM(threshold=0.2, measure="eJaccard")
-emm <- build(emm, EMMTraffic)
+emm <- EMM(threshold=0.2, measure="eJaccard", data=EMMTraffic)
 
 op <- par(mfrow = c(2, 2), pty = "s")
-plot(emm, method="graph", main="Graph (plain)", 
+plot(emm, method="igraph", main="Graph (plain)", 
     parameter=list(cluster_counts=FALSE, arrow_width=FALSE))
-plot(emm, method="graph", main="Graph")
+plot(emm, method="igraph", main="Graph")
 plot(emm, method="MDS", main="MDS projection", 
     xlim=c(-0.5,0.5), ylim= c(-0.5,0.5))
 plot(emm, method="MDS", data = EMMTraffic, 

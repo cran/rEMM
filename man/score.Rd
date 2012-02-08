@@ -10,7 +10,7 @@ Calculates a score of how likely it is that a new sequence was generated
 by the same process as the sequences used to build the EMM.
 }
 \usage{
-\S4method{score}{EMM,matrix}(x, newdata, method = c("prod", "sum", "log_odds"), match_cluster = "nn", plus_one=TRUE, initial_transition = FALSE)
+\S4method{score}{EMM,matrix}(x, newdata, method = c("prod", "sum", "log_odds"), match_cluster = "nn", plus_one=FALSE, initial_transition = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

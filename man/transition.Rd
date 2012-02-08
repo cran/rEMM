@@ -27,8 +27,8 @@ for an EMM (which contains \code{"TRACDS"}).
   to column as returned by \code{transitions}).}
   \item{type}{ What should be calculated? }
   \item{plus_one}{ add one to each transition count. This is equal
-      to start with one for each transition count, i.e. initially all 
-      transitions are equally likely. }
+      to starting with a uniform prior for the transition count distribution, 
+      i.e., initially all transitions are equally likely. }
 }
 \details{
 Log odds are calculated as \eqn{ln(a/(1/n))} where \eqn{a} is the probability

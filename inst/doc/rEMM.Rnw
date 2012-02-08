@@ -884,10 +884,10 @@ cluster_centers(emm)
 @
 
 \func{plot} for \class{EMM} objects provides several visualization methods.
-For example as a graph.
+For example, the default method is as a graph.
 
 <<Traffic_graph, fig=TRUE, include=FALSE>>=
-plot(emm, method="graph")
+plot(emm)
 @
 
 
@@ -928,7 +928,7 @@ Individual transition probabilities or counts can be obtained
 more efficiently via \func{transition}.
 
 <<>>=
-transition(emm, "1", "2", type="probability")
+transition(emm, "2", "1", type="probability")
 @
 
 
@@ -958,9 +958,8 @@ with \func{remove\_clusters}. For example, we remove cluster~3 and
 display the resulting EMM in Fig~\ref{fig:Traffic_man}(b).
 
 <<Traffic_r3, fig=TRUE, include=FALSE>>=
-emm_3removed <- copy(emm)
-remove_clusters(emm_3removed, "3")
-plot(emm_3removed, method = "graph")
+emm_3removed <- remove_clusters(emm, "3")
+plot(emm_3removed)
 @
 
 Note that a copy of \code{emm} is explicitely created 
@@ -972,8 +971,8 @@ from the original EMM for EMMTraffic in Figure~\ref{fig:Traffic_man}(a).
 The resulting graph is shown in Fig~\ref{fig:Traffic_man}(c).
 
 <<Traffic_rt52, fig=TRUE, include=FALSE>>=
-emm_52removed <- remove_transitions(copy(emm), "5", "2")
-plot(emm_52removed, method = "graph")
+emm_52removed <- remove_transitions(emm, "5", "2")
+plot(emm_52removed)
 @
 
 Here a reference of a copy of \code{emm} is passed on to 
@@ -986,8 +985,8 @@ merge vector. The resulting EMM is shown in Fig~\ref{fig:Traffic_man}(d).
 
 
 <<Traffic_m25, fig=TRUE, include=FALSE>>=
-emm_25merged <- merge_clusters(copy(emm), c("2","5"))
-plot(emm_25merged, method = "graph")
+emm_25merged <- merge_clusters(emm, c("2","5"))
+plot(emm_25merged)
 @
 
 \begin{figure}[t]
@@ -1033,7 +1032,7 @@ the observations are weighted $1, \frac{1}{2}, \frac{1}{4},\dots$.
 <<Traffic_l, fig=TRUE, include=FALSE>>=
 emm_fading <- EMM(threshold=0.2, measure="eJaccard", lambda = 1)
 build(emm_fading, EMMTraffic)
-plot(emm_fading, method = "graph")
+plot(emm_fading)
 @
 
 The resulting graph is shown in Figure~\ref{fig:Traffic_learning}(b).
@@ -1047,12 +1046,13 @@ Over time clusters in an EMM can become obsolete and no new observations
 are assigned to them. Similarly transitions might become obsolete over time.
 To simplify the model and improve efficiency, such obsolete clusters and
 transitions can be pruned. For the example here, we prune all clusters 
-and transitions which have a weighted count of less than $0.1$ and
+which have a weighted count of less than $0.1$ and
 show the resulting model in Figure~\ref{fig:Traffic_learning}(c).
 
 <<Traffic_lp, fig=TRUE, include=FALSE>>=
-prune(emm_fading, count_threshold=0.1)
-plot(emm_fading, method = "graph")
+emm_fading_pruned <- prune(emm_fading, count_threshold=0.1,
+    clusters=TRUE, transitions=TRUE)
+plot(emm_fading_pruned)
 @
 
 
@@ -1137,7 +1137,7 @@ We create an EMM by clustering using Euclidean distance and a threshold of
 <<sim_graph, fig=TRUE, include=FALSE>>=
 emm <- EMM(threshold=0.1, measure="euclidean")
 build(emm, EMMsim_train)
-plot(emm, method="graph")
+plot(emm)
 @
 
 The EMM visualized as a graph is shown in Figure~\ref{fig:sim_graph}(a).
@@ -1247,10 +1247,8 @@ fits the EMM created
 for the EMMsim data in the section above. The test data is 
 supplied together with the training set in \pkg{rEMM}.
 <<>>=
-score(emm, EMMsim_test, method="prod", match_cluster="exact", plus_one=FALSE,
-initial_transition = FALSE)
-score(emm, EMMsim_test, method="sum", match_cluster="exact", plus_one=FALSE,
-initial_transition = FALSE)
+score(emm, EMMsim_test, method="prod", match_cluster="exact")
+score(emm, EMMsim_test, method="sum", match_cluster="exact")
 @
 
 %\marginpar{Maybe introduce log\_odds for comparing EMMs of different size?}
@@ -1265,7 +1263,7 @@ The transition table is computed by \func{transition\_table}.
 
 %\marginpar{Problem with plus\_one and age!}
 <<>>=
-transition_table(emm, EMMsim_test, match_cluster="exact", plus_one=FALSE)
+transition_table(emm, EMMsim_test, match_cluster="exact")
 @
 
 The low score is caused by data points that do not fall within the threshold
@@ -1299,8 +1297,8 @@ transition count matrix.
 Using nearest neighbor and uniform initial counts of one produces the
 following scores.
 <<>>=
-score(emm, EMMsim_test, method="prod")
-score(emm, EMMsim_test, method="sum")
+score(emm, EMMsim_test, method="prod", plus_one=TRUE)
+score(emm, EMMsim_test, method="sum", plus_one=TRUE)
 @
 
 Since we only have micro-clusters, the scores are still extremely small. 
@@ -1324,7 +1322,7 @@ Here we plot the dendrogram which is shown in Fig~\ref{fig:sim_hc}.
 <<sim_hc, fig=TRUE, include=FALSE>>=
 ## find best predicting model (clustering)
 k <- 2:10
-emmc <- recluster_hclust(copy(emm), k=k, method ="average") 
+emmc <- recluster_hclust(emm, k=k, method ="average") 
 plot(attr(emmc, "cluster_info")$dendrogram)
 @
 
@@ -1352,10 +1350,10 @@ assigned to the correct state.
 
 
 <<sim_optc_graph, fig=TRUE, include=FALSE, echo=FALSE>>=
-plot(emmc[[which.max(sc)]], method="graph")
+plot(emmc[[which.max(sc)]], method="MDS")
 @
 <<sim_optc_MDS, fig=TRUE, include=FALSE, echo=FALSE>>=
-plot(emmc[[which.max(sc)]], data=EMMsim_train)
+plot(emmc[[which.max(sc)]], method="MDS", data=EMMsim_train)
 @
 
 \begin{figure}[tbp]
@@ -1450,7 +1448,7 @@ a very skewed distribution with clusters~1 and 2 representing most observations
 and clusters~5, 9, 10, 11, 12, 17, 19 and 20 being extremely rare.
 
 <<Derwent_EMM1, fig=TRUE, include=FALSE>>=
-plot(emm)
+plot(emm, method="MDS")
 @
 \begin{figure}
 \begin{minipage}[b]{.49\linewidth}
@@ -1480,14 +1478,12 @@ We define rare here as all
 clusters/transitions that represent less than 0.5\% of the observations. 
 On average this translates into less than two daily observation per year.
 We calculate a count threshold,
-use \func{prune} to remove rare clusters/transitions
-(we use copy to retain the original model in 
-\code{emm}) and then we plot the pruned EMM.
+use \func{prune} to remove rare clusters.
 
 <<Derwent_EMM2, fig=TRUE, include=FALSE>>=
 rare_threshold <- sum(cluster_counts(emm))*0.005
 rare_threshold
-plot(prune(copy(emm), rare_threshold))
+plot(prune(emm, rare_threshold), method="MDS")
 @
 
 The pruned model depicted in Figure~\ref{fig:Derwent_EMM}(b) shows that 5

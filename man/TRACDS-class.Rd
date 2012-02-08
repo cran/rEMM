@@ -3,6 +3,10 @@
 \docType{class}
 \alias{TRACDS-class}
 \alias{TRACDS}
+\alias{as.igraph}
+\alias{as.igraph.TRACDS}
+\alias{as.graph}
+\alias{as.graph.TRACDS}
 \alias{current_state}
 \alias{current_state,TRACDS-method}
 \alias{nstates}
@@ -80,9 +84,10 @@ Data Stream Clustering in R, Journal of Statistical Software, 35(5), 1-31,
 URL \url{http://www.jstatsoft.org/v35/i05/}
 }
 %\author{ ~~who you are~~ }
-%\note{ ~~further notes~~ }
+\note{A TRACDS object can be coerced to igraph or graph objects using 
+\code{as.igraph}() and \code{as.graph()}.}
 \seealso{
-	Look
+	Look at
 	\code{\link{transition}},
 	\code{\link{transition_matrix}} and 
 	\code{\link{initial_transition}} to access the transition information in
