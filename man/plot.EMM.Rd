@@ -59,7 +59,8 @@ used for marking (default: red).}
 }
 
 For some plots (e.g., \code{"igraph"}) \code{...} is passed on to the 
-primitive plotting function and can be used to change the plot (colors, etc.).
+primitive plotting function and can be used to change the plot (colors, etc.)
+See \code{? igraph.plotting}.
 For \code{"graph"} the two special parameters "nAttrs" and "eAttrs" 
 for node and edge attributes can be used. 
 

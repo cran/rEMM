@@ -1,6 +1,6 @@
 Package: rEMM
-Version: 1.0-3
-Date: 2012-02-08
+Version: 1.0-4
+Date: 2012-03-16
 Title: Extensible Markov Model (EMM) for Data Stream Clustering in R
 Author: Michael Hahsler and Margaret H. Dunham
 Maintainer: Michael Hahsler <michael@hahsler.net>
@@ -10,7 +10,8 @@ Description: This package implements TRACDS (Temporal Relationships
         model to data stream clustering by superimposing a dynamically
         adapting Markov Chain. This package implements EMM (TRACDS on
         top of tNN data stream clustering). Development of this package
-        was supported in part by NSF IIS-0948893.
+        was supported in part by NSF IIS-0948893 and R21HG005912 from
+        the National Human Genome Research Institute.
 Classification/ACM: G.4, H.2.8, I.5.1
 URL: http://R-Forge.R-project.org/projects/remm/,
         http://lyle.smu.edu/IDA/TRACDS/
@@ -19,6 +20,6 @@ Depends: R (>= 2.10.0), methods, stats, proxy (>= 0.4-7), cluster,
 Imports: stats
 Suggests: graph, Rgraphviz
 License: GPL-2
-Packaged: 2012-02-08 16:55:19 UTC; hahsler
+Packaged: 2012-03-16 19:53:02 UTC; hahsler
 Repository: CRAN
-Date/Publication: 2012-02-08 18:26:25
+Date/Publication: 2012-03-16 20:43:08

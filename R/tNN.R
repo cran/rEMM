@@ -81,8 +81,7 @@ setMethod("rare_clusters", signature(x = "tNN"),
 ## find clusters
 setMethod("find_clusters", signature(x = "tNN", newdata = "numeric"),
 	function(x, newdata, match_cluster=c("exact", "nn"), dist=FALSE)
-	find_clusters(x, as.matrix(rbind(newdata), match_cluster, dist))
-)	
+	find_clusters(x, as.matrix(rbind(newdata)), match_cluster, dist))
 
 setMethod("find_clusters", signature(x = "tNN", newdata = "data.frame"),
 	function(x, newdata, match_cluster=c("exact", "nn"), dist=FALSE) 

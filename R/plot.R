@@ -436,7 +436,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 
             }
         
-	return(pl)
+	return(invisible(pl))
 	}
         )
 

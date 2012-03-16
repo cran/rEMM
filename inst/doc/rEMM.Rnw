@@ -884,10 +884,13 @@ cluster_centers(emm)
 @
 
 \func{plot} for \class{EMM} objects provides several visualization methods.
-For example, the default method is as a graph.
+For example, the default method is as a graph using \pkg{igraph}. We use 
+here the method "graph" which uses \pkg{Rgraphviz}, a package which
+has to be installed separately from the Bioconduictor 
+project\footnote{\url{http://www.bioconductor.org/}}.
 
 <<Traffic_graph, fig=TRUE, include=FALSE>>=
-plot(emm)
+plot(emm, method="graph")
 @
 
 
@@ -959,7 +962,7 @@ display the resulting EMM in Fig~\ref{fig:Traffic_man}(b).
 
 <<Traffic_r3, fig=TRUE, include=FALSE>>=
 emm_3removed <- remove_clusters(emm, "3")
-plot(emm_3removed)
+plot(emm_3removed, method="graph")
 @
 
 Note that a copy of \code{emm} is explicitely created 
@@ -972,7 +975,7 @@ The resulting graph is shown in Fig~\ref{fig:Traffic_man}(c).
 
 <<Traffic_rt52, fig=TRUE, include=FALSE>>=
 emm_52removed <- remove_transitions(emm, "5", "2")
-plot(emm_52removed)
+plot(emm_52removed, method="graph")
 @
 
 Here a reference of a copy of \code{emm} is passed on to 
@@ -986,7 +989,7 @@ merge vector. The resulting EMM is shown in Fig~\ref{fig:Traffic_man}(d).
 
 <<Traffic_m25, fig=TRUE, include=FALSE>>=
 emm_25merged <- merge_clusters(emm, c("2","5"))
-plot(emm_25merged)
+plot(emm_25merged, method="graph")
 @
 
 \begin{figure}[t]
@@ -1032,7 +1035,7 @@ the observations are weighted $1, \frac{1}{2}, \frac{1}{4},\dots$.
 <<Traffic_l, fig=TRUE, include=FALSE>>=
 emm_fading <- EMM(threshold=0.2, measure="eJaccard", lambda = 1)
 build(emm_fading, EMMTraffic)
-plot(emm_fading)
+plot(emm_fading, method="graph")
 @
 
 The resulting graph is shown in Figure~\ref{fig:Traffic_learning}(b).
@@ -1052,7 +1055,7 @@ show the resulting model in Figure~\ref{fig:Traffic_learning}(c).
 <<Traffic_lp, fig=TRUE, include=FALSE>>=
 emm_fading_pruned <- prune(emm_fading, count_threshold=0.1,
     clusters=TRUE, transitions=TRUE)
-plot(emm_fading_pruned)
+plot(emm_fading_pruned, method="graph")
 @
 
 
@@ -1137,7 +1140,7 @@ We create an EMM by clustering using Euclidean distance and a threshold of
 <<sim_graph, fig=TRUE, include=FALSE>>=
 emm <- EMM(threshold=0.1, measure="euclidean")
 build(emm, EMMsim_train)
-plot(emm)
+plot(emm, method="graph")
 @
 
 The EMM visualized as a graph is shown in Figure~\ref{fig:sim_graph}(a).
@@ -1359,7 +1362,7 @@ plot(emmc[[which.max(sc)]], method="MDS", data=EMMsim_train)
 \begin{figure}[tbp]
 \begin{minipage}[b]{.49\linewidth}
 \centering
-\includegraphics[width=.7\linewidth]{rEMM-sim_optc_graph}\\
+\includegraphics[width=\linewidth]{rEMM-sim_optc_graph}\\
 (a)
 \end{minipage}
 \begin{minipage}[b]{.49\linewidth}
@@ -1699,8 +1702,9 @@ reading data directly from data stream sources.
 The authors would like to thank the anonymous reviewers for their valuable
 comments.
 
-Part of the research presented in this paper was supported by
-the National Science Foundation under Grant No. IIS-0948893.
+Part of the research presented in this paper was supported in part by
+the National Science Foundation under Grant No. IIS-0948893 and
+the National Human Genome Research Institute under Grant No. R21HG005912.
 
 %\bibliographystyle{abbrvnat}
 \bibliography{rEMM}
