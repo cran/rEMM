@@ -46,6 +46,13 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 		warning("Empty EMM. No plot produced!")
 		return(invisible(NULL))
 	    }
+                
+	    ## check if we can use graphviz
+	    if(method=="graph" && !require("Rgraphviz")) {
+		warning("Rgraphviz not available/installed. Reverting to igraph!", 
+			call. = FALSE)
+		method <- "igraph"
+	    }
 
             emm_centers <- cluster_centers(x)
 
@@ -149,7 +156,6 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 
 
             }else if(method=="graph") {
-                if(!require("Rgraphviz")) stop ("Package Rgraphviz needed!")
 
                 g <- as.graph(x)
 		

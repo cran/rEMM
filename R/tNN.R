@@ -74,7 +74,7 @@ setMethod("last_clustering", signature(x = "tNN"),
 
 setMethod("rare_clusters", signature(x = "tNN"),
 	function(x, count_threshold)
-	names(which(x@tnn_d$counts < count_threshold))
+	names(which(x@tnn_d$counts <= count_threshold))
 	)
 
 

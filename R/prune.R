@@ -33,5 +33,6 @@ setMethod("prune", signature(x = "EMM"),
 		    rare_transitions(x, count_threshold=count_threshold),
 		    copy=FALSE)
 
-	    invisible(x)
+	    if(copy) x
+	    else invisible(x)
 	})

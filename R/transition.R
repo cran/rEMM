@@ -145,7 +145,7 @@ setMethod("transition_table", signature(x = "EMM", newdata = "matrix"),
                         res)
             }
 
-            df <- data.frame(from=from, to=to, val=res)
+            df <- data.frame(from=from, to=to, val=res, stringsAsFactors=FALSE)
             names(df)[3] <- method
             return(df)
         })

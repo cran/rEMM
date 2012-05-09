@@ -91,8 +91,13 @@ setMethod("update", signature(object = "TRACDS"),
 
 		## fade TRACDS structure?
 		### FIXME: counts!!!
-		if(x@lambda>0) tracds_d$mm <- smc_fade(tracds_d$mm, 
-			x@lambda_factor) 
+		if(x@lambda>0) {
+		    counts <- counts * x@lambda_factor
+		    tracds_d$mm@initial_counts <- tracds_d$mm@initial_counts *  x@lambda_factor
+		    #    tracds_d$mm <- smc_fade(tracds_d$mm, 
+		    #	x@lambda_factor) 
+		}
+		    
 
 		## state exists?
 		pos_new <- which(states(x) == sel)

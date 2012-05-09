@@ -11,7 +11,8 @@ d-dimensional normal distributions. In the test set outliers are introduced.
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-synthetic_stream(k = 10, d = 2, n_subseq = 100, p_transition = 0.5, p_swap = 0, n_train = 5000, n_test = 1000, p_outlier = 0.01, rangeVar = c(0, 0.005))
+synthetic_stream(k = 10, d = 2, n_subseq = 100, p_transition = 0.5, p_swap = 0,
+n_train = 5000, n_test = 1000, p_outlier = 0.01, rangeVar = c(0, 0.005))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -83,5 +84,5 @@ points(ds$test[ds$outlier_position,], pch=3, lwd=2, col="red")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-%\keyword{ ~kwd1 }
+\keyword{datagen}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

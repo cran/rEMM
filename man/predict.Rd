@@ -55,5 +55,5 @@ predict(emm, n=2, current_state="1", probabilities = TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-%\keyword{ ~kwd1 }
+\keyword{models}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

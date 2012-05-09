@@ -69,5 +69,5 @@ cbind(as.data.frame(tr), counts=transition(emm, tr, type="counts"))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-%\keyword{ ~kwd1 }
+\keyword{models}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

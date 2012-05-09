@@ -54,4 +54,4 @@ emm
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-%\keyword{ ~kwd1 }
+\keyword{models}

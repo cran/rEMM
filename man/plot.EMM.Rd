@@ -20,13 +20,17 @@ Visualize EMM objects.}
   \item{\dots}{ further arguments passed on to \code{plot.default}. }
 }
 \details{
+There are several methods for plotting:
 
-\code{"igraph"} produces a graph representation of the EMM (using \pkg{igraph}).
+\code{"igraph"} produces a graph representation of the EMM using \pkg{igraph}.
+Additional arguments like \code{layout} are passed on to plot for igraph.
 
 \code{"interactive"} produces an interactive graph representation of the EMM (using \pkg{igraph}). Arguments suitable for \code{plot} in \pkg{igraph} can be
 passed on as \code{...}.
 
-\code{"graph"} produces a graph representation of the EMM (using \pkg{Rgraphviz}).
+\code{"graph"} produces a graph representation of the EMM using \pkg{Rgraphviz}.
+If \pkg{Rgraphviz} is not installed/available then the method reverts to
+\code{"igraph"}.
 
 \code{"MDS"} projects the cluster centers into 2-dimensional space.
 
@@ -75,17 +79,21 @@ data("EMMTraffic")
 emm <- EMM(threshold=0.2, measure="eJaccard", data=EMMTraffic)
 
 op <- par(mfrow = c(2, 2), pty = "s")
-plot(emm, method="igraph", main="Graph (plain)", 
+plot(emm, main="Graph (plain)", 
     parameter=list(cluster_counts=FALSE, arrow_width=FALSE))
-plot(emm, method="igraph", main="Graph")
+plot(emm, main="Graph")
 plot(emm, method="MDS", main="MDS projection", 
     xlim=c(-0.5,0.5), ylim= c(-0.5,0.5))
 plot(emm, method="MDS", data = EMMTraffic, 
 	main = "Projection of centers on data")
 par(op)
 
+## Example to create a fixed layout for igraph
+g <- as.igraph(emm)
+l <- layout.star(g)
+plot(emm, layout=l)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-%\keyword{ ~kwd1 }
+\keyword{hplot}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

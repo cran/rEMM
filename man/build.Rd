@@ -61,8 +61,10 @@ plot(emm)
 ## a "deep" copy is created using copy()
 emm2<- copy(emm) 
 
+## convert the emm into a graph
+as.igraph(emm)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-%\keyword{ ~kwd1 }
+\keyword{models}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

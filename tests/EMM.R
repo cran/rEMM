@@ -15,7 +15,7 @@ nstates(emm)
 states(emm)
 current_state(emm)
 transitions(emm)
-rare_transitions(emm, 2)
+rare_transitions(emm, 1)
 
 ## TRACDS
 cluster_counts(emm)
@@ -23,7 +23,7 @@ cluster_centers(emm)
 nclusters(emm)
 clusters(emm)
 last_clustering(emm)
-rare_clusters(emm,2)
+rare_clusters(emm,1)
 
 find_clusters(emm, test)
 
