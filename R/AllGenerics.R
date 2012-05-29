@@ -25,6 +25,7 @@
 ## size is also used in package arules
 setGeneric("update", function(object, ...) standardGeneric("update"))
 setGeneric("copy", function(x) standardGeneric("copy"))
+setGeneric("compact", function(x) standardGeneric("compact"))
 setGeneric("size", function(x, ...) standardGeneric("size"))
 setGeneric("nclusters", function(x, ...) standardGeneric("nclusters"))
 setGeneric("nstates", function(x, ...) standardGeneric("nstates"))
@@ -50,7 +51,7 @@ setGeneric("remove_selftransitions", function(x, copy=TRUE)
 setGeneric("cluster", function(x, newdata, ...) standardGeneric("cluster"))
 setGeneric("clusters", function(x) standardGeneric("clusters"))
 setGeneric("cluster_counts", function(x) standardGeneric("cluster_counts"))
-setGeneric("last_clustering", function(x) standardGeneric("last_clustering"))
+setGeneric("last_clustering", function(x,...) standardGeneric("last_clustering"))
 setGeneric("cluster_centers", function(x) standardGeneric("cluster_centers"))
 setGeneric("find_clusters", function(x, newdata, ...) 
 	standardGeneric("find_clusters"))
@@ -69,6 +70,7 @@ setGeneric("merge_clusters", function(x, to_merge, ...)
 setGeneric("remove_clusters", function(x, to_remove, copy=TRUE) 
 	standardGeneric("remove_clusters"))
 
+setGeneric("object.size", function(x) standardGeneric("object.size"))
 
 ## FIXME: make it one recluster method
 setGeneric("recluster_hclust", function(x, ...) 

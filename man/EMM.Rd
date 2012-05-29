@@ -1,5 +1,6 @@
 \name{EMM}
 \alias{EMM}
+\alias{object.size,EMM-method}
 \title{
 Creator for Class "EMM"
 }

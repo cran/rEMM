@@ -1,35 +1,39 @@
 \name{TRAC}
 \alias{TRAC}
-\title{TRAC: Creating an EMM from a regulat clustering}
+\title{TRAC: Creating an EMM from a Regular Clustering}
 \description{
 Create an EMM from a regular clustering (k-means or PAM) of
 sequence data.
 }
 \usage{
-TRAC(x)
+TRAC(x, data = NULL, measure = "euclidean")
 }
 \arguments{
-  \item{x}{ a clustering object (result of kmeans or pam). }
+  \item{x}{ a clustering object (result of kmeans or pam) or a 
+    vector with (integer) cluster assignments. }
+  \item{data}{ the data used for clustering (only used if \code{x}
+    is a cluster assignment vector).}
+  \item{measure}{ used distance measure.} 
 }
-%\details{
-%}
+\details{
+    The order is inferred from the order in the original data set.
+}
 \value{
     A \code{EMM} object representing the clustering of sequence data.
 }
-%\references{ ~put references to the literature/web site here ~ }
-%\author{ ~~who you are~~ }
 \examples{
 data("EMMsim")
 
-## cluster sequence data
-cl <- kmeans(EMMsim_train, 4)
-
-## create temporal/sequence model
+## using kmeans
+cl <- kmeans(EMMsim_train, 10)
 emm <- TRAC(cl)
+emm
+plot(emm, method = "MDS")
 
-plot(emm)
+## using a cluster assignment vector (taken from the k-means clustering above)
+x <- cl$cluster
+emm <- TRAC(x, data = EMMsim_train)
+emm
+plot(emm, method = "MDS")
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{models}
-%\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

@@ -50,7 +50,6 @@ setMethod("copy", signature(x = "EMM"),
 	})
 
 
-
 ## show
 setMethod("show", signature(object = "EMM"),
         function(object) {

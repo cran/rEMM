@@ -18,6 +18,7 @@
 \alias{plot,TRACDS,missing-method}
 \alias{transitions}
 \alias{transitions,TRACDS-method}
+\alias{object.size,TRACDS-method}
 %\alias{initial_transition,TRACDS-method}
 %\alias{transition_matrix,TRACDS-method}
 %\alias{transition,TRACDS,data.frame,missing-method}

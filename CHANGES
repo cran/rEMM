@@ -1,6 +1,18 @@
 CHANGES
 
-Pending changes for rEMM 1.0-3
+rEMM 1.0-7
+
+rEMM 1.0-6 (12-05-19)
+* Improved performance for prune()
+* Added object.size() which also reports memory used by the model 
+* Switched to igraph0
+
+rEMM 1.0-5 (12-04-10)
+* Added several methods for score.
+* Threshold for pruning and finding rare clusters/transitions is now less or equal instead of just less
+
+
+rEMM 1.0-3 (2012-02-07)
 * Finished the transition to reference objects implemented using environments.
 * transition_table() now has for consitency also the default of 
     add_one set to FALSE.

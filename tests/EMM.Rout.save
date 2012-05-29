@@ -30,11 +30,11 @@ The following object(s) are masked from ‘package:stats’:
 Loading required package: cluster
 Loading required package: MASS
 Loading required package: clusterGeneration
-Loading required package: igraph
+Loading required package: igraph0
 
 Attaching package: ‘rEMM’
 
-The following object(s) are masked from ‘package:igraph’:
+The following object(s) are masked from ‘package:igraph0’:
 
     clusters
 

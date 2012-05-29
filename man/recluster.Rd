@@ -61,29 +61,26 @@ in the clustering algorithm (see \code{hclust}, \code{kmeans} and \code{pam}).
 
 
 }
-%\references{ ~put references to the literature/web site here ~ }
-%\author{ ~~who you are~~ }
 \seealso{\code{\link{merge_clusters}}, \code{\link{prune}}, 
 	\code{\link[stats]{kmeans}}, \code{\link[stats]{hclust}},
 	\code{\link[cluster]{pam}}}
 \examples{
-data("EMMTraffic")
-emm <- EMM(measure="eJaccard", threshold=0.2)
-build(emm, EMMTraffic)
+data(EMMsim)
+emm <- EMM(threshold = .2)
+build(emm, EMMsim_train)
 
 ## do reclustering on a copy of the emm and plot dendrogram
-emm_hc <- recluster_hclust(emm, h=0.5)
+emm_hc <- recluster_hclust(emm, h = 0.6)
 
 attr(emm_hc, "cluster_info")
 
 ## compare original and clustered EMM
 op <- par(mfrow = c(2, 2), pty = "m")   
-plot(emm, method= "MDS", main ="original EMM", data = EMMTraffic, 
-	ylim=c(-0.5, 0.5), xlim=c(-0.5, 0.5))
-plot(emm_hc, method="MDS", main ="clustered EMM", data = EMMTraffic, 
-	ylim=c(-0.5, 0.5), xlim=c(-0.5, 0.5))
+plot(emm, method= "MDS", main ="original EMM", data = EMMsim_train) 
 plot(attr(emm_hc, "cluster_info")$dendrogram)
-abline(h=0.5, col="red")
+abline(h=0.6, col="red")
+plot(emm_hc, method="MDS", main ="clustered EMM", data = EMMsim_train) 
+plot(emm_hc, method="MDS", main ="clustered EMM") 
 par(op)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

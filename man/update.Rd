@@ -1,8 +1,10 @@
 \name{update}
-\alias{update,TRACDS-method}
 \alias{update}
+\alias{update,TRACDS-method}
 \alias{reset}
 \alias{reset,TRACDS-method}
+\alias{compact}
+\alias{compact,TRACDS-method}
 \title{Update a TRACDS temporal structure with new state assignements}
 \description{
 Add a sequence of new state assignments to a TRACDS object.
@@ -10,6 +12,7 @@ Add a sequence of new state assignments to a TRACDS object.
 \usage{
 \S4method{update}{TRACDS}(object, newdata, verbose=FALSE, ...)
 reset(x)
+compact(x)
 }
 \arguments{
   \item{x,object}{ a \code{TRACDS} object. Note that this function changes the original object! }
@@ -24,9 +27,12 @@ reset(x)
     adds a new state assignemnt sequenc to the TRACDS object by increasing the
     transition counts and, if needed, creating new states.
 
-    \code{reset} resets the current state to \code{NA} for reading in a
+    \code{reset()} resets the current state to \code{NA} for reading in a
     new sequence. An \code{NA} in \code{newdata}
     also resets the current state.
+
+    \code{compact()} reduces the size (memory) used to store the temporal
+    transition matrix.
 }
 \value{
 A reference to the changed TRACDS object with the data added. 

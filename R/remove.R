@@ -50,16 +50,17 @@ setMethod("remove_transitions", signature(x = "EMM",
 		from ="character", to="character"),
 	function(x, from, to, copy=TRUE) {
 
-		if(copy) x <- copy(x)
+	    if(copy) x <- copy(x)
 
-		if(length(from) != length(to)) 
-		    stop("length of from and to do not match!")
-		if(length(from)==0) return(x)
+	    if(length(from) != length(to)) 
+		stop("length of from and to do not match!")
+	    if(length(from)==0) return(x)
 
-		x@tracds_d$mm <- smc_removeTransition(x@tracds_d$mm,from, to)
-		invisible(x)
+	    x@tracds_d$mm <- smc_removeTransition(x@tracds_d$mm,from, to)
+	    
+	    if(copy) x else invisible(x)
 	}
-)
+	)
 
 setMethod("remove_selftransitions", signature(x = "EMM"),
 	function(x, copy=TRUE) {
@@ -67,6 +68,7 @@ setMethod("remove_selftransitions", signature(x = "EMM"),
 	    if(copy) x <- copy(x)
 
 	    x@tracds_d$mm <- smc_removeSelfTransition(x@tracds_d$mm)	
-	    invisible(x)
+	    
+	    if(copy) x else invisible(x)
 	}
-)
+	)

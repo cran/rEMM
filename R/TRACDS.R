@@ -56,12 +56,10 @@ setMethod("transitions", signature(x = "TRACDS"),
 		    MARGIN=2, FUN=function(x) colnames(m)[x])
 	    colnames(edges) <- c("from", "to")
 	    edges
-	}
-)
+	})
 
 setMethod("rare_transitions", signature(x = "TRACDS"),
 	function(x, count_threshold)
 	transitions(x)[transition(x, transitions(x),
 		type="counts") <= count_threshold,]
 	)
-

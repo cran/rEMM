@@ -20,7 +20,7 @@
 ## does newdata come from the EMM?
 
 setMethod("score", signature(x = "EMM", newdata = "numeric"),
-	function(x, newdata, method, 
+	function(x, newdata, method=NULL, 
 		match_cluster="nn", plus_one = FALSE, 
 		initial_transition = FALSE) 
 	score(x, as.matrix(rbind(newdata)), method, 
@@ -28,7 +28,7 @@ setMethod("score", signature(x = "EMM", newdata = "numeric"),
 )
 
 setMethod("score", signature(x = "EMM", newdata = "data.frame"),
-	function(x, newdata, method, 
+	function(x, newdata, method=NULL, 
 		match_cluster="nn", plus_one = FALSE, 
 		initial_transition = FALSE) 
 	score(x, as.matrix(newdata), method, 
@@ -44,7 +44,7 @@ setMethod("score", signature(x = "EMM", newdata = "matrix"),
 			"weighted_log_sum",
 			"weighted_sum",
 			"log_odds", 
-			"missing_transitions"
+			"supported_transitions"
 			), 
 		match_cluster = "nn", plus_one = FALSE, 
 		initial_transition = FALSE) {
@@ -73,11 +73,11 @@ setMethod("score", signature(x = "EMM", newdata = "matrix"),
 		return(sum(log_odds))
 	    }
 
-	    if(method == "missing_transitions") {
-		if(plus_one) warning("plus_one has no effect on missing transitions!")
+	    if(method == "supported_transitions") {
+		if(plus_one) warning("plus_one has no effect on supported transitions!")
 		tTable <- transition_table(x, newdata, method="count",
 			match_cluster, plus_one=FALSE, initial_transition)
-		return(sum(tTable[,3]==0))
+		return((nrow(tTable)-sum(tTable[,3]==0))/nrow(tTable))
 	    }
 
 	    if(method == "weighted_product" 
@@ -114,3 +114,46 @@ setMethod("score", signature(x = "EMM", newdata = "matrix"),
 	    }
 
 	})
+
+
+### score two models
+setMethod("score", signature(x = "EMM", newdata = "EMM"),
+	function(x, newdata, method=c("product", "log_sum", "sum",
+			"supported_transitions"), 
+		match_cluster="nn", plus_one = FALSE, 
+		initial_transition = FALSE) {
+	
+	    method <- match.arg(method)
+
+
+	    ### find transitions in newdata
+	    trans <- transitions(newdata)	
+
+	    ### match states in newdata to x
+	    cl <- find_clusters(x,cluster_centers(newdata), 
+		    match_cluster=match_cluster)
+	    
+	    ### translate to states in x
+	    cl <- cbind(cl[as.integer(trans[,1])], cl[as.integer(trans[,2])])
+
+	    ### FIXME: add weighted versions. What weights should we use?
+
+	    if(method=="product") return(
+		    prod(transition(x, cl, type="probability", 
+				    plus_one=plus_one)^(1/nrow(cl))))
+	    
+	    if(method=="sum") return(
+		    sum(transition(x, cl, type="probability", 
+				    plus_one=plus_one)*(1/nrow(cl))))
+
+	    if(method=="log_sum") return(
+		    sum(log(transition(x, cl, type="probability", 
+					    plus_one=plus_one))*(1/nrow(cl))))
+
+	    if(method=="supported_transitions") return(
+		    (nrow(cl)-sum(transition(x, cl, type="count", 
+					    plus_one=FALSE)==0))/nrow(cl))
+
+	}
+)
+

@@ -59,6 +59,17 @@ smc_expand <- function(x) {
     new_x
 }
 
+smc_compact <- function(x) {
+    keep <- !is.na(names(x@initial_counts))
+    x@counts <- x@counts[keep, keep, drop=FALSE]
+    x@initial_counts <- x@initial_counts[keep]
+    x@top <- 0L
+    x@unused <- rep(NA_integer_, length(x@initial_counts))
+
+    x
+}
+
+
 smc_addState <- function(x, state) {
 
     state <- unique(state)
@@ -97,11 +108,10 @@ smc_removeState <- function(x, state) {
     }
 
     ## clean matrix
-    for(i in 1:length(pos)) {
-	x@counts[pos[i],] <- 0
-	x@counts[,pos[i]] <- 0
-    }
-    
+    x@counts[pos,]<-0
+    x@counts[,pos]<-0
+
+
     old_top <- x@top
     
     x@initial_counts[pos] <-0
@@ -134,13 +144,15 @@ smc_removeSelfTransition <- function(x) {
     x
 }
 
-smc_removeTransition <- function(x, from, to, w = 1) {
+smc_removeTransition <- function(x, from, to) {
     pos_f <- smc_names2index(x, from)
     pos_t <- smc_names2index(x, to)
 
-    for(i in 1:length(pos_f)) 
-	x@counts[pos_f[i], pos_t[i]] <- 0
+    #for(i in 1:length(pos_f)) 
+    #	x@counts[pos_f[i], pos_t[i]] <- 0
     
+    x@counts <- .Call("clear_matrix", x@counts, pos_f, pos_t)
+
     x
 }
 
@@ -160,18 +172,15 @@ smc_mergeStates <- function(x, state) {
     }
     
     to <- pos[1]
-    from <- pos[-1]
-
-    ## update first state
-    for(i in 1:length(from)) {
-	x@counts[to,] <- x@counts[to,] + x@counts[from[i],]
-	x@counts[,to] <- x@counts[,to] + x@counts[,from[i]]
-    }
-
+    
     ## initial counts
-    x@initial_counts[from] <- sum(x@initial_counts[pos])
+    x@initial_counts[to] <- sum(x@initial_counts[pos])
 
-    ## remove all other states
+    ## update matrix
+    x@counts[to,] <- colSums(x@counts[pos,])
+    x@counts[,to] <- rowSums(x@counts[,pos])
+
+    ## remove additional states
     x <- smc_removeState(x, state[-1])
     x
 }

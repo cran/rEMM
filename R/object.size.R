@@ -17,23 +17,41 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-setMethod("prune", signature(x = "EMM"),
-	function(x, count_threshold, clusters = TRUE, 
-		transitions = FALSE, copy = TRUE, compact = TRUE){
+### This is needed to calculate the sice of the elements in the environments
+### correctly
 
-	    if(copy) x <- copy(x)
+setMethod("object.size", signature(x = "TRACDS"),
+	function(x) {
+	    s <- sum(sapply(ls(x@tracds_d),  function(y)
+			    object.size(get(y, envir = x@tracds_d))))
 
-	    if(clusters) 
-		x <- remove_clusters(x, 
-		    rare_clusters(x, count_threshold=count_threshold),
-		    copy=FALSE)
-
-	    if(transitions) 
-		x <- remove_transitions(x, 
-		    rare_transitions(x, count_threshold=count_threshold),
-		    copy=FALSE)
-
-	    if(compact) x <- compact(x)
-
-	    if(copy) x else invisible(x)
+	    class(s) <- "object_size"
+	    s
 	})
+
+
+setMethod("object.size", signature(x = "tNN"),
+	function(x) {
+	    s <- sum(sapply(ls(x@tnn_d),  function(y)
+			    object.size(get(y, envir = x@tnn_d))))
+
+	    class(s) <- "object_size"
+	    s
+	})
+
+setMethod("object.size", signature(x = "EMM"),
+	function(x) {
+	    s <- sum(sapply(ls(x@tracds_d),  function(y)
+			    object.size(get(y, envir = x@tracds_d))))
+	    
+	    s <- s + sum(sapply(ls(x@tnn_d),  function(y)
+			    object.size(get(y, envir = x@tnn_d))))
+
+	    s <- s+object.size(unclass(x))
+
+	    class(s) <- "object_size"
+	    s
+	})
+
+
+

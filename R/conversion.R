@@ -20,13 +20,12 @@
 ## create a tNN clustering from k-means, etc.
 ## This is TRAC (without DS)
 
-TRAC <- function(x) {
+TRAC <- function(x, data = NULL, measure = "euclidean") {
     if(is(x, "kmeans")) {
 	counts <- x$size
 	k <- length(counts)
 	centers <- x$centers
-	### FIXME: get radius of clusters from clustering
-	thresholds <- rep(1, k)
+	thresholds <- sqrt(x$withinss/x$size)*3
 	order <- x$cluster
     
     ### PAM
@@ -36,9 +35,22 @@ TRAC <- function(x) {
 	centers <- x$medoids
 	thresholds <- x$clusinfo[,"max_diss"]
 	order <- x$cluster
-    }else stop("Clustering type not supported (only support for kmeans and pam!)")
+    
+    ### x must be a cluster index vector
+    }else if(is.numeric(x) && !is.null(data)) {
+	order <- as.integer(x)
+	k <- max(order)
+	counts <- tabulate(order, k)
+	centers <- t(sapply(1:k, 
+			FUN=function(i) colMeans(data[order==i,,drop=FALSE])))
+	thresholds <- sapply(1:k,
+		        FUN=function(i) max(dist(centers[i,,drop=FALSE], 
+				data[order==i,,drop=FALSE], method = measure)))
 
-    emm <- new("EMM")
+    }else
+	stop("Needs to be a kmeans or partition (PAM) object or a cluster vector and the used data.")
+
+    emm <- new("EMM", measure=measure, threshold = max(thresholds))
 
     ## create tNN
     states <- as.character(1:k)

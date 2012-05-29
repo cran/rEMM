@@ -17,23 +17,11 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-setMethod("prune", signature(x = "EMM"),
-	function(x, count_threshold, clusters = TRUE, 
-		transitions = FALSE, copy = TRUE, compact = TRUE){
+setMethod("compact", signature(x = "TRACDS"),
+	function(x) {
 
-	    if(copy) x <- copy(x)
+	    x@tracds_d$mm <- smc_compact(x@tracds_d$mm)
+	    invisible(x)
 
-	    if(clusters) 
-		x <- remove_clusters(x, 
-		    rare_clusters(x, count_threshold=count_threshold),
-		    copy=FALSE)
-
-	    if(transitions) 
-		x <- remove_transitions(x, 
-		    rare_transitions(x, count_threshold=count_threshold),
-		    copy=FALSE)
-
-	    if(compact) x <- compact(x)
-
-	    if(copy) x else invisible(x)
 	})
+

@@ -127,5 +127,5 @@ setMethod("update", signature(object = "TRACDS"),
 	    if(verbose) cat("Update done.", "\n")
 
 	    invisible(x)
-	}
-	)
+	})
+

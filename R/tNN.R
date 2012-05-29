@@ -70,7 +70,11 @@ setMethod("clusters", signature(x = "tNN"),
 	function(x) rownames(x@tnn_d$centers))
 
 setMethod("last_clustering", signature(x = "tNN"), 
-	function(x) x@tnn_d$last)
+	function(x, remove = FALSE) {
+	    lc <- x@tnn_d$last
+	    if(remove) x@tnn_d$last <- as.character(NA) 
+	    lc
+	})
 
 setMethod("rare_clusters", signature(x = "tNN"),
 	function(x, count_threshold)

@@ -13,7 +13,7 @@ which have a count of equal or smaller than a given threshold.
 }
 \usage{
 \S4method{prune}{EMM}(x, count_threshold, clusters = TRUE, transitions = FALSE,
-    copy = TRUE)
+    copy = TRUE, compact = TRUE)
 
 rare_clusters(x, count_threshold, ...)
 rare_transitions(x, count_threshold, ...)
@@ -25,6 +25,7 @@ rare_transitions(x, count_threshold, ...)
   \item{clusters}{ logical; prune clusters?}
   \item{transitions}{ logical; prune transitions?}
   \item{copy}{ logical; make a copy of x before reclustering? Otherwise the function will change \code{x}!}
+  \item{compact}{ logical; tries make the data structure used for the temporal model more compact after pruning. }
   \item{...}{ further arguments (currently not used).}
 }
 %\details{
@@ -41,7 +42,8 @@ rare_transitions(x, count_threshold, ...)
 %\references{ ~put references to the literature/web site here ~ }
 %\author{ ~~who you are~~ }
 \seealso{\code{\link{remove_transitions}},
-\code{\link{remove_clusters}}
+\code{\link{remove_clusters}},
+\code{\link{compact}}
 }
 \examples{
 data("EMMTraffic")
