@@ -94,7 +94,13 @@ setMethod("find_clusters", signature(x = "tNN", newdata = "data.frame"),
 setMethod("find_clusters", signature(x = "tNN", newdata = "matrix"),
 	function(x, newdata, match_cluster=c("exact", "nn"), dist=FALSE) {
 
-		match_cluster <- match.arg(match_cluster)
+		## see if match_cluster is a threshold multiplier 
+		if(is.numeric(match_cluster)) {
+		    multiplier <- match_cluster
+		    match_cluster <- "exact"
+		}else multiplier <-1
+	    
+	        match_cluster <- match.arg(match_cluster)
 
 		## cross-dissimilarities
                 ## matrix can become too large for main memory
@@ -157,7 +163,8 @@ setMethod("find_clusters", signature(x = "tNN", newdata = "matrix"),
 		## NA ... no match
 
 		## subtract threshold and take the smallest value if <=0
-		d2 <- d - matrix(x@tnn_d$var_thresholds,
+		## multiplier is applied to threshold
+		d2 <- d - matrix(x@tnn_d$var_thresholds*multiplier,
 			ncol=length(x@tnn_d$var_thresholds), 
 			nrow=nrow(d), byrow=TRUE)
 

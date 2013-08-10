@@ -10,7 +10,8 @@ Finds the state sequence of a new sequence in an EMM and returns a table
 with the transition probabilities or counts.
 }
 \usage{
-\S4method{transition_table}{EMM,matrix}(x, newdata, method = c("prob", "counts", "log_odds"), match_cluster = "nn", plus_one=FALSE, initial_transition = FALSE)
+\S4method{transition_table}{EMM,matrix}(x, newdata, method = c("prob", "counts",
+"log_odds"), match_cluster = "nn", plus_one=FALSE, initial_transition = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

@@ -15,7 +15,9 @@ Finds the cluster and thus the EMM states for observations.
 \arguments{
   \item{x}{ an \code{EMM} object.}
   \item{newdata}{ a matrix/data.frame with observations.}
-  \item{match_cluster}{ find exact or nearest neighbor cluster/state.}
+  \item{match_cluster}{ find exact or nearest neighbor (nn) cluster/state. 
+    If a number is supplied then the threshold times this number is
+    used for exact matching.} 
   \item{dist}{ also report the distance to the chosen cluster/state (as a
   data.frame).}
 }
@@ -35,6 +37,19 @@ emm <- EMM(measure="eJaccard", threshold=0.2)
 emm <- build(emm, EMMTraffic)
 
 find_clusters(emm, EMMTraffic)
+find_clusters(emm, EMMTraffic, dist=TRUE)
+
+## add noise to the data 
+set.seed(1234)
+newdata <- sapply(EMMTraffic, jitter, amount=15)
+## default is exact match
+find_clusters(emm, newdata, dist=TRUE)
+## match with nearest neighbor
+find_clusters(emm, newdata, match_cluster="nn", dist=TRUE)
+## exact match only if within .5 times threshold
+find_clusters(emm, newdata, match_cluster=.5, dist=TRUE)
+## exact match only if within 2 times threshold
+find_clusters(emm, newdata, match_cluster=2, dist=TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

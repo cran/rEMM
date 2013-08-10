@@ -10,6 +10,8 @@
 \alias{recluster_tNN,EMM-method}
 \alias{recluster_reachability}
 \alias{recluster_reachability,EMM-method}
+\alias{recluster_transitions}
+\alias{recluster_transitions,EMM-method}
 \title{Reclustering EMM states}
 \description{
 Use various clustering methods to recluster states/clusters
@@ -24,6 +26,7 @@ into the same cluster are merged to produce a new reclustered EMM.
 \S4method{recluster_pam}{EMM}(x, k, ..., prune=NULL, copy=TRUE)
 \S4method{recluster_reachability}{EMM}(x, h, ..., prune=NULL, copy=TRUE)
 \S4method{recluster_tNN}{EMM}(x, threshold=NULL, ..., prune=NULL, copy=TRUE)
+\S4method{recluster_transitions}{EMM}(x, threshold=NULL, ..., prune=NULL, copy=TRUE)
 }
 \arguments{
   \item{x}{ an \code{"EMM"} object.}
@@ -49,6 +52,16 @@ For \code{recluster_reachability} reclusters all clusters which are reachable
 from each other. A cluster \eqn{j} is reachable from \eqn{i} if
 \eqn{j}'s center is closer to \eqn{i}'s center than \code{h} or if \eqn{j} is
 reachable by any cluster reachable by \eqn{i}.
+
+For \code{recluster_tNN} reclusters such that two clusters with
+centers less than the threshold apart will be reclustered into a
+single cluster. This is useful, for example, after combining two models.
+
+For \code{recluster_transitions} does not recluster clusters!
+It find groups of clusters which are overlapping (centers are
+less than 2 thresholds apart) and then redistributes the transition weights
+such that all members of one group are connected to all the members of the
+other group using the same weight.
 }
 \value{
 An object of class \code{"EMM"} or, if \code{copy=FALSE} a refernece 

@@ -59,6 +59,7 @@ setMethod("initialize", "tNN", function(.Object,
 	    assign("last", as.character(NA), envir = .Object@tnn_d)
 	    
 	    ### get dist function from proxy registry
+	    ### Note: this makes calling dist in proxy faster (no more lockup) 
 	    if(!is.null(distFun)) .Object@distFun <- distFun
 	    else .Object@distFun <- pr_DB[[measure]]
 	    

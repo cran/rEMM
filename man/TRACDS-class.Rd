@@ -11,6 +11,8 @@
 \alias{current_state,TRACDS-method}
 \alias{nstates}
 \alias{nstates,TRACDS-method}
+\alias{ntransitions}
+\alias{ntransitions,TRACDS-method}
 \alias{copy,TRACDS-method}
 \alias{states}
 \alias{states,TRACDS-method}
@@ -65,6 +67,7 @@ classes can be used as parameters.
 %    \item{initial_transition}{\code{signature(x = "TRACDS")}: ...}
 %    \item{predict}{\code{signature(object = "TRACDS")}: ... }
     \item{nstates}{\code{signature(x = "TRACDS")}: returns the number of states.}
+    \item{ntransitions}{\code{signature(x = "TRACDS")}: returns the number of transitions with a count larger than 0 stored in the object.}
     \item{plot}{\code{signature(x = "TRACDS", y = "missing")}: Plots the
     object as a directed graph.}
     \item{states}{\code{signature(x = "TRACDS")}: returns the names of the

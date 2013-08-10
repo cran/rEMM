@@ -23,12 +23,12 @@ setMethod("prune", signature(x = "EMM"),
 
 	    if(copy) x <- copy(x)
 
-	    if(clusters) 
+	    if(clusters && nclusters(x)>0) 
 		x <- remove_clusters(x, 
 		    rare_clusters(x, count_threshold=count_threshold),
 		    copy=FALSE)
 
-	    if(transitions) 
+	    if(transitions && ntransitions(x)>0) 
 		x <- remove_transitions(x, 
 		    rare_transitions(x, count_threshold=count_threshold),
 		    copy=FALSE)

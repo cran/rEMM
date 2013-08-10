@@ -53,7 +53,7 @@ The following plotting parameters are currently supported (by some of the visual
 \item{mark_clusters}{Use different markers for points depending on the
     state they belong to (only available for MDS when 
     \code{data} is specified).}
-\item{draw_ellipse}{draw an ellipse around state centers to indicate the area in which points are assigned to the cluster (experimental, only available for 
+\item{draw_threshold}{draw a circle around state centers to indicate the area in which points are assigned to the cluster (experimental, only available for 
 MDS when \code{data} is specified). }
 \item{mark_states, mark_state_color}{a vector of state names to be marked 
 and the color(s) used for marking (default: red).}

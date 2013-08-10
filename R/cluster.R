@@ -36,8 +36,7 @@ setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 	    
 	    tnn_d$last <- character(nrow(newdata))
 
-	    for(i in 1:nrow(newdata)) 
-	    {
+	    for(i in 1:nrow(newdata)) {
 
 		nd <- newdata[i,, drop = FALSE]
 		if(verbose && i%%100==0) 
@@ -67,15 +66,19 @@ setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 		    ## find a matching state
 		    #sel <- find_clusters(x, nd, match_cluster="exact")
 
-		    ## doing it inline is much faster
-		    #inside <- dist(nd, tnn_d$centers, 
-		    #    method=x@measure) - tnn_d$var_thresholds
 		    inside <- dist(nd, tnn_d$centers, 
 		        method=x@distFun) - tnn_d$var_thresholds
+		   
+
+
+		    ### find best match
 		    min <- which.min(inside)
 		    if(inside[min]<=0) sel <- rownames(tnn_d$centers)[min]
 		    else sel <- NA
 
+		    ## find all matches	
+		    all <- rownames(tnn_d$centers)[which(inside<0)]
+		    
 		    ## NA means no match -> create a new node
 		    if(is.na(sel)) {
 			## New node
@@ -98,13 +101,30 @@ setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 			## update center (if we use centroids)
 			if(x@centroids) {
 
+			    ## try moving first
 			    nnas <- !is.na(nd)
-			    tnn_d$centers[sel,nnas] <- 
-			    (tnn_d$centers[sel,nnas] * 
-				    tnn_d$counts[sel] 
-				    + nd[nnas])/(tnn_d$counts[sel]+1)
-			    nas <- is.na(tnn_d$centers[sel,])
-			    tnn_d$centers[sel,nas] <- nd[nas]
+			    new_center <- tnn_d$centers[sel,]
+			    new_center[nnas] <- (new_center[nnas] * tnn_d$counts[sel] +  nd[nnas]) / (tnn_d$counts[sel]+1) 
+
+			    ## replace NAs with the new data
+			    nas <- is.na(new_center)
+			    if(any(nas)) new_center[nas] <- nd[nas]
+
+			    ## check if move is legal (does not enter 
+			    ## another cluster's threshold)
+			    if(length(all)<2) {
+				tnn_d$centers[sel,] <- new_center
+			    }else{
+				violation <- dist(rbind(new_center), 
+					tnn_d$centers[all,], 
+					method=x@distFun) - tnn_d$var_thresholds[all]
+
+
+				if(sum(violation<0)<2) {
+				    tnn_d$centers[sel,] <- new_center
+				}
+
+			    }
 
 			}
 
@@ -114,7 +134,6 @@ setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 		}
 
 		tnn_d$last[i] <- sel
-
 	    }
 
 

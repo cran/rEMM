@@ -17,8 +17,13 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-## does newdata come from the EMM?
+.simil_weight <- function(d, th) {
+    w <- .5^(d/th - 1)
+    w[d<=th] <-1
+    w
+}
 
+## does newdata come from the EMM?
 setMethod("score", signature(x = "EMM", newdata = "numeric"),
 	function(x, newdata, method=NULL, 
 		match_cluster="nn", plus_one = FALSE, 
@@ -44,7 +49,10 @@ setMethod("score", signature(x = "EMM", newdata = "matrix"),
 			"weighted_log_sum",
 			"weighted_sum",
 			"log_odds", 
-			"supported_transitions"
+			"supported_transitions",
+			"supported_states",
+			"weighted_supported_states",
+			"sum_transitions"
 			), 
 		match_cluster = "nn", plus_one = FALSE, 
 		initial_transition = FALSE) {
@@ -74,33 +82,64 @@ setMethod("score", signature(x = "EMM", newdata = "matrix"),
 	    }
 
 	    if(method == "supported_transitions") {
-		if(plus_one) warning("plus_one has no effect on supported transitions!")
+		### We just ignore it
+		###if(plus_one) warning("plus_one has no effect on supported transitions!")
 		tTable <- transition_table(x, newdata, method="count",
 			match_cluster, plus_one=FALSE, initial_transition)
 		return((nrow(tTable)-sum(tTable[,3]==0))/nrow(tTable))
 	    }
+	    
+	    if(method == "supported_states") {
+		### We just ignore it
+		###if(plus_one) warning("plus_one has no effect on supported transitions!")
+		### match clusters should be "exact" for this to make sense
+		if(!pmatch(match_cluster, "exact", nomatch=0)) warning("Using 'exact 'for 'match_cluster' for supported clusters!")
+		states <- find_clusters(x, newdata, match_cluster="exact")
+		return(sum(!is.na(states))/length(states))
+	    }
+	    
+	    if(method == "sum_transitions") {
+		cnt<-transition_table(x, newdata, method="counts")$counts
+		return(sum(cnt)/sum(smc_countMatrix(x@tracds_d$mm))/length(cnt))
+	    }
 
 	    if(method == "weighted_product" 
 		    || method == "weighted_log_sum"
-		    || method == "weighted_sum") {
+		    || method == "weighted_sum"
+		    || method == "weighted_supported_states") {
 	   
+		if(!pmatch(match_cluster, "nn", nomatch=0)) warning("Using 'nn 'for 'match_cluster' for weighted scores!")
 
 		tTable <- transition_table(x, newdata, method="prob",
-			match_cluster, plus_one=plus_one,
+			match_cluster="nn", plus_one=plus_one,
 			initial_transition)
-		### find similarities between the sequence states and 
-		### the assigned clusters
-		
-		### FIXME: from sequence state to cluster!
-		S <- numeric(nrow(newdata)-1)
-		for(i in 1:(nrow(newdata)-1)) {
-		    S[i] <- as.numeric(pr_dist2simil(
-			dist(
-			    newdata[i, , drop=FALSE],
-			    cluster_centers(x)[as.numeric(tTable[i,1]), , drop=FALSE],
-			    measure=x@measure)))
-    }
+	    
+## Note: the last start is in the last row of tTable in column 2!
+		n <- nrow(newdata)
+		S <- numeric(n)
+		for(i in 1:n) {
+		    S[i] <- as.numeric(.simil_weight(
+				    dist(
+					    newdata[i, , drop=FALSE],
+					    cluster_centers(x)[
+					    tTable[min(i, n-1), 
+					    if(i<n) 1 else 2], ,
+					    drop=FALSE],
+					    measure=x@measure),
+				    #x@threshold
+				    x@tnn_d$var_thresholds[
+				    tTable[min(i, n-1),
+				    if(i<n) 1 else 2]]
+				    ))
+		}
 
+
+		if(method == "weighted_supported_states"){
+		    return(sum(S)/length(S))
+		}
+
+		### product of source and target weight
+		S <- S[-n] * S[-1]
 
 		### probabilities
 		P <- tTable[,3]

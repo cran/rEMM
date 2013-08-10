@@ -178,3 +178,46 @@ setMethod("recluster_tNN", signature(x = "EMM"),
 
 	    invisible(x)
 	})
+
+## transitions: group all states which intersecting radius
+## and then homogenizes transitions between groups. 
+## Note: does not cluster states!
+setMethod("recluster_transitions", signature(x = "EMM"),
+	function(x, threshold=NULL, ..., prune=NULL, copy=TRUE) {
+	   
+	    if(is.null(threshold)) threshold <- 2*x@threshold
+
+	    if(copy) x <- copy(x)
+
+	    d <- dist(cluster_centers(x), method = x@distFun)
+	    hc <- hclust(d, method="single")
+	    
+	    ## FIXME: this ignores vat_thresholds for now!
+	    clusters <- cutree(hc, h=threshold)
+
+	    for(i in unique(clusters)) {
+		cl <- which(clusters==i)
+		ncl <- which(clusters!=i)
+
+		if(length(cl)>1) {
+		    ### fix transitions between elements in group
+		    x@tracds_d$mm@counts[cl,cl] <- sum(
+			    x@tracds_d$mm@counts[cl,cl])/length(cl)	
+
+		    ### fix outgoing transitions
+		    x@tracds_d$mm@counts[cl,ncl] <- matrix(
+			    colSums(x@tracds_d$mm@counts[cl,ncl])/length(cl), 
+			    nrow=length(cl), ncol=length(ncl), byrow=TRUE)
+		    
+		    ### fix incoming transitions
+		    x@tracds_d$mm@counts[ncl,cl] <- matrix(
+			    rowSums(x@tracds_d$mm@counts[ncl,cl])/length(cl), 
+			    nrow=length(ncl), ncol=length(cl), byrow=FALSE)
+
+		}
+	    }
+
+
+	    invisible(x)
+	})
+

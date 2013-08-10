@@ -28,7 +28,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                             
 			    ## MDS
 			    mark_clusters = TRUE,
-                            draw_ellipses = FALSE,
+                            draw_threshold = FALSE,
                             
 			    ## graph, igraph
                             mark_states = NULL,
@@ -245,12 +245,14 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 		    }else{
                         d <- dist(emm_centers, method=x@distFun)
                         mds <- cmdscale(d, eig=TRUE, add=TRUE)
+                        #mds <- isoMDS(d, trace=FALSE)
 			pts <- mds$points
 			dimnames(pts) <- list(states(x), 
 				c("Dimension 1", "Dimension 2"))
 			sub <- paste("These two dimensions explain",
 				round(100 * mds$GOF[2], digits = 2),
 				"% of the point variability.")
+			#sub <- ""
 		    }
 
 		    ## start plotting
@@ -407,13 +409,12 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 
                         ## add ellipses
                         ## FIXME: does not work with d>2
-			if(p$draw_ellipses) {
-			    library(sfsmisc)
+			if(p$draw_threshold) {
 			    for (i in 1:size(x)) {
 				thr <- x@tnn_d$var_thresholds[i]
 				loc <- cluster_centers(x)[i,]
-				lines(ellipsePoints(thr, thr, loc=loc), 
-					col = "grey", lty=2)
+				lines(ellipsePoints(thr, thr, loc=loc, n=90), 
+					col = 1, lty=2)
 			    }
 			}
 
@@ -474,7 +475,111 @@ setMethod("plot", signature(x = "TRACDS", y = "missing"),
 
 
 setMethod("plot", signature(x = "tNN", y = "missing"),
-        function(x, y, ...){ 
-		
-	    pairs(cluster_centers(x))
+	function(x, y, 
+		method = c("direct", "MDS"),
+		data=NULL, parameter=NULL, ...){ 
+
+	    method <- match.arg(method)
+
+	    p <- .get_parameters(list(
+			    draw_threshold = FALSE
+			    ), parameter)
+
+
+	    if(nclusters(x)<1) {
+		warning("No clusters. No plot produced!")
+		return(invisible(NULL))
+	    }
+
+	    centers <- as.data.frame(cluster_centers(x))
+
+	    if(method=="direct") {
+		### plot for data.frame does plot or pairs (for dim >2)
+		if(is.null(data)) {
+		    plot(centers, ...)
+		}else{
+		    plot(rbind(as.data.frame(data), centers),
+			    col=c(rep("gray", nrow(data)), 
+				    rep(2, nrow(cluster_centers(x)))),
+			    pch=c(rep(1, nrow(data)),
+				    rep(3, nrow(cluster_centers(x)))), ...)
+				}
+
+
+		## add ellipses?
+		if(p$draw_threshold) {
+		    for (i in 1:nclusters(x)) {
+			thr <- x@tnn_d$var_thresholds[i]
+			loc <- cluster_centers(x)[i,]
+			lines(ellipsePoints(thr, thr, loc=loc, n=90), 
+				col = 1, lty=3)
+		    }
+		}
+
+	    }else if(method=="MDS") {
+
+		if(is.null(data)) {
+		    if(ncol(centers)==2 && 
+			    tolower(x@measure)=="euclidean" ) {
+			## we need no MDS
+			mds <- list(points = centers, GOF=c(0,1))
+			pts <- mds$points
+			rownames(pts) <- clusters(x)
+			sub <- ''
+
+		    }else{
+			d <- dist(centers, method=x@distFun)
+			mds <- cmdscale(d, eig=TRUE, add=TRUE)
+			#mds <- isoMDS(d, trace=FALSE)
+			pts <- mds$points
+			dimnames(pts) <- list(clusters(x), 
+				c("Dimension 1", "Dimension 2"))
+			sub <- paste("These two dimensions explain",
+				round(100 * mds$GOF[2], digits = 2),
+				"% of the point variability.")
+		    }
+
+		    plot(pts, ...,
+			    sub= paste("These two dimensions explain",
+				    round(100 * mds$GOF[2], digits = 2),
+				    "% of the point variability."))
+
+		} else {
+		    ### MDS + data
+		    ## project state centers onto dataset
+
+		    ## remove NA rows (resets)
+		    data <- data[!apply(data, FUN=function(x) 
+			    all(is.na(x)), MARGIN=1),]
+
+		    if(ncol(centers)==2 && 
+			    tolower(x@measure)=="euclidean" ) {
+			## we need no MDS
+			mds <- list(points = centers, GOF=c(0,1))
+			centerpoints <- centers
+			allpoints <- data
+			sub <- ''
+
+		    }else{
+			d <- dist(rbind(centers, data), method=x@distFun)
+			mds <- cmdscale(d, eig=TRUE, add=TRUE)
+			centerpoints <- mds$points[1:nrow(centers),1:2]
+			allpoints <- mds$points[-c(1:nrow(centers)),1:2]
+			colnames(allpoints) <- c("Dimension 1", "Dimension 2")
+			sub <- paste("These two dimensions explain",
+				round(100 * mds$GOF[2], digits = 2),
+				"% of the point variability.")
+		    }
+
+
+		    plot(allpoints, col="grey", pch=1, ...,
+			    sub=sub)
+
+		 #   if(any(is.na(centerpoints)))
+			points(centerpoints, col="red", pch=3)
+		}
+
+	    }else stop("Unknown method!")
+
+
 	})

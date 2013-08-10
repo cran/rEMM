@@ -50,8 +50,22 @@ An object of class \code{"EMM"}.
 \code{\link{EMM-class}}
 }
 \examples{
-emm <- EMM(.3, measure = "Jaccard", lambda = .1)
+## load EMMTraffic data
+data(EMMTraffic)
+
+## create empty EMM
+emm <- EMM(threshold=0.2, measure="eJaccard", lambda=.1)
 emm
+
+## cluster some data
+build(emm, EMMTraffic)
+emm
+
+## what clusters were the data points assigned to?
+last_clustering(emm)
+
+## plot the clustering as a graph
+plot(emm)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

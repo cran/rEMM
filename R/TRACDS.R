@@ -49,11 +49,18 @@ setMethod("states", signature(x = "TRACDS"),
 setMethod("current_state", signature(x = "TRACDS"),
 	function(x) x@tracds_d$current_state)
 
+setMethod("ntransitions", signature(x = "TRACDS"),
+	function(x) sum(smc_countMatrix(x@tracds_d$mm)>0))
+
 setMethod("transitions", signature(x = "TRACDS"),
 	function(x) {
 	    m <- smc_countMatrix(x@tracds_d$mm)
-	    edges <- apply(which(m>0, arr.ind=T), 
+	    
+	    ### check for no transition
+	    if(sum(m)<1) edges <- matrix(as.character(NA), nrow=0, ncol=2)
+	    else edges <- apply(which(m>0, arr.ind=T), 
 		    MARGIN=2, FUN=function(x) colnames(m)[x])
+	    
 	    colnames(edges) <- c("from", "to")
 	    edges
 	})
