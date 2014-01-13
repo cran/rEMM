@@ -139,6 +139,25 @@ smc_addTransition <- function(x, from, to, w = 1) {
     x
 }
 
+smc_setTransitions <- function(x, from, to, value = 0) {
+  pos_f <- smc_names2index(x, from)
+  pos_t <- smc_names2index(x, to)
+  
+  if(length(pos_f) != length(pos_t)) stop("Lengths do not match!")
+  if(length(pos_f) != length(value)) value <- rep.int(value[1], length(pos_f))
+  
+  missing <- is.na(pos_f) | is.na(pos_t)
+  if(any(missing)) {
+    warning("Some states do not exist (edge not added)!")
+  }
+  
+  for(i in 1:length(pos_f)) 
+    x@counts[pos_f[i], pos_t[i]] <- value[i]
+  x
+}
+
+
+
 smc_removeSelfTransition <- function(x) {
     diag(x@counts) <- 0
     x

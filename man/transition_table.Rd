@@ -10,18 +10,20 @@ Finds the state sequence of a new sequence in an EMM and returns a table
 with the transition probabilities or counts.
 }
 \usage{
-\S4method{transition_table}{EMM,matrix}(x, newdata, method = c("prob", "counts",
-"log_odds"), match_cluster = "nn", plus_one=FALSE, initial_transition = FALSE)
+\S4method{transition_table}{EMM,matrix}(x, newdata, 
+  type = c("probability", "counts", "log_odds"), 
+  match_cluster = "exact", prior=TRUE, initial_transition = FALSE)
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ an \code{EMM} object. }
   \item{newdata}{ new sequence, }
-  \item{method}{ the measure to return. }
+  \item{type}{ the measure to return. }
   \item{match_cluster}{ do the new observations have to fall within
     the threshold of the cluster (\code{"exact"}) or is nearest neighbor 
     used (\code{"nn"})?}
-  \item{plus_one}{ add one to each transition count. This is equal
+  \item{prior}{ add one to each transition count. This is equal
       to starting with a uniform prior for the transition count distribution, 
 	i.e. initially all transitions are equally likely. It also prevents the 
 	product of probabilities to be zero if a transition was never observed. }
@@ -44,8 +46,8 @@ data("EMMsim")
 emm <- EMM(threshold=.5)
 emm <- build(emm, EMMsim_train)
 
-transition_table(emm, EMMsim_test)
-transition_table(emm, EMMsim_test, method ="prob", initial_transition=TRUE)
+head(transition_table(emm, EMMsim_test))
+head(transition_table(emm, EMMsim_test, type ="prob", initial_transition=TRUE))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

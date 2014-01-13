@@ -1,7 +1,15 @@
+Changes in version 1.0-8
+    * score: match_clusters can now be "exact", "nn" or "weighted", where 
+  weighted replaces all the weighted scores. 
+    * added smooth_transitions (experimental)
+    * plus_one is now called prior (since it adds a uniform prior for 
+  transition probabilities)
+    * score has now an argument called normalize
+
 Changes in version 1.0-7
     * improved plot for tNN
     * tNN: centroids stop moving to prevent 2 clusters from colliding
-    * fixed bug with getting transitions from a tracds object with 0 transitions
+    * fixed bug with getting transitions from a TRACDS object with 0 transitions
     * find_clusters also accepts now a threshold factor for match_clusters
     * score: weights for scoring are now normalized for threshold
     * transition from igraph0 to igraph
@@ -19,7 +27,7 @@ Changes in version 1.0-5
 Changes in version 1.0-3
     * Finished the transition to reference objects implemented 
 	using environments.
-    * transition_table() now has for consitency also the default of 
+    * transition_table() now has for consistency also the default of 
 	add_one set to FALSE.
     * last_clustering() was added as an accessor function to tNN.
     * 'igraph' is now the default plot method.

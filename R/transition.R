@@ -20,19 +20,30 @@
 setMethod("transition", signature(x = "TRACDS", 
 		from = "matrix", to = "missing"),
 	function(x, from, to, 
-		type=c("probability", "counts", "log_odds"), plus_one = FALSE){
+		type=c("probability", "counts", "log_odds"), prior = TRUE){
 
 		to <- from[,2]
 		from <- from[,1]
 
-		transition(x, from, to, type, plus_one)
+		transition(x, from, to, type, prior)
 	}
 )
-		
+	
+setMethod("transition", signature(x = "TRACDS", 
+          from = "data.frame", to = "missing"),
+          function(x, from, to, 
+                   type=c("probability", "counts", "log_odds"), prior = TRUE){
+            
+            to <- from[,2]
+            from <- from[,1]
+            
+            transition(x, from, to, type, prior)
+          }
+)
 
 setMethod("transition", signature(x = "TRACDS", from = "character", to =
                 "character"), function(x, from, to, type=c("probability",
-                        "counts", "log_odds"), plus_one = FALSE){ 
+                        "counts", "log_odds"), prior = TRUE){ 
             type <- match.arg(type)
 
 	    if(length(from) != length(to)) stop("vectors from and to are not of the same length!")
@@ -40,7 +51,7 @@ setMethod("transition", signature(x = "TRACDS", from = "character", to =
 	    ### deal with empty from/to
 	    if(length(from) <1) return(numeric(0))	
 
-            tm <- transition_matrix(x, type, plus_one)
+            tm <- transition_matrix(x, type, prior)
 
             from <- match(from, states(x)) 
             to <- match(to, states(x)) 
@@ -55,13 +66,13 @@ setMethod("transition", signature(x = "TRACDS", from = "character", to =
 
 setMethod("transition_matrix", signature(x = "TRACDS"),
 	function(x,
-		type=c("probability", "counts", "log_odds"), plus_one = FALSE){
+		type=c("probability", "counts", "log_odds"), prior = TRUE){
 		type <- match.arg(type)
 
 		## get transition count matrix
 		m <- smc_countMatrix(x@tracds_d$mm)
 		
-		if(plus_one) m <- m+1
+		if(prior) m <- m+1
 
 		if(type=="counts") return(m)
 
@@ -83,11 +94,11 @@ setMethod("transition_matrix", signature(x = "TRACDS"),
 
 setMethod("initial_transition", signature(x = "TRACDS"),
 	function(x, 
-		type=c("probability", "counts", "log_odds"), plus_one = FALSE){
+		type=c("probability", "counts", "log_odds"), prior = TRUE){
 		type <- match.arg(type)
 
 		ic <- smc_initialCounts(x@tracds_d$mm)
-		if(plus_one) ic <- ic+1
+		if(prior) ic <- ic+1
 
 		switch(type,
 			probability = ic / sum(ic),
@@ -99,27 +110,27 @@ setMethod("initial_transition", signature(x = "TRACDS"),
 
 
 setMethod("transition_table", signature(x = "EMM", newdata = "numeric"),
-	function(x, newdata, method = c("prob", "counts", "log_odds"), 
-		match_cluster="nn", plus_one = FALSE, 
+	function(x, newdata, type= c("probability", "counts", "log_odds"), 
+		match_cluster="exact", prior = TRUE, 
 		initial_transition = FALSE) 
-	transition_table(x, as.matrix(rbind(newdata)), method, 
-		match_cluster, plus_one, initial_transition)
+	transition_table(x, as.matrix(rbind(newdata)), type, 
+		match_cluster, prior, initial_transition)
 )
 
 setMethod("transition_table", signature(x = "EMM", newdata = "data.frame"),
-	function(x, newdata, method = c("prob", "counts", "log_odds"), 
-		match_cluster="nn", plus_one = FALSE, 
+	function(x, newdata, type= c("probability", "counts", "log_odds"), 
+		match_cluster="exact", prior = TRUE, 
 		initial_transition = FALSE) 
-	transition_table(x, as.matrix(newdata), method, 
-		match_cluster, plus_one, initial_transition)
+	transition_table(x, as.matrix(newdata), type, 
+		match_cluster, prior, initial_transition)
 )
 
 setMethod("transition_table", signature(x = "EMM", newdata = "matrix"),
-        function(x, newdata, method = c("prob", "counts", "log_odds"), 
-                match_cluster="nn", plus_one = FALSE, 
+        function(x, newdata, type= c("probability", "counts", "log_odds"), 
+                match_cluster="exact", prior = TRUE, 
                 initial_transition = FALSE) {
 
-            method <- match.arg(method)
+            type<- match.arg(type)
 
             ## make sure  newdata is a matrix (maybe a single row)
             if(!is.matrix(newdata)) newdata <- as.matrix(rbind(newdata))
@@ -128,7 +139,7 @@ setMethod("transition_table", signature(x = "EMM", newdata = "matrix"),
             ## empty EMM or single state?
             if(n<2) { 
                 df <- data.frame(from=NA, to=NA, val=NA)
-                names(df)[3] <- method
+                names(df)[3] <- type
                 return(df)
             }
 
@@ -139,18 +150,18 @@ setMethod("transition_table", signature(x = "EMM", newdata = "matrix"),
             to <- ssequence[2:n]
 
             ## get values
-            res <- transition(x, from, to, type=method, 
-                    plus_one=plus_one)
+            res <- transition(x, from, to, type=type, 
+                    prior=prior)
 
             if(initial_transition) {
                 from <- c(NA, from)
                 to <- c(ssequence[1], to)
-                res <- c(initial_transition(x, type=method, 
-                                plus_one=plus_one)[ssequence[1]], 
+                res <- c(initial_transition(x, type=type, 
+                                prior=prior)[ssequence[1]], 
                         res)
             }
 
             df <- data.frame(from=from, to=to, val=res, stringsAsFactors=FALSE)
-            names(df)[3] <- method
+            names(df)[3] <- type
             return(df)
         })

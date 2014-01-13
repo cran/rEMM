@@ -1,40 +1,24 @@
-citHeader("To cite rEMM in publications use:")
 
-if(!exists("meta") || is.null(meta)) meta <- packageDescription("rEMM")
+citation(auto = meta)
 
-year <- sub("-.*", "", meta$Date)
-note <- sprintf("R package version %s.", meta$Version)
-
-citEntry(entry = "Manual",
+bibentry(bibtype = "article",
 	title = "{rEMM}: Extensible Markov Model for Data Stream Clustering in {R}",
-	author = personList(as.person("Michael Hahsler"),
-	    as.person("Margaret H. Dunham")),
-	year = year,
-	note = note,
-	url = "http://CRAN.R-project.org/",
-	textVersion = {
-	paste("Michael Hahsler, Margaret H. Dunham",
-	    sprintf("(%s).", year),                         
+	author = {
+	c(person("Michael", "Hahsler",
+		email = "michael@hahsler.net"),
+	    person("Margaret H.", "Dunham"))
+	},
+	journal      = "Journal of Statistical Software",
+	year         = "2010",
+	volume       = "35",
+	number       = "5",
+	pages        = "1--31",
+	url          = "http://www.jstatsoft.org/v35/i05/",
+
+	textVersion  =
+	paste("Michael Hahsler, Margaret H. Dunham (2010).",
 	    "rEMM: Extensible Markov Model for Data Stream Clustering in R.",
-	    note,
-	    sep = "  ")
-	})
-
-citEntry(entry = "Article",
-  title        = "{rEMM}: Extensible Markov Model for Data Stream Clustering in {R}",
-  author       = personList(as.person("Michael Hahsler"),
-                   as.person("Margaret H. Dunham")),
-  journal      = "Journal of Statistical Software",
-  year         = "2010",
-  volume       = "35",
-  number       = "5",
-  pages        = "1--31",
-  url          = "http://www.jstatsoft.org/v35/i05/",
-
-  textVersion  =
-  paste("Michael Hahsler, Margaret H. Dunham (2010).",
-        "rEMM: Extensible Markov Model for Data Stream Clustering in R.",
-        "Journal of Statistical Software, 35(5), 1-31.",
-        "URL http://www.jstatsoft.org/v35/i05/.")
-)
+	    "Journal of Statistical Software, 35(5), 1-31.",
+	    "URL http://www.jstatsoft.org/v35/i05/.")
+	)
 

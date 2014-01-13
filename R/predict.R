@@ -22,7 +22,7 @@ setMethod("predict", signature(object = "TRACDS"),
 	function(object, current_state=NULL, n=1,
 		probabilities = FALSE, 
 		randomized = FALSE,
-		plus_one = FALSE) {
+		prior = FALSE) {
 
 		## probabilistic max with random tie breaking
 		.prob_max <- function(x) {
@@ -49,7 +49,7 @@ setMethod("predict", signature(object = "TRACDS"),
 		    stop("State does not exist")
 
 
-		P <- transition_matrix(object, plus_one=plus_one)
+		P <- transition_matrix(object, prior=prior)
 		## calculate P^n
 		if(n>1) for(i in 1:(n-1)) P <- P%*%P
 

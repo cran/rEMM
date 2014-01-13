@@ -1,4 +1,6 @@
 library("rEMM")
+library("testthat")
+
 data("16S")
 
 data <- Mollicutes16S+1
@@ -10,33 +12,23 @@ emm
 
 
 ## remove two states
-nstates(emm)
-nclusters(emm)
+n <- nstates(emm)
 e <- remove_clusters(emm, c("3","4"))
-nstates(e)
-nclusters(e)
-
+n1 <- nstates(e)
+expect_equal(n-2L, n1)
 
 ## prune w/ copy and w/o copy
+rare <- rare_clusters(emm, 5)
 e <- prune(emm, 5)
-nstates(emm)
-nstates(e)
+expect_equal(nstates(e), nstates(emm)-length(rare))
+expect_equal(clusters(e),setdiff(clusters(emm), rare))
+
 
 prune(emm, 5, copy=FALSE)
-nstates(emm)
-
-## adding new states again
-clusters(e)
-build(e, data)
-clusters(e)
-
-nclusters(e)
-nstates(e)
+expect_equal(e, emm)
 
 ## merge clusters
-nclusters(emm)
+n <- nclusters(emm)
 e <- merge_clusters(emm, c("2", "3", "4", "5"))
-nclusters(e)
-nstates(e)
-clusters(e)
+expect_equal(nclusters(emm)-3L, nclusters(e))
 

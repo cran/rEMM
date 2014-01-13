@@ -47,6 +47,8 @@ setGeneric("remove_transitions", function(x, from, to, copy=TRUE)
 	standardGeneric("remove_transitions"))
 setGeneric("remove_selftransitions", function(x, copy=TRUE) 
 	standardGeneric("remove_selftransitions"))
+setGeneric("smooth_transitions", function(x, ...) standardGeneric("smooth_transitions"))
+
 
 ## tNN
 setGeneric("cluster", function(x, newdata, ...) standardGeneric("cluster"))

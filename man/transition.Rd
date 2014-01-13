@@ -2,6 +2,7 @@
 \alias{transition}
 \alias{transition,TRACDS,character,character-method}
 \alias{transition,TRACDS,matrix,missing-method}
+\alias{transition,TRACDS,data.frame,missing-method}
 \alias{transition_matrix}
 \alias{transition_matrix,TRACDS-method}
 \alias{initial_transition}
@@ -14,9 +15,12 @@ or a complete transition matrix
 for an EMM (which contains \code{"TRACDS"}).
 }
 \usage{
-\S4method{transition}{TRACDS,character,character}(x, from, to, type = c("probability", "counts", "log_odds"), plus_one = FALSE)
-\S4method{transition_matrix}{TRACDS}(x, type = c("probability", "counts", "log_odds"), plus_one = FALSE)
-\S4method{initial_transition}{TRACDS}(x, type = c("probability", "counts", "log_odds"), plus_one = FALSE)
+\S4method{transition}{TRACDS,character,character}(x, from, to, 
+          type = c("probability", "counts", "log_odds"), prior = TRUE)
+\S4method{transition_matrix}{TRACDS}(x, 
+          type = c("probability", "counts", "log_odds"), prior = TRUE)
+\S4method{initial_transition}{TRACDS}(x, 
+          type = c("probability", "counts", "log_odds"), prior = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,7 +30,7 @@ for an EMM (which contains \code{"TRACDS"}).
   to contain a matrix with two columns (a from column and a 
   to column as returned by \code{transitions}).}
   \item{type}{ What should be calculated? }
-  \item{plus_one}{ add one to each transition count. This is equal
+  \item{prior}{ add one to each transition count. This is equal
       to starting with a uniform prior for the transition count distribution, 
       i.e., initially all transitions are equally likely. }
 }
@@ -52,10 +56,10 @@ emm <- EMM(measure="eJaccard", threshold=0.2)
 emm <- build(emm, EMMTraffic)
 
 ## get transition matrix
-transition_matrix(emm)
-transition_matrix(emm, plus_one=TRUE)
+transition_matrix(emm, type="count", prior=FALSE)
 transition_matrix(emm, type="count")
-transition_matrix(emm, type="count", plus_one=TRUE)
+transition_matrix(emm, prior=FALSE)
+transition_matrix(emm)
 
 ## get initial state probabilities
 initial_transition(emm)
@@ -65,6 +69,7 @@ transition(emm, "1","2")
 
 ## get counts for all existing transitions
 tr <- transitions(emm)
+tr
 cbind(as.data.frame(tr), counts=transition(emm, tr, type="counts"))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

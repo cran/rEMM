@@ -8,7 +8,7 @@ time steps.
 }
 \usage{
 \S4method{predict}{TRACDS}(object, current_state = NULL, n=1, 
-	probabilities = FALSE, randomized = FALSE, plus_one=FALSE)
+	probabilities = FALSE, randomized = FALSE, prior=FALSE)
 }
 \arguments{
   \item{object}{ an \code{"EMM"}/\code{"TRACDS"} object. }
@@ -20,7 +20,7 @@ time steps.
   \item{randomized}{ if \code{TRUE}, the predicted state is choosen
     randomly with a selection probability proportional to its transition 
     probability}
-  \item{plus_one}{ add one to each transition count. This is equal
+  \item{prior}{ add one to each transition count. This is equal
       to starting with a uniform prior for the transition count distribution,
       i.e. initially all transitions are equally likely. It also prevents the
       product of probabilities to be zero if a transition was never observed. }

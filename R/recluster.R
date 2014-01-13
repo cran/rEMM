@@ -73,7 +73,9 @@ setMethod("recluster_hclust", signature(x = "EMM"),
 	    }
 
 	    attr(x, "cluster_info") <- list(clustering=cl, dendrogram=hc)
-	    invisible(x)
+	    
+	    if(copy) x
+	    else invisible(x)
 	}
 	)
 
@@ -98,7 +100,9 @@ setMethod("recluster_kmeans", signature(x = "EMM"),
 		    copy=FALSE)
 
 	    attr(x, "cluster_info") <- cl
-	    invisible(x)
+	    
+	    if(copy) x
+	    else invisible(x)
 	}
 	)
 
@@ -121,7 +125,9 @@ setMethod("recluster_pam", signature(x = "EMM"),
 		    copy=FALSE)
 
 	    attr(x, "cluster_info") <- cl
-	    invisible(x)
+	    
+	    if(copy) x
+	    else invisible(x)
 	}
 	)
 
@@ -131,6 +137,9 @@ setMethod("recluster_reachability", signature(x = "EMM"),
 
 
 	    if(copy) x <- copy(x)
+	    
+	    if(!is.null(prune)) x <- prune(x, count_threshold = prune, 
+		    transitions = FALSE, copy = FALSE)
 
 	    d <- as.matrix(dist(cluster_centers(x), method = x@distFun))
 
@@ -152,7 +161,8 @@ setMethod("recluster_reachability", signature(x = "EMM"),
 		}
 	    }
 
-	    invisible(x)
+	    if(copy) x
+	    else invisible(x)
 	})
 
 
@@ -176,7 +186,8 @@ setMethod("recluster_tNN", signature(x = "EMM"),
 	    merge_clusters(x, as.integer(assignments), clustering=TRUE, 
 		    copy=FALSE)
 
-	    invisible(x)
+	    if(copy) x
+	    else invisible(x)
 	})
 
 ## transitions: group all states which intersecting radius
@@ -188,6 +199,9 @@ setMethod("recluster_transitions", signature(x = "EMM"),
 	    if(is.null(threshold)) threshold <- 2*x@threshold
 
 	    if(copy) x <- copy(x)
+
+	    if(!is.null(prune)) x <- prune(x, count_threshold = prune, 
+		    transitions = FALSE, copy = FALSE)
 
 	    d <- dist(cluster_centers(x), method = x@distFun)
 	    hc <- hclust(d, method="single")
@@ -218,6 +232,7 @@ setMethod("recluster_transitions", signature(x = "EMM"),
 	    }
 
 
-	    invisible(x)
+	    if(copy) x
+	    else invisible(x)
 	})
 

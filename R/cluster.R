@@ -66,19 +66,18 @@ setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 		    ## find a matching state
 		    #sel <- find_clusters(x, nd, match_cluster="exact")
 
-		    inside <- dist(nd, tnn_d$centers, 
+		    ### all with inside<=0 are matches
+        inside <- dist(nd, tnn_d$centers, 
 		        method=x@distFun) - tnn_d$var_thresholds
-		   
-
-
-		    ### find best match
-		    min <- which.min(inside)
-		    if(inside[min]<=0) sel <- rownames(tnn_d$centers)[min]
-		    else sel <- NA
-
-		    ## find all matches	
-		    all <- rownames(tnn_d$centers)[which(inside<0)]
-		    
+		    names(inside) <- rownames(tnn_d$centers)
+        
+        ## find all matches  
+        matches <- names(inside)[which(inside<0)]
+        if(length(matches)==0) { sel <- NA
+        }else if(length(matches)==1) { sel <- matches
+        }else sel <- matches[which.min(inside[matches])]
+        
+		   		    
 		    ## NA means no match -> create a new node
 		    if(is.na(sel)) {
 			## New node
@@ -112,12 +111,12 @@ setMethod("cluster", signature(x = "tNN", newdata = "matrix"),
 
 			    ## check if move is legal (does not enter 
 			    ## another cluster's threshold)
-			    if(length(all)<2) {
+			    if(length(matches)<2) {
 				tnn_d$centers[sel,] <- new_center
 			    }else{
 				violation <- dist(rbind(new_center), 
-					tnn_d$centers[all,], 
-					method=x@distFun) - tnn_d$var_thresholds[all]
+					tnn_d$centers[matches,], 
+					method=x@distFun) - tnn_d$var_thresholds[matches]
 
 
 				if(sum(violation<0)<2) {

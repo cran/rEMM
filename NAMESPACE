@@ -1,7 +1,10 @@
 useDynLib(rEMM)
 
-#imports("gclus") ## we use :: for gclus in seriate.hclust
-#imports("cluster") ## we use :: for silhouette in dissplot
+import(methods)
+
+importFrom(clusterGeneration, genPositiveDefMat)
+importFrom(MASS, mvrnorm)
+importFrom(igraph, graph.adjacency)
 
 importFrom(graphics, plot)
 ## Fixme: Rgraphviz has to be loaded after rEMM for plot to work!
@@ -59,6 +62,7 @@ export(
     rare_transitions,
     remove_transitions,
     remove_selftransitions,
+    smooth_transitions,
 
     object.size,	### S4 generic for object size in base
 
