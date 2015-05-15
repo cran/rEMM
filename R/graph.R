@@ -9,7 +9,7 @@ as.igraph.TRACDS <-  function(object) smc_as.igraph(object@tracds_d$mm)
 as.graph <-  function(object) UseMethod("as.graph")
 
 as.graph.TRACDS <-  function(object) {
-    if(!require("Rgraphviz")) stop ("Package Rgraphviz needed!")
+    if(!.installed("graph")) stop ("Package graph needed! Please install from Bioconductor.")
     smc_as.graph(object@tracds_d$mm)
 }
 

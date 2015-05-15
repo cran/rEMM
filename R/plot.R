@@ -48,7 +48,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 	    }
                 
 	    ## check if we can use graphviz
-	    if(method=="graph" && !require("Rgraphviz")) {
+	    if(method=="graph" && !.installed("Rgraphviz")) {
 		warning("Rgraphviz not available/installed. Reverting to igraph!", 
 			call. = FALSE)
 		method <- "igraph"
@@ -156,6 +156,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 
 
             }else if(method=="graph") {
+		## this is Rgraphviz
 
                 g <- as.graph(x)
 		
@@ -187,12 +188,12 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
                     cluster_counts(x)/max(cluster_counts(x))) * p$state_size_multiplier * .75
                 }
 
-		if(p$arrow_width && numEdges(g)>0) {
+		if(p$arrow_width && graph::numEdges(g)>0) {
 		    ## this should work but the order in graph
 		    ## lwd ordering seems to be broken in graph
 		    #edges <- transitions(x)
 		    
-		    edg <- edges(g)
+		    edg <- graph::edges(g)
 		    from <- character()
 		    to <- unlist(edg)
 		    for(n in names(edg)) 
@@ -224,7 +225,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
 		    eAttrs$color <- e.cols
 		}
 
-                pl <- plot(g, recipEdges="distinct",
+                pl <- Rgraphviz::plot(g, recipEdges="distinct",
                         nodeAttrs = nAttrs, edgeAttrs = eAttrs, ...)
             } else {
                 if(nrow(emm_centers)<3) stop('Less than 3 centers! Use method="graph".')

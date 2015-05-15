@@ -1,17 +1,16 @@
-useDynLib(rEMM)
+useDynLib("rEMM")
 
-import(methods)
+import("methods")
 
-importFrom(clusterGeneration, genPositiveDefMat)
-importFrom(MASS, mvrnorm)
-importFrom(igraph, graph.adjacency)
+importFrom("clusterGeneration", "genPositiveDefMat")
+importFrom("MASS", "mvrnorm")
+import("igraph")
 
-importFrom(graphics, plot)
+##importFrom("graphics", "plot")
 ## Fixme: Rgraphviz has to be loaded after rEMM for plot to work!
 
-importFrom(stats, predict)
-
-importFrom(proxy, pr_DB, pr_dist2simil)
+importFrom("stats", "predict")
+importFrom("proxy", "pr_DB", "pr_dist2simil")
 
 exportClasses(EMM, TRACDS, StreamClustering, tNN)
 
@@ -76,3 +75,5 @@ export(
     synthetic_stream
 )
 
+S3method(as.graph, TRACDS)
+S3method(as.igraph, TRACDS)

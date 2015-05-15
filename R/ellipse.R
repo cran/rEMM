@@ -2,7 +2,7 @@
 ###					    fuer Statistik ETH Zurich
 ### by Martin Maechler et al.
 ### Version: 1.0-23
-### License: GPL (≥ 2)
+### License: GPL (>= 2)
 
 ellipsePoints <- function(a,b, alpha = 0, loc = c(0,0), n = 201,
                           keep.ab.order = FALSE)

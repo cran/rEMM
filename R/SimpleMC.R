@@ -236,8 +236,8 @@ smc_as.igraph <- function(x) {
 
 ## convert to graph (needs package graph!) 
 smc_as.graph <- function(x) {
-    if(!require("graph")) stop ("Package graph needed!")
-    new("graphAM", adjMat=smc_countMatrix(x), edgemode= "directed", 
+    if(!.installed("graph")) stop ("Package graph needed! Please install from Bioconductor.")
+    graph::graphAM(adjMat=smc_countMatrix(x), edgemode= "directed", 
 	    values=list(weight=1))
 }
 
