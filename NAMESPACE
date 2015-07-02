@@ -4,13 +4,15 @@ import("methods")
 
 importFrom("clusterGeneration", "genPositiveDefMat")
 importFrom("MASS", "mvrnorm")
+
 import("igraph")
 
 ##importFrom("graphics", "plot")
 ## Fixme: Rgraphviz has to be loaded after rEMM for plot to work!
 
-importFrom("stats", "predict")
-importFrom("proxy", "pr_DB", "pr_dist2simil")
+importFrom("stats", "predict", "plogis", "runif")
+importFrom("proxy", "dist", "pr_DB", "pr_dist2simil")
+importFrom("utils", "installed.packages")
 
 exportClasses(EMM, TRACDS, StreamClustering, tNN)
 

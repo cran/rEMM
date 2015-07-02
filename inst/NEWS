@@ -1,3 +1,6 @@
+Changes in version 1.0-10 (07/02/2015)
+    * Fixed NAMESPACE (non-standard imports)
+
 Changes in version 1.0-9 (5/15/2015)
     * Fixed dependencies in NAMESPACE
     * Fixed problems with testthat

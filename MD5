@@ -1,5 +1,5 @@
-cd0747c570ee06eabfcb6b1140d19166 *DESCRIPTION
-ecdb2ebe737cf8b82d0f5b37fc48e36e *NAMESPACE
+92917cc047fc4187c054863a251d4402 *DESCRIPTION
+01196f331ae4e1a7afcbf013d906bb1d *NAMESPACE
 19263826c73a982c0f440ec1b8e4ecc5 *R/AAA.R
 3a2a6dbf51c8bc4227dfd964cf64df75 *R/AllClasses.R
 5b7f17e641d155d537373f6e58ad19aa *R/AllGenerics.R
@@ -36,10 +36,10 @@ bd79bbe6f83e630a6b56d1811d9386d9 *data/Derwent.rda
 f7f9873f33f5cc4d59b763f1f0297842 *data/EMMTraffic.rda
 063a8b311e1aa09be289562c958c92d3 *data/EMMsim.rda
 5fc472621e2f97cfc19e3a8c6bc7a506 *inst/CITATION
-2fc80cb375449eb41622d5346483bc9e *inst/NEWS
+ab5c677524bdaabfe65b7e4edfb4e46e *inst/NEWS
 c093afb86a8a9849aa10385e15674a4e *inst/doc/rEMM.R
 12503bd9e207ce6d83f5bf8867b46a54 *inst/doc/rEMM.Rnw
-1527d2740b254a7aa8288ede0aca581a *inst/doc/rEMM.pdf
+4a6a3c97a60292f712aa6447edd74b74 *inst/doc/rEMM.pdf
 36e954d637db0d19ee9a4b3b2eb950f9 *inst/tests/test-EMM.R
 5b34edb0cdd98b6b088f19c3677f5dbf *inst/tests/test-remove.R
 b4e04fc9f5a71c2beced1f9983284a84 *man/16S.Rd
