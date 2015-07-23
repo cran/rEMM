@@ -7,12 +7,13 @@ importFrom("MASS", "mvrnorm")
 
 import("igraph")
 
-##importFrom("graphics", "plot")
-## Fixme: Rgraphviz has to be loaded after rEMM for plot to work!
-
-importFrom("stats", "predict", "plogis", "runif")
+importFrom("graphics", "arrows", "barplot", "lines", "points",
+        "strheight", "strwidth", "text")
+importFrom("stats", "predict", "plogis", "runif",
+	"cmdscale", "cutree", "hclust", "kmeans")
 importFrom("proxy", "dist", "pr_DB", "pr_dist2simil")
-importFrom("utils", "installed.packages")
+importFrom("utils", "installed.packages", "tail")
+importFrom("cluster", "pam")
 
 exportClasses(EMM, TRACDS, StreamClustering, tNN)
 

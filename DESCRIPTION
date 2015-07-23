@@ -1,6 +1,6 @@
 Package: rEMM
-Version: 1.0-10
-Date: 2015-07-02
+Version: 1.0-11
+Date: 2015-07-23
 Title: Extensible Markov Model for Modelling Temporal Relationships
         Between Clusters
 Authors@R: c(person("Michael", "Hahsler", role = c("aut", "cre", "cph"),
@@ -17,13 +17,13 @@ Description: Implements TRACDS (Temporal Relationships
 Classification/ACM: G.4, H.2.8, I.5.1
 URL: http://lyle.smu.edu/IDA/TRACDS/
 Depends: R (>= 2.10.0), proxy (>= 0.4-7), igraph
-Imports: methods, stats, clusterGeneration, MASS, utils
+Imports: methods, stats, cluster, clusterGeneration, MASS, utils
 Suggests: graph, Rgraphviz, testthat
 License: GPL-2
 NeedsCompilation: yes
-Packaged: 2015-07-02 11:16:14 UTC; hahsler
+Packaged: 2015-07-23 22:02:39 UTC; hahsler
 Author: Michael Hahsler [aut, cre, cph],
   Margaret H. Dunham [aut, cph]
 Maintainer: Michael Hahsler <mhahsler@lyle.smu.edu>
 Repository: CRAN
-Date/Publication: 2015-07-02 16:07:19
+Date/Publication: 2015-07-24 07:54:05
