@@ -21,20 +21,20 @@ Agency North-East, UK.
 %}
 \source{
 UK National River Flow Archive (NRFA),
-\url{http://www.ceh.ac.uk/data/nrfa/}
+\url{https://nrfa.ceh.ac.uk/}
 
 The owner of the data is the Ridings Area Office of the Environment
 Agency North-East, UK.
 }
 \references{
 Wikipedia, River Derwent, Yorkshire,
-\url{http://en.wikipedia.org/wiki/River_Derwent,_Yorkshire}
+\url{https://en.wikipedia.org/wiki/River_Derwent,_Yorkshire}
 
 Wikipedia, River Wye, Derbyshire,
-\url{http://en.wikipedia.org/wiki/River_Wye,_Derbyshire}
+\url{https://en.wikipedia.org/wiki/River_Wye,_Derbyshire}
 
 Wikipedia, River Amber,
-\url{http://en.wikipedia.org/wiki/River_Amber}
+\url{https://en.wikipedia.org/wiki/River_Amber}
 }
 \examples{
 data(Derwent)

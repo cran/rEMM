@@ -1,19 +1,20 @@
 \name{TRAC}
 \alias{TRAC}
-\title{TRAC: Creating an EMM from a Regular Clustering}
+\title{TRAC: Creating a Markov Model from a Regular Clustering}
 \description{
-Create an EMM from a regular clustering (k-means or PAM) of
+Create an Markov model from a regular clustering (k-means or PAM) of
 sequence data.
 }
 \usage{
-TRAC(x, data = NULL, measure = "euclidean")
+TRAC(x, data = NULL, centers = NULL, measure = "euclidean")
 }
 \arguments{
-  \item{x}{ a clustering object (result of kmeans or pam) or a 
-    vector with (integer) cluster assignments. }
+  \item{x}{ a clustering object (result of kmeans or PAM), a
+    data set (a data matrix), or a vector with (integer) cluster assignments. }
   \item{data}{ the data used for clustering (only used if \code{x}
     is a cluster assignment vector).}
-  \item{measure}{ used distance measure.} 
+  \item{centers}{ if \code{x} is a cluster assignment vector, then a data.frame or matrix with the cluster centers needs to be supplies. Otherwise, \code{centers} is ignored.}
+  \item{measure}{ used distance measure.}
 }
 \details{
     The order is inferred from the order in the original data set.

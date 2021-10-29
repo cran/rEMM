@@ -10,11 +10,11 @@
 \S4method{c}{EMM}(x, ..., copy=TRUE, recursive = FALSE)
 }
 \arguments{
-  \item{x}{ first \code{EMM} object. Note that this object will be changed 
+  \item{x}{ first \code{EMM} object. Note that this object will be changed
   by the function if \code{copy=FALSE}! }
   \item{\dots}{ further objects of the same class as \code{x} to be combined.}
-  \item{copy}{ a logical. Copy \code{x} first? Otherwise x will be changed! } 
-  \item{recursive}{ a logical. If \code{recursive=TRUE}, 
+  \item{copy}{ a logical. Copy \code{x} first? Otherwise x will be changed! }
+  \item{recursive}{ a logical. If \code{recursive=TRUE},
     the function recursively
     descends through lists combining all their elements into a
     vector.}
@@ -42,8 +42,8 @@ emm12 <- c(emm1, emm2)
 emm12r <- recluster_tNN(emm12)
 
 op <- par(mfrow = c(1, 2), pty = "s")
-plot(emm12, method="graph", main="Two EMMs")
-plot(emm12r, method="graph", main="Two EMMs (reclustered)")
+plot(emm12, main="Two EMMs")
+plot(emm12r, main="Two EMMs (reclustered)")
 par(op)
 }
 \keyword{manip}

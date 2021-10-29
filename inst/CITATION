@@ -4,8 +4,8 @@ citation(auto = meta)
 bibentry(bibtype = "article",
 	title = "{rEMM}: Extensible Markov Model for Data Stream Clustering in {R}",
 	author = {
-	c(person("Michael", "Hahsler",
-		email = "michael@hahsler.net"),
+	personList(person("Michael", "Hahsler",
+		email = "mhahsler@lyle.smu.edu"),
 	    person("Margaret H.", "Dunham"))
 	},
 	journal      = "Journal of Statistical Software",
@@ -13,12 +13,7 @@ bibentry(bibtype = "article",
 	volume       = "35",
 	number       = "5",
 	pages        = "1--31",
-	url          = "http://www.jstatsoft.org/v35/i05/",
-
-	textVersion  =
-	paste("Michael Hahsler, Margaret H. Dunham (2010).",
-	    "rEMM: Extensible Markov Model for Data Stream Clustering in R.",
-	    "Journal of Statistical Software, 35(5), 1-31.",
-	    "URL http://www.jstatsoft.org/v35/i05/.")
+	doi          = "10.18637/jss.v035.i05",
+	issn         = "1548-7660"
 	)
 

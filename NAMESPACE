@@ -1,4 +1,4 @@
-useDynLib("rEMM")
+useDynLib("rEMM", .registration = TRUE)
 
 import("methods")
 

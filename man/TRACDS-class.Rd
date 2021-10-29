@@ -79,13 +79,15 @@ classes can be used as parameters.
 	 }
 }
 \references{ 
+Michael Hahsler and Margaret H. Dunham. Temporal structure learning for clustering massive data streams in real-time. In \emph{SIAM Conference on Data Mining} (SDM11), pages 664--675. SIAM, April 2011. \doi{10.1137/1.9781611972818.57}
+
+M. Hahsler, M. H. Dunham (2010): rEMM: Extensible Markov Model for 
+Data Stream Clustering in R, \emph{Journal of Statistical Software,} 35(5), 1-31,
+URL \doi{10.18637/jss.v035.i05}
+
 M.H. Dunham, Y. Meng, J. Huang (2004): Extensible Markov Model, In:
 \emph{ICDM '04: Proceedings of the Fourth IEEE International
 Conference on Data Mining,} pp. 371--374.
-
-M. Hahsler, M. H. Dunham (2010): rEMM: Extensible Markov Model for 
-Data Stream Clustering in R, Journal of Statistical Software, 35(5), 1-31,
-URL \url{http://www.jstatsoft.org/v35/i05/}
 }
 %\author{ ~~who you are~~ }
 \note{A TRACDS object can be coerced to igraph or graph objects using 
