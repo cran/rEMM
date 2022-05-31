@@ -1,6 +1,6 @@
 #######################################################################
 # rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
+# Copyright (C) 2011 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,46 +19,51 @@
 
 ## predict next n states using P^n
 setMethod("predict", signature(object = "TRACDS"),
-	function(object, current_state=NULL, n=1,
-		probabilities = FALSE, 
-		randomized = FALSE,
-		prior = FALSE) {
+  function(object,
+    current_state = NULL,
+    n = 1,
+    probabilities = FALSE,
+    randomized = FALSE,
+    prior = FALSE) {
+    ## probabilistic max with random tie breaking
+    .prob_max <- function(x) {
+      m <- which(x == max(x))
+      if (length(m) > 1)
+        m <- sample(m, 1)
+      m
+    }
 
-		## probabilistic max with random tie breaking
-		.prob_max <- function(x) {
-			m <- which(x==max(x))
-			if(length(m)>1) m <- sample(m,1)
-			m
-		}
-
-		## randomized
-		.randomized <- function(x)
-			sample((1:length(x))[x>0], 1, prob=x[x>0])
-
-
-		
-		if(is.null(current_state)) 
-		    current_state <- current_state(object)
-		else 
-		    current_state <- as.character(current_state)
-
-		current_state_i <- which(states(object) == current_state)
-		
-		## check is state exists!
-		if(!is.element(current_state, states(object))) 
-		    stop("State does not exist")
+    ## randomized
+    .randomized <- function(x)
+      sample((1:length(x))[x > 0], 1, prob = x[x > 0])
 
 
-		P <- transition_matrix(object, prior=prior)
-		## calculate P^n
-		if(n>1) for(i in 1:(n-1)) P <- P%*%P
 
-		prob <- P[current_state_i,]
-		
-		## create result
-		if(probabilities) return(prob)
-		if(randomized) return(states(object)[.randomized(prob)])
-		
-		return(states(object)[.prob_max(prob)])
-	}
-)
+    if (is.null(current_state))
+      current_state <- current_state(object)
+    else
+      current_state <- as.character(current_state)
+
+    current_state_i <- which(states(object) == current_state)
+
+    ## check is state exists!
+    if (!is.element(current_state, states(object)))
+      stop("State does not exist")
+
+
+    P <- transition_matrix(object, prior = prior)
+    ## calculate P^n
+    if (n > 1)
+      for (i in 1:(n - 1))
+        P <- P %*% P
+
+    prob <- P[current_state_i, ]
+
+    ## create result
+    if (probabilities)
+      return(prob)
+    if (randomized)
+      return(states(object)[.randomized(prob)])
+
+    return(states(object)[.prob_max(prob)])
+  })

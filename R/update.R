@@ -1,6 +1,6 @@
 #######################################################################
 # rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
+# Copyright (C) 2011 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,112 +20,119 @@
 
 ### alias update
 setMethod("update", signature(object = "TRACDS"),
-	function(object, newdata, verbose = FALSE, ...) {
-		    
-	    if(verbose) cat("Update for", length(newdata),
-		    "assignments","\n")
+  function(object, newdata, verbose = FALSE, ...) {
+    if (verbose)
+      cat("Update for", length(newdata),
+        "assignments", "\n")
 
-	    x <- object
-	    
-	    tracds_d <- x@tracds_d  ### get the environment
-	    
-	    counts <- tracds_d$mm@counts ### get matrix for performance
-					 ### otherwise R copies the matrix
-					 ### for each update
+    x <- object
 
-	    ## inline function to increase performance
-	    .addState <- function(name) {
-		## expand?
-		if(tracds_d$mm@top < 1) {
-		    old_size <- nstates(x)
+    tracds_d <- x@tracds_d  ### get the environment
 
-		    new_size <- old_size*2L
-		    
-		    if(verbose) cat("Resizing matrix from", old_size ,"to",
-			    new_size,"\n")
-		    
-		    new_counts <- matrix(0, ncol=new_size, nrow=new_size)
-		    #new_counts[1:old_size, 1:old_size] <- tracds_d$mm@counts
-		    #tracds_d$mm@counts <- new_counts
-		    new_counts[1:old_size, 1:old_size] <- counts
-		    counts <<- new_counts
+    counts <- tracds_d$mm@counts ### get matrix for performance
+    ### otherwise R copies the matrix
+    ### for each update
 
-		    new_initial_counts <- numeric(new_size)
-		    new_initial_counts[1:old_size] <- tracds_d$mm@initial_counts
-		    names(new_initial_counts)[1:old_size] <- names(tracds_d$mm@initial_counts)
-		    tracds_d$mm@initial_counts <- new_initial_counts
+    ## inline function to increase performance
+    .addState <- function(name) {
+      ## expand?
+      if (tracds_d$mm@top < 1) {
+        old_size <- nstates(x)
 
-		    new_unused <- new_size:1
-		    new_unused[(old_size+1):length(new_unused)] <- tracds_d$mm@unused
-		    tracds_d$mm@unused <- new_unused
+        new_size <- old_size * 2L
 
-		    tracds_d$mm@top <- old_size+tracds_d$mm@top
-		}
+        if (verbose)
+          cat("Resizing matrix from", old_size , "to",
+            new_size, "\n")
 
-		## add node
-		pos <- tracds_d$mm@unused[tracds_d$mm@top]
-		tracds_d$mm@unused[tracds_d$mm@top] <- NA
-		tracds_d$mm@top <- tracds_d$mm@top-1L
-		names(tracds_d$mm@initial_counts)[pos] <- name
+        new_counts <- matrix(0, ncol = new_size, nrow = new_size)
+        #new_counts[1:old_size, 1:old_size] <- tracds_d$mm@counts
+        #tracds_d$mm@counts <- new_counts
+        new_counts[1:old_size, 1:old_size] <- counts
+        counts <<- new_counts
 
-		tracds_d$mm@initial_counts[pos] <- 0 
+        new_initial_counts <- numeric(new_size)
+        new_initial_counts[1:old_size] <- tracds_d$mm@initial_counts
+        names(new_initial_counts)[1:old_size] <-
+          names(tracds_d$mm@initial_counts)
+        tracds_d$mm@initial_counts <- new_initial_counts
 
-		pos
-	    }
+        new_unused <- new_size:1
+        new_unused[(old_size + 1):length(new_unused)] <-
+          tracds_d$mm@unused
+        tracds_d$mm@unused <- new_unused
 
-	    ## get position of current date in matrix
-	    pos_current <- which(states(x) == current_state(x))
-	    i <- 1
+        tracds_d$mm@top <- old_size + tracds_d$mm@top
+      }
 
-	    ## iterate over cluster assignments in newdata
-	    for(sel in newdata) {
-		
-		if(verbose && !(i%%100)) cat("Processing assignment", i, "\n")
-		i <- i+1
+      ## add node
+      pos <- tracds_d$mm@unused[tracds_d$mm@top]
+      tracds_d$mm@unused[tracds_d$mm@top] <- NA
+      tracds_d$mm@top <- tracds_d$mm@top - 1L
+      names(tracds_d$mm@initial_counts)[pos] <- name
 
-		## cluster returns NA if we start a new sequence.
-		if(is.na(sel)) {
-		    pos_current <- numeric(0)
-		    next
-		}
+      tracds_d$mm@initial_counts[pos] <- 0
 
-		## fade TRACDS structure?
-		### FIXME: counts!!!
-		if(x@lambda>0) {
-		    counts <- counts * x@lambda_factor
-		    tracds_d$mm@initial_counts <- tracds_d$mm@initial_counts *  x@lambda_factor
-		    #    tracds_d$mm <- smc_fade(tracds_d$mm, 
-		    #	x@lambda_factor) 
-		}
-		    
+      pos
+    }
 
-		## state exists?
-		pos_new <- which(states(x) == sel)
+    ## get position of current date in matrix
+    pos_current <- which(states(x) == current_state(x))
+    i <- 1
 
-		## no: create state
-		if(!length(pos_new)) pos_new <- .addState(sel)
+    ## iterate over cluster assignments in newdata
+    for (sel in newdata) {
+      if (verbose && !(i %% 100))
+        cat("Processing assignment", i, "\n")
+      i <- i + 1
 
-		## add transition
-		## no current state?
-		if(!length(pos_current)) {
-		    tracds_d$mm@initial_counts[pos_new] <- tracds_d$mm@initial_counts[pos_new] + 1 
-		}else{
-		    ## tracds_d$mm@counts[pos_current, pos_new] <- tracds_d$mm@counts[pos_current, pos_new] + 1
-		    counts[pos_current, pos_new] <- counts[pos_current, pos_new] + 1
-		}
+      ## cluster returns NA if we start a new sequence.
+      if (is.na(sel)) {
+        pos_current <- numeric(0)
+        next
+      }
 
-		## update current_state
-		pos_current <- pos_new
-	    }
+      ## fade TRACDS structure?
+      ### FIXME: counts!!!
+      if (x@lambda > 0) {
+        counts <- counts * x@lambda_factor
+        tracds_d$mm@initial_counts <-
+          tracds_d$mm@initial_counts *  x@lambda_factor
+        #    tracds_d$mm <- smc_fade(tracds_d$mm,
+        #	x@lambda_factor)
+      }
 
-	    ## save the last state as current
-	    tracds_d$current_state <- sel
-		   
-	    ### return counts to object
-	    tracds_d$mm@counts <- counts 
 
-	    if(verbose) cat("Update done.", "\n")
+      ## state exists?
+      pos_new <- which(states(x) == sel)
 
-	    invisible(x)
-	})
+      ## no: create state
+      if (!length(pos_new))
+        pos_new <- .addState(sel)
 
+      ## add transition
+      ## no current state?
+      if (!length(pos_current)) {
+        tracds_d$mm@initial_counts[pos_new] <-
+          tracds_d$mm@initial_counts[pos_new] + 1
+      } else{
+        ## tracds_d$mm@counts[pos_current, pos_new] <- tracds_d$mm@counts[pos_current, pos_new] + 1
+        counts[pos_current, pos_new] <-
+          counts[pos_current, pos_new] + 1
+      }
+
+      ## update current_state
+      pos_current <- pos_new
+    }
+
+    ## save the last state as current
+    tracds_d$current_state <- sel
+
+    ### return counts to object
+    tracds_d$mm@counts <- counts
+
+    if (verbose)
+      cat("Update done.", "\n")
+
+    invisible(x)
+  })

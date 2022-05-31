@@ -1,6 +1,6 @@
 #######################################################################
 # rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
+# Copyright (C) 2011 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,61 +20,76 @@
 ## create a tNN clustering from k-means, etc.
 ## This is TRAC (without DS)
 
-TRAC <- function(x, data = NULL, centers = NULL, measure = "euclidean") {
-  if(is(x, "kmeans")) {
-    counts <- x$size
-    k <- length(counts)
-    centers <- x$centers
-    thresholds <- sqrt(x$withinss/x$size)*3
-    order <- x$cluster
-    
-    ### PAM
-  }else if(is(x, "partition")) {
-    counts <- x$clusinfo[,"size"]
-    k <- length(counts)
-    centers <- x$medoids
-    thresholds <- x$clusinfo[,"max_diss"]
-    order <- x$cluster
-    
-    ### x must be a cluster index vector
-  }else if(is.numeric(x)) {
-    if(is.null(data) && is.null(centers)) stop("Either data or centers need to be specified.")
-    
-    order <- as.integer(x)
-    k <- max(order, na.rm = TRUE)
-    counts <- tabulate(order, k)
-    
-    
-    if(!is.null(centers)) {
-      if(!nrow(centers) != k) stop("Number of clusters and number of centers do not agree!")
-      ### centers already are set
-        
-    }else{ ### data is given
-    centers <- t(sapply(1:k, 
-      FUN=function(i) colMeans(data[order==i,,drop=FALSE], na.rm = TRUE)))
-    thresholds <- sapply(1:k,
-      FUN=function(i) max(dist(centers[i,,drop=FALSE], 
-        data[order==i,,drop=FALSE], method = measure), na.rm = TRUE))
-    }
-    
-  }else
-    stop("Needs to be a kmeans or partition (PAM) object or a cluster vector and the used data.")
-  
-  emm <- new("EMM", measure=measure, threshold = max(thresholds))
-  
-  ## create tNN
-  states <- as.character(1:k)
-  names(counts) <- states
-  
-  emm@tnn_d$centers <- centers
-  emm@tnn_d$counts <- counts
-  emm@tnn_d$var_thresholds <- thresholds
-  
-  ## update TRACDS
-  ## make sure the order of states corresponds to tNN
-  emm@tracds_d$mm <- smc_addState(emm@tracds_d$mm, states)
-  update(emm, order)
-  
-  emm
-}
+TRAC <-
+  function(x,
+    data = NULL,
+    centers = NULL,
+    measure = "euclidean") {
+    if (is(x, "kmeans")) {
+      counts <- x$size
+      k <- length(counts)
+      centers <- x$centers
+      thresholds <- sqrt(x$withinss / x$size) * 3
+      order <- x$cluster
 
+      ### PAM
+    } else if (is(x, "partition")) {
+      counts <- x$clusinfo[, "size"]
+      k <- length(counts)
+      centers <- x$medoids
+      thresholds <- x$clusinfo[, "max_diss"]
+      order <- x$cluster
+
+      ### x must be a cluster index vector
+    } else if (is.numeric(x)) {
+      if (is.null(data) &&
+          is.null(centers))
+        stop("Either data or centers need to be specified.")
+
+      order <- as.integer(x)
+      k <- max(order, na.rm = TRUE)
+      counts <- tabulate(order, k)
+
+
+      if (!is.null(centers)) {
+        if (!nrow(centers) != k)
+          stop("Number of clusters and number of centers do not agree!")
+        ### centers already are set
+
+      } else{
+        ### data is given
+        centers <- t(sapply(
+          1:k,
+          FUN = function(i)
+            colMeans(data[order == i, , drop = FALSE], na.rm = TRUE)
+        ))
+        thresholds <- sapply(
+          1:k,
+          FUN = function(i)
+            max(dist(centers[i, , drop = FALSE],
+              data[order == i, , drop = FALSE], method = measure), na.rm = TRUE)
+        )
+      }
+
+    } else
+      stop("Needs to be a kmeans or partition (PAM) object or a cluster vector and the used data.")
+
+    emm <- new("EMM",
+      measure = measure,
+      threshold = max(thresholds))
+
+    ## create tNN
+    states <- as.character(1:k)
+    names(counts) <- states
+
+    emm@tnn_d$centers <- centers
+    emm@tnn_d$counts <- counts
+    emm@tnn_d$var_thresholds <- thresholds
+
+    ## update TRACDS
+    ## make sure the order of states corresponds to tNN
+    emm@tracds_d$mm <- smc_addState(emm@tracds_d$mm, states)
+    update(emm, order)
+
+    emm
+  }

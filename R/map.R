@@ -1,6 +1,6 @@
 #######################################################################
 # rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
+# Copyright (C) 2011 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,27 +18,31 @@
 
 ## mapping helper
 
-map <- function(x, range = c(0,1), from.range=NA) {
-    if(any(is.na(from.range))) from.range <- range(x, na.rm=TRUE)
-    
-    ## check if all values are the same
-    if(!diff(from.range)) {
-	x[] <- mean(range) 
-	return(x)
-    }
-    
-    ## map to [0,1]
-    x <- (x-from.range[1])
-    x <- x/diff(from.range)
-    ## handle single values
-    if(diff(from.range) == 0) x <- 0 
-    
-    ## map from [0,1] to [range]
-    if (range[1]>range[2]) x <- 1-x
-    x <- x*(abs(diff(range))) + min(range)
-    
-    x[x<min(range) | x>max(range)] <- NA
-    
-    x
-}
+map <- function(x,
+  range = c(0, 1),
+  from.range = NA) {
+  if (any(is.na(from.range)))
+    from.range <- range(x, na.rm = TRUE)
 
+  ## check if all values are the same
+  if (!diff(from.range)) {
+    x[] <- mean(range)
+    return(x)
+  }
+
+  ## map to [0,1]
+  x <- (x - from.range[1])
+  x <- x / diff(from.range)
+  ## handle single values
+  if (diff(from.range) == 0)
+    x <- 0
+
+  ## map from [0,1] to [range]
+  if (range[1] > range[2])
+    x <- 1 - x
+  x <- x * (abs(diff(range))) + min(range)
+
+  x[x < min(range) | x > max(range)] <- NA
+
+  x
+}

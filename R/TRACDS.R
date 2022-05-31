@@ -1,6 +1,6 @@
 #######################################################################
 # rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
+# Copyright (C) 2011 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,61 +17,69 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 ## creator for TRACDS
-TRACDS <- function(lambda=0) {
-    new("TRACDS", lambda=lambda)
+TRACDS <- function(lambda = 0) {
+  new("TRACDS", lambda = lambda)
 }
 
 ## show
 setMethod("show", signature(object = "TRACDS"),
-	function(object) {
-	    cat("tNN with", nstates(object), "states.\n")
-	    invisible(NULL)
-	})
+  function(object) {
+    cat("tNN with", nstates(object), "states.\n")
+    invisible(NULL)
+  })
 
 setMethod("copy", signature(x = "TRACDS"),
-	function(x) {
+  function(x) {
+    r <- new("TRACDS")
 
-	    r <- new("TRACDS") 
-	    
-	    ## copy environment
-	    r@tracds_d <- as.environment(as.list(x@tracds_d))
-	
-	    r
-	})
+    ## copy environment
+    r@tracds_d <- as.environment(as.list(x@tracds_d))
+
+    r
+  })
 
 
 setMethod("nstates", signature(x = "TRACDS"),
-	function(x) smc_size(x@tracds_d$mm))
+  function(x)
+    smc_size(x@tracds_d$mm))
 
 setMethod("states", signature(x = "TRACDS"),
-	function(x) smc_states(x@tracds_d$mm))
+  function(x)
+    smc_states(x@tracds_d$mm))
 
 setMethod("current_state", signature(x = "TRACDS"),
-	function(x) x@tracds_d$current_state)
+  function(x)
+    x@tracds_d$current_state)
 
 setMethod("ntransitions", signature(x = "TRACDS"),
-	function(x, threshold=NA) { 
-    if(is.na(threshold)) sum(smc_countMatrix(x@tracds_d$mm)>0)
-    else sum(smc_countMatrix(x@tracds_d$mm)>=threshold)
-    })
+  function(x, threshold = NA) {
+    if (is.na(threshold))
+      sum(smc_countMatrix(x@tracds_d$mm) > 0)
+    else
+      sum(smc_countMatrix(x@tracds_d$mm) >= threshold)
+  })
 
 setMethod("transitions", signature(x = "TRACDS"),
-	function(x) {
-    
+  function(x) {
     m <- smc_countMatrix(x@tracds_d$mm)
-      
-	    ### check for no transition
-	    if(sum(m)<1) edges <- matrix(as.character(NA), nrow=0, ncol=2)
-	    else edges <- apply(which(m>0, arr.ind=T), 
-		    MARGIN=2, FUN=function(x) colnames(m)[x])
-	    
-	    colnames(edges) <- c("from", "to")
-	    edges
-    })
+
+    ### check for no transition
+    if (sum(m) < 1)
+      edges <- matrix(as.character(NA), nrow = 0, ncol = 2)
+    else
+      edges <- apply(
+        which(m > 0, arr.ind = T),
+        MARGIN = 2,
+        FUN = function(x)
+          colnames(m)[x]
+      )
+
+    colnames(edges) <- c("from", "to")
+    edges
+  })
 
 setMethod("rare_transitions", signature(x = "TRACDS"),
-          function(x, count_threshold) {
-            ts <- transitions(x)
-            ts[transition(x, ts, type="counts", prior=FALSE) <= count_threshold,]
-          }
-)
+  function(x, count_threshold) {
+    ts <- transitions(x)
+    ts[transition(x, ts, type = "counts", prior = FALSE) <= count_threshold, ]
+  })

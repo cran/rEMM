@@ -1,3 +1,11 @@
+#######################################################################
+# rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
+# Copyright (C) 2011 Michael Hahsler
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -7,6 +15,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 
 ## the generic with x, y, ... comes from graphics
 setMethod("plot", signature(x = "EMM", y = "missing"),
@@ -314,8 +323,9 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
         if (!is.null(p$mark_transitions)) {
           edge_colors <- rep("grey", nrow(edges))
           if (length(p$mark_transitions_color) == 1)
-            p$mark_transitions_color <- rep(p$mark_transitions_color,
-              length(p$mark_transitions))
+            p$mark_transitions_color <-
+              rep(p$mark_transitions_color,
+                length(p$mark_transitions))
 
           sl <- strsplit(p$mark_transitions, "->")
           for (i in 1:length(sl)) {
@@ -427,7 +437,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
             FUN = function(x)
               all(is.na(x)),
             MARGIN = 1
-          ), ]
+          ),]
 
         if (ncol(emm_centers) == 2 &&
             tolower(x@measure) == "euclidean") {
@@ -489,7 +499,7 @@ setMethod("plot", signature(x = "EMM", y = "missing"),
           if (p$draw_threshold) {
             for (i in 1:size(x)) {
               thr <- x@tnn_d$var_thresholds[i]
-              loc <- cluster_centers(x)[i, ]
+              loc <- cluster_centers(x)[i,]
               lines(ellipsePoints(thr, thr, loc = loc, n = 90),
                 col = 1,
                 lty = 2)
@@ -612,7 +622,7 @@ setMethod("plot", signature(x = "tNN", y = "missing"),
       if (p$draw_threshold) {
         for (i in 1:nclusters(x)) {
           thr <- x@tnn_d$var_thresholds[i]
-          loc <- cluster_centers(x)[i, ]
+          loc <- cluster_centers(x)[i,]
           lines(ellipsePoints(thr, thr, loc = loc, n = 90),
             col = 1,
             lty = 3)
@@ -663,7 +673,7 @@ setMethod("plot", signature(x = "tNN", y = "missing"),
           FUN = function(x)
             all(is.na(x)),
           MARGIN = 1
-        ), ]
+        ),]
 
         if (ncol(centers) == 2 &&
             tolower(x@measure) == "euclidean") {

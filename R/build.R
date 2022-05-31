@@ -1,6 +1,6 @@
 #######################################################################
 # rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
+# Copyright (C) 2011 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,27 +22,26 @@
 
 ## make  newdata a matrix (with a single row)
 setMethod("build", signature(x = "EMM", newdata = "numeric"),
-	function(x, newdata, verbose = FALSE) build(x, 
-		as.matrix(rbind(newdata), verbose))
-	)
+  function(x, newdata, verbose = FALSE)
+    build(x,
+      as.matrix(rbind(newdata), verbose)))
 
 setMethod("build", signature(x = "EMM", newdata = "data.frame"),
-	function(x, newdata, verbose = FALSE) build(x, as.matrix(newdata), 
-		verbose)
-	)
+  function(x, newdata, verbose = FALSE)
+    build(x, as.matrix(newdata),
+      verbose))
 
 setMethod("build", signature(x = "EMM", newdata = "matrix"),
-	function(x, newdata, verbose = FALSE) {
+  function(x, newdata, verbose = FALSE) {
+    if (verbose)
+      cat("Adding", nrow(newdata) , "observations.", "\n")
 
-	    if(verbose) cat("Adding", nrow(newdata) , "observations.","\n")
-	    
-	    ## cluster all the data (the variable data is in an 
-	    ## environment, so there is no need for x <- cluster(x, newdata))
-	    cluster(x, newdata, verbose=verbose)
+    ## cluster all the data (the variable data is in an
+    ## environment, so there is no need for x <- cluster(x, newdata))
+    cluster(x, newdata, verbose = verbose)
 
-	    ## now update TRACDS (iterate over cluster assignments in last)
-	    update(x, last_clustering(x), verbose=verbose)
-	    
-	    invisible(x)
-	}
-	)
+    ## now update TRACDS (iterate over cluster assignments in last)
+    update(x, last_clustering(x), verbose = verbose)
+
+    invisible(x)
+  })

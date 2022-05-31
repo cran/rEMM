@@ -1,6 +1,6 @@
 #######################################################################
 # rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
+# Copyright (C) 2011 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 ## reset the EMM for new sequence
 ## reset is also done by an observation of all NAs
-setMethod("reset", signature(x = "TRACDS"), function(x) { 
-		x@tracds_d$current_state <- as.character(NA)
-		invisible(x)
-	}
-)
+setMethod("reset", signature(x = "TRACDS"), function(x) {
+  x@tracds_d$current_state <- as.character(NA)
+  invisible(x)
+})

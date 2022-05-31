@@ -1,6 +1,6 @@
 #######################################################################
 # rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
+# Copyright (C) 2011 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,16 +20,18 @@
 ## add Euclidean Squared Distance
 
 .onLoad <- function(libname, pkgname) {
+  if (!pr_DB$entry_exists("Euclidean2"))
     pr_DB$set_entry(
-	    names = c("Euclidean2"), 
-	    FUN = function(x,y) dist(x,y)^2, 
-	    PREFUN = NA,
-	    POSTFUN = NA,
-	    convert = pr_dist2simil,
-	    type = "metric",
-	    loop = FALSE,
-	    C_FUN = FALSE,
-	    abcd = FALSE,
-	    description="Euclidean Squared Distance."
-	    )
+      names = c("Euclidean2"),
+      FUN = function(x, y)
+        dist(x, y) ^ 2,
+      PREFUN = NA,
+      POSTFUN = NA,
+      convert = pr_dist2simil,
+      type = "metric",
+      loop = FALSE,
+      C_FUN = FALSE,
+      abcd = FALSE,
+      description = "Euclidean Squared Distance."
+    )
 }

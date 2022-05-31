@@ -1,6 +1,6 @@
 #######################################################################
 # rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
+# Copyright (C) 2011 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,37 +21,38 @@
 ### correctly
 
 setMethod("object.size", signature(x = "TRACDS"),
-	function(x) {
-	    s <- sum(sapply(ls(x@tracds_d),  function(y)
-			    object.size(get(y, envir = x@tracds_d))))
+  function(x) {
+    s <- sum(sapply(ls(x@tracds_d),  function(y)
+      object.size(get(
+        y, envir = x@tracds_d
+      ))))
 
-	    class(s) <- "object_size"
-	    s
-	})
+    class(s) <- "object_size"
+    s
+  })
 
 
 setMethod("object.size", signature(x = "tNN"),
-	function(x) {
-	    s <- sum(sapply(ls(x@tnn_d),  function(y)
-			    object.size(get(y, envir = x@tnn_d))))
+  function(x) {
+    s <- sum(sapply(ls(x@tnn_d),  function(y)
+      object.size(get(y, envir = x@tnn_d))))
 
-	    class(s) <- "object_size"
-	    s
-	})
+    class(s) <- "object_size"
+    s
+  })
 
 setMethod("object.size", signature(x = "EMM"),
-	function(x) {
-	    s <- sum(sapply(ls(x@tracds_d),  function(y)
-			    object.size(get(y, envir = x@tracds_d))))
-	    
-	    s <- s + sum(sapply(ls(x@tnn_d),  function(y)
-			    object.size(get(y, envir = x@tnn_d))))
+  function(x) {
+    s <- sum(sapply(ls(x@tracds_d),  function(y)
+      object.size(get(
+        y, envir = x@tracds_d
+      ))))
 
-	    s <- s+object.size(unclass(x))
+    s <- s + sum(sapply(ls(x@tnn_d),  function(y)
+      object.size(get(y, envir = x@tnn_d))))
 
-	    class(s) <- "object_size"
-	    s
-	})
+    s <- s + object.size(unclass(x))
 
-
-
+    class(s) <- "object_size"
+    s
+  })

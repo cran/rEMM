@@ -1,6 +1,6 @@
 #######################################################################
 # rEMM - Extensible Markov Model (EMM) for Data Stream Clustering in R
-# Copyrigth (C) 2011 Michael Hahsler
+# Copyright (C) 2011 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,25 +17,27 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 ## helper
-.installed <- function(pkg) !is(try(installed.packages()[pkg,],
-        silent=TRUE), "try-error")
+.installed <- function(pkg)
+  ! is(try(installed.packages()[pkg, ],
+    silent = TRUE)
+    , "try-error")
 
 
 .get_parameters <- function(p, parameter) {
-    if(!is.null(parameter) && length(parameter) != 0) {
-        o <- pmatch(names(parameter), names(p))
+  if (!is.null(parameter) && length(parameter) != 0) {
+    o <- pmatch(names(parameter), names(p))
 
-        if(any(is.na(o)))
-        stop(sprintf(ngettext(length(is.na(o)),
-                    "Unknown option: %s",
-                    "Unknown options: %s"),
-                paste(names(parameter)[is.na(o)],
-                    collapse = " ")))
+    if (any(is.na(o)))
+      stop(sprintf(
+        ngettext(length(is.na(o)),
+          "Unknown option: %s",
+          "Unknown options: %s"),
+        paste(names(parameter)[is.na(o)],
+          collapse = " ")
+      ))
 
-        p[o] <- parameter
-    }
+    p[o] <- parameter
+  }
 
-    p
+  p
 }
-
-
