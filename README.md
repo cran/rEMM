@@ -1,6 +1,5 @@
-R package rEMM: Extensible Markov Model for Modelling Temporal
-Relationships Between Clusters
-================
+
+# <img src='man/figures/logo.svg' align="right" height="139" />R package rEMM: Extensible Markov Model for Modelling Temporal Relationships Between Clusters
 
 [![CRAN
 version](http://www.r-pkg.org/badges/version/rEMM)](https://CRAN.R-project.org/package=rEMM)
@@ -15,6 +14,9 @@ transition probabilities in sequence data. TRACDS adds a temporal or
 order model to data stream clustering by superimposing a dynamically
 adapting Markov Chain. Also provides an implementation of EMM (TRACDS on
 top of tNN data stream clustering).
+
+Interface classes DSC_tNN and DSC_EMM for the [stream
+package](https://github.com/mhahsler/stream) are provided.
 
 ## Installation
 
@@ -38,8 +40,9 @@ library(rEMM)
 
 data("EMMsim")
 
-plot(EMMsim_train, pch = EMMsim_sequence_train)
+plot(EMMsim_train, pch = NA)
 lines(EMMsim_train, col = "gray")
+points(EMMsim_train, pch = EMMsim_sequence_train)
 ```
 
 ![](inst/README_files/example_data-1.png)<!-- -->

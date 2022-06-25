@@ -1,12 +1,11 @@
 useDynLib("rEMM", .registration = TRUE)
 
 import("methods")
+import("igraph")
+import("stream")
 
 importFrom("clusterGeneration", "genPositiveDefMat")
 importFrom("MASS", "mvrnorm")
-
-import("igraph")
-
 importFrom("graphics", "arrows", "barplot", "lines", "points",
         "strheight", "strwidth", "text")
 importFrom("stats", "predict", "plogis", "runif",
@@ -34,7 +33,7 @@ export(
     plot,
     merge_clusters,
     remove_clusters,
-    
+
     ## tNN
     tNN,
     cluster,
@@ -74,8 +73,14 @@ export(
     recluster_reachability,
     recluster_tNN,
     recluster_transitions,
-    
-    synthetic_stream
+
+    synthetic_stream,
+
+    ## stream
+    DSC_tNN,
+    DSC_EMM,
+    get_EMM,
+    set_EMM
 )
 
 S3method(as.graph, TRACDS)
